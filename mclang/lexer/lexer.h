@@ -4,8 +4,31 @@
 
 #include "lexer/token.h"
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
+
+// One-character tokens that can be read in easily
+const std::map<char, TokenType> simpleTokens = {
+    {'(', TOK_LBRACE},
+    {')', TOK_RBRACE},
+    {'{', TOK_LCBRACE},
+    {'}', TOK_RCBRACE},
+    {'+', TOK_ADD},
+    {'-', TOK_SUB},
+    // NOTE: Division is not present here because of commands starting with '/'
+    {'*', TOK_MUL},
+    {'%', TOK_MOD}
+};
+
+// Tokens that are followed by '=' and then mean something different
+const std::map<TokenType, TokenType> eqTokens = {
+    {TOK_ADD, TOK_ASSIGN_ADD},
+    {TOK_SUB, TOK_ASSIGN_SUB},
+    {TOK_DIV, TOK_ASSIGN_DIV},
+    {TOK_MUL, TOK_ASSIGN_MUL},
+    {TOK_ASSIGN, TOK_EQ}
+};
 
 class Lexer {
 
@@ -16,6 +39,14 @@ public:
      * @param inp Input string to be tokenized
      */
     Lexer(std::string inp);
+
+    /**
+     * Read in the stored string and convert it to tokens
+     * @return A vector of tokens generated from the `txt` string
+     */
+    std::vector<Token> readIn();
+
+private:
 
     /**
      * Move to the next character
@@ -37,12 +68,6 @@ public:
     char cur() const;
 
     /**
-     * Read in the stored string and convert it to tokens
-     * @return A vector of tokens generated from the `txt` string
-     */
-    std::vector<Token> readIn();
-
-    /**
      * Read in one token
      * @param tok Reference to a token object where the found token will be
      * placed, if any is found
@@ -58,7 +83,19 @@ public:
      */
     bool readInWord(Token &tok);
 
-private:
+    /**
+     * Read in a word, typename, etc.
+     * @param tok Reference to a token object where the fond token will be
+     * placed, if any is found
+     * @return Boolean indicating if a token could be read
+     */
+    bool readInCmd(Token &tok);
+
+    /**
+     * Get the last read token. This can be used to edit the last token
+     * @return A reference to the last token that was read
+     */
+    Token &lastRead() const;
 
     // String to be tokenized
     std::string txt;
@@ -69,6 +106,15 @@ private:
     // Indicates wether we're still reading the start of a line (excluding
     // spaces/tabs)
     bool atLineStart;
+
+    // Vector of currently read tokens
+    std::vector<Token> readTokens;
+
+    // Current location where we are reading, line and column (both start
+    // counting from 1)
+    struct {
+        unsigned int line, col;
+    } curLoc;
 
 };
 

@@ -5,8 +5,36 @@ Lexer::Lexer(std::string inp) : txt(inp), curIndex(0), atLineStart(true) {
 
 }
 
+std::vector<Token> Lexer::readIn() {
+    curIndex = 0, curLoc.line = 1, curLoc.col = 1;
+    readTokens.clear();
+    Token tok;
+    while (!atEnd()) {
+        unsigned int lastLine = curLoc.line, lastCol = curLoc.col;
+        // Ignore whitespace
+        if (cur() == ' ' || cur() == '\t') {
+            next();
+        } else if (cur() == '\n') {
+            next();
+            atLineStart = true;
+            curLoc.line++;
+            curLoc.col = 1;
+        } else if (readInToken(tok)) {
+            tok.loc.col = lastCol;
+            tok.loc.line = lastLine;
+            readTokens.push_back(tok);
+            atLineStart = false;
+        } else {
+            // TODO: Add proper error handling
+            std::cout << "Could not recognize token!" << std::endl;
+            return readTokens;
+        }
+    }
+    return readTokens;
+}
+
 void Lexer::next() {
-    curIndex++;
+    curIndex++, curLoc.col++;
 }
 
 bool Lexer::atEnd() const {
@@ -19,52 +47,31 @@ char Lexer::cur() const {
     return txt[curIndex];
 }
 
-std::vector<Token> Lexer::readIn() {
-    curIndex = 0;
-    Token tok;
-    std::vector<Token> out;
-    while (!atEnd()) {
-        // Ignore whitespace
-        if (cur() == ' ' || cur() == '\t') {
-            next();
-        } else if (cur() == '\n') {
-            atLineStart = true;
-            next();
-        } else if (readInToken(tok)) {
-            out.push_back(tok);
-            atLineStart = false;
-        } else {
-            // TODO: Add proper error handling
-            std::cout << "Could not recognize token!" << std::endl;
-            return out;
-        }
-    }
-    return out;
-}
-
 bool Lexer::readInToken(Token &tok) {
-    if (cur() == '(') {
-        tok = Token(TOK_LBRACE, "");
+    // Simple tokens only contain one character
+    if (simpleTokens.count(cur())) {
+        tok = Token(simpleTokens.find(cur())->second);
         next();
         return true;
-    } else if (cur() == ')') {
-        tok = Token(TOK_RBRACE, "");
-        next();
+    }
+    // '/' is special because it can be both division and the start of a command
+    if (cur() == '/') {
+        if (atLineStart)
+            return readInCmd(tok);
+        tok = Token(TOK_DIV);
         return true;
-    } else if (cur() == '{') {
-        tok = Token(TOK_LCBRACE, "");
-        next();
+    }
+    // Special tokens followed by '=', or just '=' by itself
+    if (cur() == '=') {
+        if (simpleTokens.count(lastRead().type)) {
+            lastRead().type = simpleTokens.find(lastRead().type)->second;
+            next();
+            return true;
+        }
+        tok = Token(TOK_ASSIGN);
         return true;
-    } else if (cur() == '}') {
-        tok = Token(TOK_RCBRACE, "");
-        next();
-        return true;
-    } else if (cur() == '/' && atLineStart) {
-        tok = Token(TOK_RCBRACE, "");
-        next();
-        return true;
-    } else if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z'))
-    {
+    }
+    if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')) {
         return readInWord(tok);
     }
     return false;
@@ -85,4 +92,22 @@ bool Lexer::readInWord(Token &tok) {
         tt = TOK_TYPENAME;
     tok = Token(tt, word);
     return true;
+}
+
+bool Lexer::readInCmd(Token &tok) {
+    // Skip the '/'
+    next();
+    std::string out = "";
+    while (cur() != '\n') {
+        out += cur();
+        next();
+    }
+    // NOTE: the line ending needs to still be there when exiting this function
+    atLineStart = false;
+    tok = Token(TOK_CMD, out);
+    return true;
+}
+
+Token &Lexer::lastRead() const {
+    return (Token &)readTokens[readTokens.size() - 1];
 }

@@ -7,7 +7,15 @@
 #include <vector>
 
 const std::string tokenTypeNames[] = {
-    "ERR", "CMD", "WORD", "TYPENAME", "(", ")", "{", "}"
+    "ERR",
+    "CMD",
+    "WORD",
+    "TYPENAME",
+    "(", ")", "{", "}",
+    "+", "-", "/", "*", "%",
+    "=",
+    "+=", "-=", "/=", "*=", "%=",
+    "NUM", "STR", "TRUE", "FALSE"
 };
 
 /**
