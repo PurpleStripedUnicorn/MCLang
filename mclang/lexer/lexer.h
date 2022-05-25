@@ -60,6 +60,12 @@ private:
      */
     bool readInWord(Token &tok);
 
+    /**
+     * Get the last read token. This can be used to edit the last token
+     * @return A reference to the last token that was read
+     */
+    Token &lastRead() const;
+
     // String to be tokenized
     std::string txt;
 
@@ -69,6 +75,9 @@ private:
     // Indicates wether we're still reading the start of a line (excluding
     // spaces/tabs)
     bool atLineStart;
+
+    // Vector of currently read tokens
+    std::vector<Token> readTokens;
 
 };
 

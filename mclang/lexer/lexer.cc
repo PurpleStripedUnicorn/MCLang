@@ -7,8 +7,8 @@ Lexer::Lexer(std::string inp) : txt(inp), curIndex(0), atLineStart(true) {
 
 std::vector<Token> Lexer::readIn() {
     curIndex = 0;
+    readTokens.clear();
     Token tok;
-    std::vector<Token> out;
     while (!atEnd()) {
         // Ignore whitespace
         if (cur() == ' ' || cur() == '\t') {
@@ -17,15 +17,15 @@ std::vector<Token> Lexer::readIn() {
             atLineStart = true;
             next();
         } else if (readInToken(tok)) {
-            out.push_back(tok);
+            readTokens.push_back(tok);
             atLineStart = false;
         } else {
             // TODO: Add proper error handling
             std::cout << "Could not recognize token!" << std::endl;
-            return out;
+            return readTokens;
         }
     }
-    return out;
+    return readTokens;
 }
 
 void Lexer::next() {
@@ -86,4 +86,8 @@ bool Lexer::readInWord(Token &tok) {
         tt = TOK_TYPENAME;
     tok = Token(tt, word);
     return true;
+}
+
+Token &Lexer::lastRead() const {
+    return (Token &)readTokens[readTokens.size() - 1];
 }
