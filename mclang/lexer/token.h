@@ -23,7 +23,9 @@ enum TokenType {
     TOK_ASSIGN_ADD, TOK_ASSIGN_SUB, TOK_ASSIGN_DIV, TOK_ASSIGN_MUL,
     TOK_ASSIGN_MOD,
     // Strings, numbers and other constants
-    TOK_NUM, TOK_STR, TOK_TRUE, TOK_FALSE
+    TOK_NUM, TOK_STR, TOK_TRUE, TOK_FALSE,
+    // Comparisons
+    TOK_EQ
 };
 
 struct Token {
