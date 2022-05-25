@@ -1,3 +1,9 @@
+# Visual Studio Code generated
+.vscode
+
+# Build folder
+build
+
 # Prerequisites
 *.d
 
