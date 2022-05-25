@@ -60,10 +60,7 @@ bool Lexer::readInToken(Token &tok) {
         next();
         return true;
     } else if (cur() == '/' && atLineStart) {
-        // TODO: Implement this
-        tok = Token(TOK_RCBRACE, "");
-        next();
-        return true;
+        return readInCmd(tok);
     } else if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z'))
     {
         return readInWord(tok);
@@ -85,6 +82,20 @@ bool Lexer::readInWord(Token &tok) {
     if (word == "int" || word == "void")
         tt = TOK_TYPENAME;
     tok = Token(tt, word);
+    return true;
+}
+
+bool Lexer::readInCmd(Token &tok) {
+    // Skip the '/'
+    next();
+    std::string out = "";
+    while (cur() != '\n') {
+        out += cur();
+        next();
+    }
+    // NOTE: the line ending needs to still be there when exiting this function
+    atLineStart = false;
+    tok = Token(TOK_CMD, out);
     return true;
 }
 

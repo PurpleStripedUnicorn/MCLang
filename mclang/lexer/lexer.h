@@ -61,6 +61,14 @@ private:
     bool readInWord(Token &tok);
 
     /**
+     * Read in a word, typename, etc.
+     * @param tok Reference to a token object where the fond token will be
+     * placed, if any is found
+     * @return Boolean indicating if a token could be read
+     */
+    bool readInCmd(Token &tok);
+
+    /**
      * Get the last read token. This can be used to edit the last token
      * @return A reference to the last token that was read
      */
