@@ -1,7 +1,11 @@
 
 #include "lexer/token.h"
 
-Token::Token(TokenType type) : type(type) {
+Token::Token() : type(TOK_ERRTYPE), content("") {
+    
+}
+
+Token::Token(TokenType type) : type(type), content("") {
 
 }
 

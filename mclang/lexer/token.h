@@ -2,6 +2,8 @@
 #include <string>
 
 enum TokenType {
+    // Error type
+    TOK_ERRTYPE,
     // Basic command insertion
     TOK_CMD,
     // Normal word
@@ -13,6 +15,7 @@ enum TokenType {
 };
 
 struct Token {
+    Token();
     Token(TokenType type);
     Token(TokenType type, std::string content);
     TokenType type;
