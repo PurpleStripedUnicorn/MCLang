@@ -5,20 +5,6 @@ Lexer::Lexer(std::string inp) : txt(inp), curIndex(0), atLineStart(true) {
 
 }
 
-void Lexer::next() {
-    curIndex++;
-}
-
-bool Lexer::atEnd() const {
-    return curIndex >= txt.size();
-}
-
-char Lexer::cur() const {
-    if (atEnd())
-        return '$';
-    return txt[curIndex];
-}
-
 std::vector<Token> Lexer::readIn() {
     curIndex = 0;
     Token tok;
@@ -40,6 +26,20 @@ std::vector<Token> Lexer::readIn() {
         }
     }
     return out;
+}
+
+void Lexer::next() {
+    curIndex++;
+}
+
+bool Lexer::atEnd() const {
+    return curIndex >= txt.size();
+}
+
+char Lexer::cur() const {
+    if (atEnd())
+        return '$';
+    return txt[curIndex];
 }
 
 bool Lexer::readInToken(Token &tok) {

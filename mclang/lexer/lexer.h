@@ -18,6 +18,14 @@ public:
     Lexer(std::string inp);
 
     /**
+     * Read in the stored string and convert it to tokens
+     * @return A vector of tokens generated from the `txt` string
+     */
+    std::vector<Token> readIn();
+
+private:
+
+    /**
      * Move to the next character
      * @post `curIndex` is incremented
      */
@@ -37,12 +45,6 @@ public:
     char cur() const;
 
     /**
-     * Read in the stored string and convert it to tokens
-     * @return A vector of tokens generated from the `txt` string
-     */
-    std::vector<Token> readIn();
-
-    /**
      * Read in one token
      * @param tok Reference to a token object where the found token will be
      * placed, if any is found
@@ -57,8 +59,6 @@ public:
      * @return Boolean indicating if a token could be read
      */
     bool readInWord(Token &tok);
-
-private:
 
     // String to be tokenized
     std::string txt;
