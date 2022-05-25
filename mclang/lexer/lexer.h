@@ -60,11 +60,11 @@ public:
 
 private:
 
-    // Index of the current character being read
-    unsigned int curIndex;
-
     // String to be tokenized
     std::string txt;
+
+    // Index of the current character being read
+    unsigned int curIndex;
 
     // Indicates wether we're still reading the start of a line (excluding
     // spaces/tabs)

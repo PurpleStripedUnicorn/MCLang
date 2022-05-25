@@ -26,9 +26,10 @@ std::vector<Token> Lexer::readIn() {
     while (!atEnd()) {
         // Ignore whitespace
         if (cur() == ' ' || cur() == '\t') {
-            ;
+            next();
         } else if (cur() == '\n') {
             atLineStart = true;
+            next();
         } else if (readInToken(tok)) {
             out.push_back(tok);
             atLineStart = false;
@@ -44,21 +45,23 @@ std::vector<Token> Lexer::readIn() {
 bool Lexer::readInToken(Token &tok) {
     if (cur() == '(') {
         tok = Token(TOK_LBRACE, "");
+        next();
         return true;
     } else if (cur() == ')') {
         tok = Token(TOK_RBRACE, "");
+        next();
         return true;
     } else if (cur() == '{') {
         tok = Token(TOK_LCBRACE, "");
+        next();
         return true;
     } else if (cur() == '}') {
         tok = Token(TOK_RCBRACE, "");
+        next();
         return true;
     } else if (cur() == '/' && atLineStart) {
         tok = Token(TOK_RCBRACE, "");
-        return true;
-    } else if (cur() == '}') {
-        tok = Token(TOK_RCBRACE, "");
+        next();
         return true;
     } else if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z'))
     {
