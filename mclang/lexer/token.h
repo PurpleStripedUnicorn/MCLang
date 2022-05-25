@@ -1,4 +1,7 @@
 
+#ifndef __LEXER_TOKEN_H__
+#define __LEXER_TOKEN_H__
+
 #include <string>
 
 enum TokenType {
@@ -21,3 +24,5 @@ struct Token {
     TokenType type;
     std::string content;
 };
+
+#endif
