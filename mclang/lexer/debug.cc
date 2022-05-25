@@ -8,7 +8,9 @@ std::string lexerDebugTable(std::vector<Token> toks) {
         std::string tname = tokenTypeNames[(unsigned int)(cur.type)];
         while (tname.size() < 10)
             tname.push_back(' ');
-        out += "Type: " + tname + " Content: " + cur.content + "\n";
+        out += "Type: " + tname + " Content: " + cur.content;
+        if (i < toks.size() - 1)
+            out.push_back('\n');
     }
     return out;
 }
