@@ -1,5 +1,5 @@
 
-subfolders = tmpinclude incl2
+subfolders = lexer
 cppargs = -Imclang -Wall -Wextra
 
 buildfolders = $(addprefix build/,$(subfolders))
