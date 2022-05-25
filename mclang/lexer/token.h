@@ -34,6 +34,9 @@ struct Token {
     Token(TokenType type, std::string content);
     TokenType type;
     std::string content;
+    struct {
+        unsigned int line, col;
+    } loc;
 };
 
 #endif

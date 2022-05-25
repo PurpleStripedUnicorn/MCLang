@@ -6,17 +6,22 @@ Lexer::Lexer(std::string inp) : txt(inp), curIndex(0), atLineStart(true) {
 }
 
 std::vector<Token> Lexer::readIn() {
-    curIndex = 0;
+    curIndex = 0, curLoc.line = 1, curLoc.col = 1;
     readTokens.clear();
     Token tok;
     while (!atEnd()) {
+        unsigned int lastLine = curLoc.line, lastCol = curLoc.col;
         // Ignore whitespace
         if (cur() == ' ' || cur() == '\t') {
             next();
         } else if (cur() == '\n') {
-            atLineStart = true;
             next();
+            atLineStart = true;
+            curLoc.line++;
+            curLoc.col = 1;
         } else if (readInToken(tok)) {
+            tok.loc.col = lastCol;
+            tok.loc.line = lastLine;
             readTokens.push_back(tok);
             atLineStart = false;
         } else {
@@ -29,7 +34,7 @@ std::vector<Token> Lexer::readIn() {
 }
 
 void Lexer::next() {
-    curIndex++;
+    curIndex++, curLoc.col++;
 }
 
 bool Lexer::atEnd() const {

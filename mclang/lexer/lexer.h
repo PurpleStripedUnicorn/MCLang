@@ -110,6 +110,12 @@ private:
     // Vector of currently read tokens
     std::vector<Token> readTokens;
 
+    // Current location where we are reading, line and column (both start
+    // counting from 1)
+    struct {
+        unsigned int line, col;
+    } curLoc;
+
 };
 
 #endif
