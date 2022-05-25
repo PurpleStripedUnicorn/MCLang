@@ -4,8 +4,31 @@
 
 #include "lexer/token.h"
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
+
+// One-character tokens that can be read in easily
+const std::map<char, TokenType> simpleTokens = {
+    {'(', TOK_LBRACE},
+    {')', TOK_RBRACE},
+    {'{', TOK_LCBRACE},
+    {'}', TOK_RCBRACE},
+    {'+', TOK_ADD},
+    {'-', TOK_SUB},
+    // NOTE: Division is not present here because of commands starting with '/'
+    {'*', TOK_MUL},
+    {'%', TOK_MOD}
+};
+
+// Tokens that are followed by '=' and then mean something different
+const std::map<TokenType, TokenType> eqTokens = {
+    {TOK_ADD, TOK_ASSIGN_ADD},
+    {TOK_SUB, TOK_ASSIGN_SUB},
+    {TOK_DIV, TOK_ASSIGN_DIV},
+    {TOK_MUL, TOK_ASSIGN_MUL},
+    {TOK_ASSIGN, TOK_EQ}
+};
 
 class Lexer {
 

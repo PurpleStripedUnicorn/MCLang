@@ -43,26 +43,30 @@ char Lexer::cur() const {
 }
 
 bool Lexer::readInToken(Token &tok) {
-    if (cur() == '(') {
-        tok = Token(TOK_LBRACE, "");
+    // Simple tokens only contain one character
+    if (simpleTokens.count(cur())) {
+        tok = Token(simpleTokens.find(cur())->second);
         next();
         return true;
-    } else if (cur() == ')') {
-        tok = Token(TOK_RBRACE, "");
-        next();
+    }
+    // '/' is special because it can be both division and the start of a command
+    if (cur() == '/') {
+        if (atLineStart)
+            return readInCmd(tok);
+        tok = Token(TOK_DIV);
         return true;
-    } else if (cur() == '{') {
-        tok = Token(TOK_LCBRACE, "");
-        next();
+    }
+    // Special tokens followed by '=', or just '=' by itself
+    if (cur() == '=') {
+        if (simpleTokens.count(lastRead().type)) {
+            lastRead().type = simpleTokens.find(lastRead().type)->second;
+            next();
+            return true;
+        }
+        tok = Token(TOK_ASSIGN);
         return true;
-    } else if (cur() == '}') {
-        tok = Token(TOK_RCBRACE, "");
-        next();
-        return true;
-    } else if (cur() == '/' && atLineStart) {
-        return readInCmd(tok);
-    } else if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z'))
-    {
+    }
+    if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')) {
         return readInWord(tok);
     }
     return false;
