@@ -60,6 +60,7 @@ bool Lexer::readInToken(Token &tok) {
         next();
         return true;
     } else if (cur() == '/' && atLineStart) {
+        // TODO: Implement this
         tok = Token(TOK_RCBRACE, "");
         next();
         return true;
