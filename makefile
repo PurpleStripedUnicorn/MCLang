@@ -16,7 +16,7 @@ clean:
 	rm -r build/*
 
 # Create output C++ files and use them to build main.cc
-build/main: $(ofiles)
+build/main: mclang/main.cc $(ofiles)
 	g++ $(cppargs) -o build/main mclang/main.cc $^
 build/%.o: mclang/%.cc
 	g++ $(cppargs) -o $@ -c $<
