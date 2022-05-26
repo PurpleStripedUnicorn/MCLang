@@ -1,5 +1,5 @@
 
-subfolders = lexer
+subfolders = lexer parser parsenodes
 cppargs = -Imclang -Wall -Wextra
 
 buildfolders = $(addprefix build/,$(subfolders))
