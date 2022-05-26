@@ -12,3 +12,7 @@ CmdNode::~CmdNode() {
 std::vector<ParseNode *> CmdNode::children() const {
     return {};
 }
+
+void CmdNode::bytecode(BCManager &man) const {
+    man.write(BCInstr(INSTR_CMD, cmd));
+}

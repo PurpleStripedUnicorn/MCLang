@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_H__
 #define __PARSENODE_H__
 
+#include "bcgen/bcgen.h"
 #include <vector>
 
 enum ParseNodeType {
@@ -43,6 +44,12 @@ public:
      * @return The type of this parse node
      */
     ParseNodeType getType() const;
+
+    /**
+     * Generate bytecode for this parse node
+     * @param man The main bytecode manager
+     */
+    virtual void bytecode(BCManager &man) const = 0;
 
 protected:
 
