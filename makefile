@@ -1,11 +1,11 @@
 
-subfolders = lexer parser parsenodes bcgen
+# subfolders = lexer parser parsenodes bcgen
+subfolders = $(subst mclang,,$(subst mclang/,,$(shell find mclang -type d)))
 cppargs = -Imclang -Wall -Wextra
 
 buildfolders = $(addprefix build/,$(subfolders))
 ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
-tmpofiles = $(ccfiles:.cc=.o)
-ofiles = $(subst mclang,build,$(tmpofiles))
+ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
 
 # Makefile starting point
 .PHONY: all
