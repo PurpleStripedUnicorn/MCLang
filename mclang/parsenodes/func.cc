@@ -13,3 +13,9 @@ std::vector<ParseNode *> FuncNode::children() const {
 FuncNode::~FuncNode() {
     delete codeblock;
 }
+
+void FuncNode::bytecode(BCManager &man) const {
+    man.addFunc(name);
+    codeblock->bytecode(man);
+    man.popFunc();
+}
