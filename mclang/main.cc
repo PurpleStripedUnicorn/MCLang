@@ -53,7 +53,6 @@ int main(int argc, char *argv[]) {
         std::cerr << "No filename given." << std::endl;
         return 1;
     }
-    std::cout << fname << std::endl;
     // Read the contents of the given file
     std::ifstream inpFile(fname);
     std::string inp;
