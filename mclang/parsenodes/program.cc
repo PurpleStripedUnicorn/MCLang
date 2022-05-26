@@ -1,8 +1,9 @@
 
 #include "parsenodes/program.h"
 
-ProgramNode::ProgramNode(std::vector<ParseNode *> childNodes) :
-ParseNode(PNODE_PROGRAM), childNodes(childNodes) {
+ProgramNode::ProgramNode(std::vector<ParseNode *> childNodes,
+ParseNodeProps props) : ParseNode(PNODE_PROGRAM, props), childNodes(childNodes)
+{
 
 }
 

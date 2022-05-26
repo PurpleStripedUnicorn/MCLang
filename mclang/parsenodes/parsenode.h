@@ -18,6 +18,16 @@ enum ParseNodeType {
     PNODE_CODEBLOCK
 };
 
+/**
+ * This type is used to store properties of parse nodes, without taking up many
+ * function arguments
+ */
+struct ParseNodeProps {
+    struct {
+        unsigned int line = 0, col = 0;
+    } loc;
+};
+
 class ParseNode {
 
 public:
@@ -26,7 +36,7 @@ public:
      * Constructor
      * @param type The node type
      */
-    ParseNode(ParseNodeType type);
+    ParseNode(ParseNodeType type, ParseNodeProps props);
 
     /**
      * Destructor
@@ -51,20 +61,13 @@ public:
      */
     virtual void bytecode(BCManager &man) const = 0;
 
-    /**
-     * Set the location of this node to the given line and column
-     */
-    void setLoc(unsigned int line, unsigned int col);
+    // General parse node properties, such as location
+    ParseNodeProps props;
 
 protected:
 
     // Node type
     ParseNodeType type;
-
-    // Location of the node in the text
-    struct {
-        unsigned int line, col;
-    } loc;
 
 };
 

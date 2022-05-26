@@ -41,13 +41,17 @@ void Parser::expect(TokenType type) {
 }
 
 ParseNode *Parser::readInProgram() {
+    unsigned int line, col;
+    curLoc(line, col);
     std::vector<ParseNode *> childNodes;
     while (accept(TOK_TYPENAME))
         childNodes.push_back(readInFunc());
-    return new ProgramNode(childNodes);
+    return new ProgramNode(childNodes, {.loc = {line, col}});
 }
 
 ParseNode *Parser::readInFunc() {
+    unsigned int line, col;
+    curLoc(line, col);
     expect(TOK_TYPENAME);
     if (cur().content != "void")
         std::cout << "Invalid typename for function, has to be 'void'"
@@ -61,19 +65,27 @@ ParseNode *Parser::readInFunc() {
     expect(TOK_LCBRACE), next();
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
     expect(TOK_RCBRACE), next();
-    return new FuncNode(name, codeblock);
+    return new FuncNode(name, codeblock, {.loc = {line, col}});
 }
 
 ParseNode *Parser::readInCodeBlock() {
+    unsigned int line, col;
+    curLoc(line, col);
     std::vector<ParseNode *> childNodes;
     while (!accept(TOK_RCBRACE))
         childNodes.push_back(readInCmd());
-    return new CodeBlockNode(childNodes);
+    return new CodeBlockNode(childNodes, {.loc = {line, col}});
 }
 
 ParseNode *Parser::readInCmd() {
+    unsigned int line, col;
+    curLoc(line, col);
     expect(TOK_CMD);
-    ParseNode *out = new CmdNode(cur().content);
+    ParseNode *out = new CmdNode(cur().content, {.loc = {line, col}});
     next();
     return out;
+}
+
+void Parser::curLoc(unsigned int &line, unsigned int &col) const {
+    line = cur().loc.line, col = cur().loc.col;
 }

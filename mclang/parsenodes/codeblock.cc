@@ -1,8 +1,9 @@
 
 #include "parsenodes/codeblock.h"
 
-CodeBlockNode::CodeBlockNode(std::vector<ParseNode *> childNodes) :
-ParseNode(PNODE_CODEBLOCK), childNodes(childNodes) {
+CodeBlockNode::CodeBlockNode(std::vector<ParseNode *> childNodes,
+ParseNodeProps props) : ParseNode(PNODE_CODEBLOCK, props),
+childNodes(childNodes) {
 
 }
 

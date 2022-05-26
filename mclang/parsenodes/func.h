@@ -18,7 +18,7 @@ public:
      * @param name Name of the function
      * @param codeblock Code inside the function
      */
-    FuncNode(std::string name, CodeBlockNode *codeblock);
+    FuncNode(std::string name, CodeBlockNode *codeblock, ParseNodeProps props);
 
     /**
      * Destructor

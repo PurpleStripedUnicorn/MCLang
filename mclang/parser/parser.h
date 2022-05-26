@@ -89,6 +89,12 @@ private:
      */
     ParseNode *readInCmd();
 
+    /**
+     * Get the line and column of the token currently being read
+     * @post The `line` and `col` are modified to reflect the correct position
+     */
+    void curLoc(unsigned int &line, unsigned int &col) const;
+
     // Vector of input tokens
     const std::vector<Token> &toks;
 

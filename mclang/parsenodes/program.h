@@ -14,7 +14,7 @@ public:
     /**
      * Constructor
      */
-    ProgramNode(std::vector<ParseNode *> childNodes);
+    ProgramNode(std::vector<ParseNode *> childNodes, ParseNodeProps props);
 
     /**
      * Destructor
