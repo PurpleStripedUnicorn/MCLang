@@ -17,7 +17,7 @@ clean:
 
 # Create output C++ files and use them to build main.cc
 build/main: mclang/main.cc $(ofiles)
-	g++ $(cppargs) -o build/main mclang/main.cc $^
+	g++ $(cppargs) -o build/main mclang/main.cc $(ofiles)
 build/%.o: mclang/%.cc
 	g++ $(cppargs) -o $@ -c $<
 
