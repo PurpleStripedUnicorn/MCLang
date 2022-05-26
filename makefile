@@ -14,6 +14,7 @@ all: build $(buildfolders) build/main
 # Clean up build folder
 clean:
 	rm -r build/*
+	rm *.debug
 
 # Create output C++ files and use them to build main.cc
 build/main: mclang/main.cc $(ofiles)

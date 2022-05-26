@@ -1,8 +1,9 @@
 
 #include "parsenodes/func.h"
 
-FuncNode::FuncNode(std::string name, CodeBlockNode *codeblock) : ParseNode(PNODE_FUNC),
-name(name), codeblock(codeblock) {
+FuncNode::FuncNode(std::string name, CodeBlockNode *codeblock,
+ParseNodeProps props) : ParseNode(PNODE_FUNC, props), name(name),
+codeblock(codeblock) {
 
 }
 

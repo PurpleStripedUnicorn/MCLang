@@ -1,0 +1,9 @@
+
+void main() {
+    /say PurpleStriped: Hello World!
+    /function joke
+}
+
+void joke() {
+    /say World: Hello PurpleStriped!
+}

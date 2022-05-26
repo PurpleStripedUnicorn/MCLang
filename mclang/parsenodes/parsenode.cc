@@ -1,7 +1,8 @@
 
 #include "parsenodes/parsenode.h"
 
-ParseNode::ParseNode(ParseNodeType type) : type(type) {
+ParseNode::ParseNode(ParseNodeType type, ParseNodeProps props) : props(props),
+type(type) {
 
 }
 

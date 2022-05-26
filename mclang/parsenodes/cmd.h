@@ -16,7 +16,7 @@ public:
      * Constructor
      * @param cmd A string with the command
      */
-    CmdNode(std::string cmd);
+    CmdNode(std::string cmd, ParseNodeProps props);
 
     /**
      * Destructor

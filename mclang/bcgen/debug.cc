@@ -9,7 +9,7 @@ std::string bcgenInstrList(const std::vector<BCFunc> &instrList) {
         for (unsigned int j = 0; j < cur->instrList.size(); j++) {
             BCInstr curInstr = cur->instrList[j];
             std::string curLine = "";
-            curLine.append("\n  " + instrNames[(unsigned int)curInstr.type]);
+            curLine.append("\n    " + instrNames[(unsigned int)curInstr.type]);
             while (curLine.size() < 10)
                 curLine.push_back(' ');
             if (curInstr.arg1 != "")
