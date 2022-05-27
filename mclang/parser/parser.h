@@ -2,6 +2,8 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include "errorhandle/handle.h"
+#include "lexer/debug.h"
 #include "lexer/token.h"
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
