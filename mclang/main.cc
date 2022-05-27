@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include "filemanager/manager.h"
+
 bool debugMode = false;
 std::string fname = "";
 
@@ -103,5 +105,8 @@ int main(int argc, char *argv[]) {
     if (!debugMode)
         std::cout << "Currently nothing happens without debug mode."
         << std::endl;
+    // Create output files and folders
+    FileManager fm("woopwoop", "dp");
+    fm.genDatapack(cmds);
     return 0;
 }
