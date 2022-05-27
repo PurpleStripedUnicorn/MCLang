@@ -32,9 +32,7 @@ std::vector<Token> Lexer::readIn() {
             }
         // Token not recognized
         } else {
-            // TODO: Add proper error handling
-            std::cout << "Could not recognize token at " << lastLine << "["
-            << lastCol << "]." << std::endl;
+            MCLError(1, "Could not recognize token.", lastLine, lastCol);
             return readTokens;
         }
     }

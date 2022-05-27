@@ -16,7 +16,8 @@ ParseNode *Parser::genTree() {
     ParseNode *out = readInProgram();
     if (curIndex != toks.size())
         // TODO: Implement better error handling
-        std::cout << "Stopped reading before EOF" << std::endl;
+        MCLError(1, "Stopped reading before EOF.", cur().loc.line,
+        cur().loc.col);
     return out;
 }
 
@@ -36,8 +37,9 @@ bool Parser::accept(TokenType type) const {
 
 void Parser::expect(TokenType type) {
     if (!accept(type))
-        std::cout << "Expected a different token type! Located at line "
-        << cur().loc.line << "[" << cur().loc.col << "]" << std::endl;
+        MCLError(1, "Expected token '" + tokenTypeNames[(unsigned int)type]
+        + "', instead got '" + tokenTypeNames[(unsigned int)cur().type] + "'.",
+        cur().loc.line, cur().loc.col);
 }
 
 ParseNode *Parser::readInProgram() {
@@ -54,8 +56,9 @@ ParseNode *Parser::readInFunc() {
     curLoc(line, col);
     expect(TOK_TYPENAME);
     if (cur().content != "void")
-        std::cout << "Invalid typename for function, has to be 'void'"
-        << std::endl;
+        // TODO: Implement non-void functions
+        MCLError(1, "Invalid return type '" + cur().content
+        + "', needs to be 'void'.", cur().loc.line, cur().loc.col);
     next();
     expect(TOK_WORD);
     std::string name = cur().content;

@@ -2,6 +2,7 @@
 #ifndef __LEXER_H__
 #define __LEXER_H__
 
+#include "errorhandle/handle.h"
 #include "lexer/token.h"
 #include <iostream>
 #include <map>
