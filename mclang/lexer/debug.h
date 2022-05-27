@@ -8,6 +8,7 @@
 
 const std::string tokenTypeNames[] = {
     "ERR",
+    "EMPTY",
     "CMD",
     "WORD",
     "TYPENAME",
