@@ -5,6 +5,7 @@ cppargs = -Imclang -Wall -Wextra
 
 buildfolders = $(addprefix build/,$(subfolders))
 ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
+hfiles = $(ccfiles:.cc=.h)
 ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
 
 # Makefile starting point
@@ -17,9 +18,9 @@ clean:
 	rm *.debug
 
 # Create output C++ files and use them to build main.cc
-build/main: mclang/main.cc $(ofiles)
+build/main: mclang/main.cc $(ofiles) $(hfiles)
 	g++ $(cppargs) -o build/main mclang/main.cc $(ofiles)
-build/%.o: mclang/%.cc
+build/%.o: mclang/%.cc mclang/%.h
 	g++ $(cppargs) -o $@ -c $<
 
 # Create folders if neccessary
