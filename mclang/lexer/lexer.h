@@ -8,26 +8,18 @@
 #include <string>
 #include <vector>
 
-// One-character tokens that can be read in easily
-const std::map<char, TokenType> simpleTokens = {
-    {'(', TOK_LBRACE},
-    {')', TOK_RBRACE},
-    {'{', TOK_LCBRACE},
-    {'}', TOK_RCBRACE},
-    {'+', TOK_ADD},
-    {'-', TOK_SUB},
-    // NOTE: Division is not present here because of commands starting with '/'
-    {'*', TOK_MUL},
-    {'%', TOK_MOD}
-};
-
-// Tokens that are followed by '=' and then mean something different
-const std::map<TokenType, TokenType> eqTokens = {
-    {TOK_ADD, TOK_ASSIGN_ADD},
-    {TOK_SUB, TOK_ASSIGN_SUB},
-    {TOK_DIV, TOK_ASSIGN_DIV},
-    {TOK_MUL, TOK_ASSIGN_MUL},
-    {TOK_ASSIGN, TOK_EQ}
+// Two-character tokens list, ordered by first character and then by second
+// character, a space character means it is also a single character
+const std::map<char, std::map<char, TokenType>> twoLetterTokens = {
+    {'(', {{' ', TOK_LBRACE}}},
+    {')', {{' ', TOK_RBRACE}}},
+    {'{', {{' ', TOK_LCBRACE}}},
+    {'}', {{' ', TOK_RCBRACE}}},
+    {'+', {{' ', TOK_ADD}, {'=', TOK_ASSIGN_ADD}}},
+    {'-', {{' ', TOK_SUB}, {'=', TOK_ASSIGN_SUB}}},
+    {'/', {{' ', TOK_DIV}, {'=', TOK_ASSIGN_DIV}}},
+    {'*', {{' ', TOK_MUL}, {'=', TOK_ASSIGN_MUL}}},
+    {'=', {{' ', TOK_ASSIGN}, {'=', TOK_EQ}}}
 };
 
 class Lexer {
@@ -50,7 +42,7 @@ private:
 
     /**
      * Move to the next character
-     * @post `curIndex` is incremented
+     * @post `curIndex` is incremented, `curLoc.col` is incremented
      */
     void next();
 

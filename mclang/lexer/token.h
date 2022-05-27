@@ -7,6 +7,8 @@
 enum TokenType {
     // Error type
     TOK_ERRTYPE,
+    // Empty token type, purely internal
+    TOK_EMPTY,
     // Basic command insertion
     TOK_CMD,
     // Normal word

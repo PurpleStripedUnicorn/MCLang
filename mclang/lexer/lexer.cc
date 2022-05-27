@@ -11,22 +11,30 @@ std::vector<Token> Lexer::readIn() {
     Token tok;
     while (!atEnd()) {
         unsigned int lastLine = curLoc.line, lastCol = curLoc.col;
-        // Ignore whitespace
+        // Ignore whitespace, atLineStart remains the same, because whitespace
+        // is not counted for this
         if (cur() == ' ' || cur() == '\t') {
             next();
+        // Keep track of the start of a line, for inserted commands
+        // Also keeps track of line numbers
         } else if (cur() == '\n') {
             next();
             atLineStart = true;
             curLoc.line++;
             curLoc.col = 1;
+        // Read in normal tokens
         } else if (readInToken(tok)) {
-            tok.loc.col = lastCol;
-            tok.loc.line = lastLine;
-            readTokens.push_back(tok);
-            atLineStart = false;
+            if (tok.type != TOK_EMPTY) {
+                tok.loc.col = lastCol;
+                tok.loc.line = lastLine;
+                readTokens.push_back(tok);
+                atLineStart = false;
+            }
+        // Token not recognized
         } else {
             // TODO: Add proper error handling
-            std::cout << "Could not recognize token!" << std::endl;
+            std::cout << "Could not recognize token at " << lastLine << "["
+            << lastCol << "]." << std::endl;
             return readTokens;
         }
     }
@@ -48,28 +56,62 @@ char Lexer::cur() const {
 }
 
 bool Lexer::readInToken(Token &tok) {
-    // Simple tokens only contain one character
-    if (simpleTokens.count(cur())) {
-        tok = Token(simpleTokens.find(cur())->second);
-        next();
-        return true;
-    }
-    // '/' is special because it can be both division and the start of a command
+    // '/' is special because it can be division, the start of a command or the
+    // start of a comment
     if (cur() == '/') {
-        if (atLineStart)
+        next();
+        // Start of a comment
+        if (cur() == '/') {
+            while (cur() != '\n' && !atEnd())
+                next();
+            tok = Token(TOK_EMPTY);
+            return true;
+        // Start of a multiline comment
+        } else if (cur() == '*') {
+            while (true) {
+                next();
+                while (cur() == '*') {
+                    next();
+                    if (cur() == '/') {
+                        next();
+                        tok = Token(TOK_EMPTY);
+                        atLineStart = false;
+                        return true;
+                    }
+                }
+            }
+            // Reached end of file without closing comment
+            return false;
+        // Start of a command
+        } else if (atLineStart) {
             return readInCmd(tok);
-        tok = Token(TOK_DIV);
+        // Division assignment
+        } else if (cur() == '=') {
+            tok = Token(TOK_ASSIGN_DIV);
+            next();
+        } else {
+            tok = Token(TOK_DIV);
+            next();
+        }
         return true;
     }
-    // Special tokens followed by '=', or just '=' by itself
-    if (cur() == '=') {
-        if (simpleTokens.count(lastRead().type)) {
-            lastRead().type = simpleTokens.find(lastRead().type)->second;
+    // Checks for both one- and two-character tokens
+    if (twoLetterTokens.count(cur())) {
+        const std::map<char, TokenType> &curLook = twoLetterTokens.find(
+        cur())->second;
+        next();
+        // Two characters
+        if (curLook.count(cur())) {
+            tok = Token(curLook.find(cur())->second);
             next();
             return true;
         }
-        tok = Token(TOK_ASSIGN);
-        return true;
+        // One character
+        if (curLook.count(' ')) {
+            tok = Token(curLook.find(' ')->second);
+            return true;
+        }
+        return false;
     }
     if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')) {
         return readInWord(tok);
@@ -95,14 +137,13 @@ bool Lexer::readInWord(Token &tok) {
 }
 
 bool Lexer::readInCmd(Token &tok) {
-    // Skip the '/'
-    next();
+    // NOTE: The '/' has already been skipped
     std::string out = "";
     while (cur() != '\n') {
         out += cur();
         next();
     }
-    // NOTE: the line ending needs to still be there when exiting this function
+    // NOTE: The line ending needs to still be there when exiting this function
     atLineStart = false;
     tok = Token(TOK_CMD, out);
     return true;
