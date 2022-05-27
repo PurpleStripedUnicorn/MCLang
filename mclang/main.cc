@@ -1,4 +1,6 @@
 
+#include "bcconvert/bcconvert.h"
+#include "bcconvert/debug.h"
 #include "bcgen/bcgen.h"
 #include "bcgen/debug.h"
 #include "lexer/lexer.h"
@@ -84,9 +86,18 @@ int main(int argc, char *argv[]) {
     // Bytecode generator
     BCManager bcman;
     parsOut->bytecode(bcman);
+    std::vector<BCFunc> bytecode = bcman.getBytecode();
     if (debugMode) {
         std::ofstream out("mcl_bcgen.debug");
-        out << bcgenInstrList(bcman.getBytecode());
+        out << bcgenInstrList(bytecode);
+        out.close();
+    }
+    // Bytecode converter
+    BCConverter bcconv(&bytecode);
+    std::vector<CmdFunc> cmds = bcconv.getRawCommands();
+    if (debugMode) {
+        std::ofstream out("mcl_cmds.debug");
+        out << bcconvertCmdList(cmds);
         out.close();
     }
     if (!debugMode)
