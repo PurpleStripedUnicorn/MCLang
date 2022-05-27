@@ -1,5 +1,9 @@
 
 void main() {
     /say hello
+    // Hello World!
     /say hi
+    /*
+        This is a comment
+    */
 }
