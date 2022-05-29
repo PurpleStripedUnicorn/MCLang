@@ -20,8 +20,9 @@
 #define HELPPADLEFT 24
 #define HELPPADRIGHT 100
 
-bool debugMode = false;
-std::string fname = "";
+bool debugMode;
+std::string fname;
+std::string outputName;
 
 /**************************
  * Command line arguments
@@ -50,12 +51,23 @@ void argDebugMode(std::string args) {
     debugMode = true;
 }
 
+/**
+ * Set the output folder name
+ * @param args The folder name to select, no spaces
+ */
+void argOutputFolder(std::string args) {
+    outputName = args;
+}
+
 // List of all command line arguments, for easier use later in the program
 // Use ' ' for no letter or "" for no full name
 const CmdLineArg argList[] = {
     {'d', "debug", 0, argDebugMode, "Use debugging tools. Debug info will be "
     "dumped in files in the current working directory."},
-    {'h', "help", 0, argHelpList, "Show the help page."}
+    {'h', "help", 0, argHelpList, "Show the help page."},
+    {'o', "output", 1, argOutputFolder, "Set the output folder, default is "
+    "'out_datapack'. Warning: this folder will be overwritten by this program! "
+    "Be very careful when selecting an output folder!"}
 };
 
 /**
@@ -78,12 +90,11 @@ void argHelpList(std::string args) {
             cur.push_back(' ');
         cur.append(argList[i].description.substr(0, HELPPADRIGHT));
         for (unsigned int j = HELPPADRIGHT; j < argList[i].description.size();
-        j++) {
+        j += HELPPADRIGHT) {
             cur.push_back('\n');
             for (unsigned int k = 0; k < HELPPADLEFT; k++)
                 cur.push_back(' ');
-            cur.append(argList[i].description.substr(HELPPADRIGHT * j,
-            HELPPADRIGHT));
+            cur.append(argList[i].description.substr(j, HELPPADRIGHT));
         }
         std::cout << cur << std::endl << std::endl;
     }
@@ -126,6 +137,7 @@ void readInArgs(int argc, char *argv[]) {
                 std::cerr << "Unknown command line argument." << std::endl;
                 exit(1);
             }
+            i++;
         } else if (cur.size() >= 1 && cur[0] == '-') {
             // Single-letter command line argument
             if (leftToRead > 0) {
@@ -155,6 +167,7 @@ void readInArgs(int argc, char *argv[]) {
                 std::cerr << "Unknown command line argument." << std::endl;
                 exit(1);
             }
+            i++;
         } else if (leftToRead > 1) {
             curParams.append(cur + " ");
             leftToRead--;
@@ -182,7 +195,7 @@ void readInArgs(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    debugMode = false, fname = "";
+    debugMode = false, fname = "", outputName = "datapack";
     // Read in the arguments provided via the command line
     readInArgs(argc, argv);
     if (fname == "") {
@@ -234,11 +247,8 @@ int main(int argc, char *argv[]) {
         out << bcconvertCmdList(cmds);
         out.close();
     }
-    if (!debugMode)
-        std::cout << "Currently nothing happens without debug mode."
-        << std::endl;
     // Create output files and folders
-    FileManager fm("woopwoop", "dp");
+    FileManager fm(outputName, "dp");
     fm.genDatapack(cmds);
     return 0;
 }
