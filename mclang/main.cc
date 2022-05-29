@@ -195,7 +195,7 @@ void readInArgs(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    debugMode = false, fname = "", outputName = "datapack";
+    debugMode = false, fname = "", outputName = "out_datapack";
     // Read in the arguments provided via the command line
     readInArgs(argc, argv);
     if (fname == "") {
