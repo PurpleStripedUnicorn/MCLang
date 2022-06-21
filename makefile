@@ -17,6 +17,10 @@ clean:
 	rm -r build/*
 	rm *.debug
 
+# Clean up output datapack
+clean_dp:
+	rm -r out_datapack/*
+
 # Create output C++ files and use them to build main.cc
 build/main: mclang/main.cc $(ofiles) $(hfiles)
 	g++ $(cppargs) -o build/main mclang/main.cc $(ofiles)
