@@ -23,6 +23,14 @@ const std::map<char, std::map<char, TokenType>> twoLetterTokens = {
     {'=', {{' ', TOK_ASSIGN}, {'=', TOK_EQ}}}
 };
 
+// Execute-statement indicators, i.e. positioned, as, at, etc.
+// Note that if-statements are special and not listed here! The "store"
+// subcommand is not supported
+const std::string execNames[] = {
+    "align", "anchored", "as", "at", "facing", "in", "positioned", "rotated",
+    "unless"
+};
+
 class Lexer {
 
 public:
@@ -70,7 +78,7 @@ private:
 
     /**
      * Read in a word, typename, etc.
-     * @param tok Reference to a token object where the fond token will be
+     * @param tok Reference to a token object where the found token will be
      * placed, if any is found
      * @return Boolean indicating if a token could be read
      */
@@ -78,11 +86,27 @@ private:
 
     /**
      * Read in a word, typename, etc.
-     * @param tok Reference to a token object where the fond token will be
+     * @param tok Reference to a token object where the found token will be
      * placed, if any is found
      * @return Boolean indicating if a token could be read
      */
     bool readInCmd(Token &tok);
+
+    /**
+     * Read in a string literal
+     * @param tok Reference to a token object where the found token will be
+     * placed, if any is found
+     * @return Boolean indicating if a token could be read
+     */
+    bool readInString(Token &tok);
+
+    /**
+     * Convert an escaped character to its escaped version
+     * @param inp The input character
+     * @return The escaped character that the input character represents. If
+     * none can be found, the input character is returned
+     */
+    char convertEscapeChar(char inp);
 
     /**
      * Get the last read token. This can be used to edit the last token

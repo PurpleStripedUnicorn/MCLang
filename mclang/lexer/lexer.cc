@@ -114,6 +114,8 @@ bool Lexer::readInToken(Token &tok) {
     if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')) {
         return readInWord(tok);
     }
+    if (cur() == '"')
+        return readInString(tok);
     return false;
 }
 
@@ -130,6 +132,9 @@ bool Lexer::readInWord(Token &tok) {
     TokenType tt = TOK_WORD;
     if (word == "int" || word == "void")
         tt = TOK_TYPENAME;
+    for (unsigned int i = 0; i < sizeof(execNames) / sizeof(execNames[0]); i++)
+        if (word == execNames[i])
+            tt = TOK_EXEC_STMT;
     tok = Token(tt, word);
     return true;
 }
@@ -145,6 +150,38 @@ bool Lexer::readInCmd(Token &tok) {
     atLineStart = false;
     tok = Token(TOK_CMD, out);
     return true;
+}
+
+bool Lexer::readInString(Token &tok) {
+    std::string out = "";
+    // Skip the '"'
+    next();
+    while (cur() != '"') {
+        if (atEnd())
+            MCLError(1, "Reached EOF before end of string.", curLoc.line,
+            curLoc.col);
+        if (cur() == '\\') {
+            next();
+            out += convertEscapeChar(cur());
+        } else {
+            out += cur();
+        }
+        next();
+    }
+    // Skip the '"'
+    next();
+    tok = Token(TOK_STR, out);
+    return true;
+}
+
+char Lexer::convertEscapeChar(char inp) {
+    // NOTE: The ''', '"' and '\' characters sometimes need to be escaped but
+    // still are output the same by this function
+    if (inp == 'n')
+        return '\n';
+    if (inp == 't')
+        return '\t';
+    return inp;
 }
 
 Token &Lexer::lastRead() const {
