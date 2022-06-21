@@ -5,6 +5,7 @@
 #include "bcconvert/bcconvert.h"
 #include "errorhandle/handle.h"
 #include <dirent.h>
+#include <filesystem>
 #include <fstream>
 #include <string>
 #include <sys/stat.h>
@@ -56,6 +57,13 @@ private:
      * Create the "pack.mcmeta" file associated to this datapack
      */
     void genPackFile() const;
+
+    /**
+     * Delete the datapack that is currently in the output folder. If there is
+     * no "pack.mcmeta" file present, nothing will be deleted. Will show an
+     * error if there is not "pack.mcmeta" but the folder does exist
+     */
+    void deletePrevPack() const;
 
     /**
      * Create the folder structure to store all files in

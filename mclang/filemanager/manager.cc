@@ -3,8 +3,7 @@
 
 FileManager::FileManager(std::string root, std::string ns) : root(root), ns(ns)
 {
-    // TODO: Implement deleting the root directory
-    // TODO: Implement writing to pack.mcmeta
+    deletePrevPack();
     createSubFolder("");
 }
 
@@ -40,6 +39,16 @@ void FileManager::genPackFile() const {
     } else {
         MCLError(1, "Could not write to file 'pack.mcmeta'.", 0, 0);
     }
+}
+
+void FileManager::deletePrevPack() const {
+    if (!std::filesystem::is_directory(root))
+        return;
+    std::ifstream metaFile(root + DIRSEP + "pack.mcmeta");
+    if (metaFile.good() || std::filesystem::is_empty(root))
+        std::filesystem::remove_all(root);
+    else
+        MCLError(1, "Output folder exists, but is not a datapack.", 0, 0);
 }
 
 void FileManager::genFolderStructure() const {
