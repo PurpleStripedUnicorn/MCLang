@@ -25,8 +25,7 @@ void FileManager::genFunctionFile(const CmdFunc &func) const {
         for (unsigned int j = 0; j < func.cmdList.size(); j++)
             file << func.cmdList[j] << std::endl;
     } else {
-        MCLError(1, "Could not write to file '" + func.name + ".mcfunction'.",
-        0, 0);
+        MCLError(1, "Could not write to file '" + func.name + ".mcfunction'.");
     }
     file.close();
 }
@@ -37,7 +36,7 @@ void FileManager::genPackFile() const {
         file << "{\"pack\":{\"pack_format\":10,"
         << "\"description\":\"Generated with MCLang.\"}}";
     } else {
-        MCLError(1, "Could not write to file 'pack.mcmeta'.", 0, 0);
+        MCLError(1, "Could not write to file 'pack.mcmeta'.");
     }
 }
 
@@ -48,7 +47,7 @@ void FileManager::deletePrevPack() const {
     if (metaFile.good() || std::filesystem::is_empty(root))
         std::filesystem::remove_all(root);
     else
-        MCLError(1, "Output folder exists, but is not a datapack.", 0, 0);
+        MCLError(1, "Output folder exists, but is not a datapack.");
 }
 
 void FileManager::genFolderStructure() const {
@@ -64,5 +63,5 @@ void FileManager::createSubFolder(std::string path) const {
 void FileManager::createFolder(std::string path) const {
     int check = mkdir(path.c_str(), 0777);
     if (check == MKDIR_FAIL_CODE)
-        MCLError(1, "Could not create folder '" + path + "'", 0, 0);
+        MCLError(1, "Could not create folder '" + path + "'");
 }
