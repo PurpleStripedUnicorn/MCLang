@@ -4,6 +4,8 @@
 # Build folder and debug files
 build
 *.debug
+# Placeholder name for output datapacks
+out_datapack
 
 # Prerequisites
 *.d

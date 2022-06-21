@@ -15,7 +15,6 @@ ParseNode *Parser::genTree() {
     delete out;
     ParseNode *out = readInProgram();
     if (curIndex != toks.size())
-        // TODO: Implement better error handling
         MCLError(1, "Stopped reading before EOF.", cur().loc.line,
         cur().loc.col);
     return out;

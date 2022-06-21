@@ -26,8 +26,8 @@ public:
      * @param line The line on which the error occured
      * @param col The column on which the error occured
      */
-    MCLError(unsigned int level, std::string txt, unsigned int line,
-    unsigned int col);
+    MCLError(unsigned int level, std::string txt, unsigned int line = 0,
+    unsigned int col = 0);
 
 private:
 

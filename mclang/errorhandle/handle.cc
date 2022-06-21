@@ -20,8 +20,10 @@ void MCLError::print() const {
     }
     for (unsigned int i = 0; i + errtxtSize < ERRTXT_PAD; i++)
         std::cerr << " ";
-    std::string lineTxt = "Line " + std::to_string(loc.line) + "["
-    + std::to_string(loc.col) + "]";
+    std::string lineTxt = "";
+    if (loc.line != 0 || loc.col != 0)
+        lineTxt = "Line " + std::to_string(loc.line) + "["
+        + std::to_string(loc.col) + "]";
     while (lineTxt.size() < LINETXT_PAD)
         lineTxt.push_back(' ');
     std::cerr << lineTxt;

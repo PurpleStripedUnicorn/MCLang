@@ -1,7 +1,7 @@
 
 # subfolders = lexer parser parsenodes bcgen
 subfolders = $(subst mclang,,$(subst mclang/,,$(shell find mclang -type d)))
-cppargs = -Imclang -Wall -Wextra
+cppargs = -std=c++17 -Imclang -Wall -Wextra
 
 buildfolders = $(addprefix build/,$(subfolders))
 ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
@@ -16,6 +16,10 @@ all: build $(buildfolders) build/main
 clean:
 	rm -r build/*
 	rm *.debug
+
+# Clean up output datapack
+clean_dp:
+	rm -r out_datapack/*
 
 # Create output C++ files and use them to build main.cc
 build/main: mclang/main.cc $(ofiles) $(hfiles)

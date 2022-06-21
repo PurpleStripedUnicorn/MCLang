@@ -22,8 +22,8 @@ std::vector<CmdFunc> BCConverter::getRawCommands() {
             if (curInstr.type == INSTR_CMD) {
                 cur.cmdList.push_back(convertCmd(curInstr));
             } else {
-                MCLError(1, "Invalid instruction being read. Unexpected error.",
-                0, 0);
+                MCLError(1, "Invalid instruction being read. Unexpected error."
+                );
             }
         }
         out.push_back(cur);
