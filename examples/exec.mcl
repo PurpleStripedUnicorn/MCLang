@@ -1,0 +1,7 @@
+
+void main() {
+    /say I'm somewhere!
+    positioned ("0 64 0") {
+        /say I'm at [0, 64, 0]!
+    }
+}
