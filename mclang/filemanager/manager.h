@@ -53,6 +53,11 @@ private:
     void genFunctionFile(const CmdFunc &func) const;
 
     /**
+     * Create the "pack.mcmeta" file associated to this datapack
+     */
+    void genPackFile() const;
+
+    /**
      * Create the folder structure to store all files in
      */
     void genFolderStructure() const;

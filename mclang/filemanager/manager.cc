@@ -14,6 +14,7 @@ FileManager::~FileManager() {
 
 void FileManager::genDatapack(const std::vector<CmdFunc> &cmds) const {
     genFolderStructure();
+    genPackFile();
     for (unsigned int i = 0; i < cmds.size(); i++)
         genFunctionFile(cmds[i]);
 }
@@ -29,6 +30,16 @@ void FileManager::genFunctionFile(const CmdFunc &func) const {
         0, 0);
     }
     file.close();
+}
+
+void FileManager::genPackFile() const {
+    std::ofstream file(root + DIRSEP + "pack.mcmeta");
+    if (file.is_open()) {
+        file << "{\"pack\":{\"pack_format\":10,"
+        << "\"description\":\"Generated with MCLang.\"}}";
+    } else {
+        MCLError(1, "Could not write to file 'pack.mcmeta'.", 0, 0);
+    }
 }
 
 void FileManager::genFolderStructure() const {
