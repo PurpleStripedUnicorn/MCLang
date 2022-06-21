@@ -1,7 +1,7 @@
 
 # subfolders = lexer parser parsenodes bcgen
 subfolders = $(subst mclang,,$(subst mclang/,,$(shell find mclang -type d)))
-cppargs = -Imclang -Wall -Wextra
+cppargs = -std=c++17 -Imclang -Wall -Wextra
 
 buildfolders = $(addprefix build/,$(subfolders))
 ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
