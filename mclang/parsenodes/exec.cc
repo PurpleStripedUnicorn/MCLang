@@ -16,5 +16,9 @@ ExecNode::~ExecNode() {
 }
 
 void ExecNode::bytecode(BCManager &man) const {
-    // TODO: implement bytecode conversion
+    man.addFunc();
+    std::string fname = man.topFunc()->name;
+    codeblock->bytecode(man);
+    man.popFunc();
+    man.write(BCInstr(INSTR_EXEC_CALL, execType + " " + execArgs, fname));
 }
