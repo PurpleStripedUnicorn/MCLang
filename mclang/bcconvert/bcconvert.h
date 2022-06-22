@@ -51,6 +51,13 @@ private:
      */
     std::string convertCmd(BCInstr instr) const;
 
+    /**
+     * Convert a custom execute call to a raw command
+     * @param instr The instruction to convert, assumed to be of the exec-call
+     * type
+     */
+    std::string convertExecCall(BCInstr instr) const;
+
     // Pointer to the list of bytecode functions
     std::vector<BCFunc> *data;
 

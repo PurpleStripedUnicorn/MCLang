@@ -12,14 +12,17 @@ ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
 .PHONY: all
 all: build $(buildfolders) build/main
 
-# Clean up build folder
-clean:
-	rm -r build/*
-	rm *.debug
+# Clean up build fodler and output datapack
+clean: clean_build clean_dp
 
-# Clean up output datapack
+# Clean up build folder
+clean_build:
+	rm -r build/*
+
+# Clean up output datapack and debug files
 clean_dp:
-	rm -r out_datapack/*
+	rm -r out_datapack
+	rm *.debug
 
 # Create output C++ files and use them to build main.cc
 build/main: mclang/main.cc $(ofiles) $(hfiles)

@@ -68,10 +68,16 @@ public:
      */
     void popFunc();
 
+    /**
+     * Get a pointer to the top function on the function stack
+     * @return Top element of `funcStack`
+     */
+    BCFunc *topFunc() const;
+
 private:
 
     // List of functions that are generated
-    std::vector<BCFunc> funcList;
+    std::vector<BCFunc *> funcList;
 
     // Function stack, which helps with adding instructions to the right
     // functions

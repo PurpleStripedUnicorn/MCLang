@@ -8,7 +8,10 @@ enum BCInstrType {
     // Error type
     INSTR_ERR,
     // Normal command
-    INSTR_CMD
+    INSTR_CMD,
+    // Execute-statement with function call: arg1 = type + args, arg2 = function
+    // to call
+    INSTR_EXEC_CALL
 };
 
 struct BCInstr {

@@ -64,9 +64,8 @@ ParseNode *Parser::readInFunc() {
     next();
     expect(TOK_LBRACE), next();
     expect(TOK_RBRACE), next();
-    expect(TOK_LCBRACE), next();
+    expect(TOK_LCBRACE);
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-    expect(TOK_RCBRACE), next();
     return new FuncNode(name, codeblock, {.loc = {line, col}});
 }
 
@@ -74,8 +73,16 @@ ParseNode *Parser::readInCodeBlock() {
     unsigned int line, col;
     curLoc(line, col);
     std::vector<ParseNode *> childNodes;
-    while (!accept(TOK_RCBRACE))
-        childNodes.push_back(readInCmd());
+    if (accept(TOK_LCBRACE)) {
+        // Skip the '{'
+        next();
+        while (!accept(TOK_RCBRACE))
+            childNodes.push_back(readInLine());
+        // Skip the '}'
+        next();
+    } else {
+        childNodes.push_back(readInLine());
+    }
     return new CodeBlockNode(childNodes, {.loc = {line, col}});
 }
 
@@ -86,6 +93,30 @@ ParseNode *Parser::readInCmd() {
     ParseNode *out = new CmdNode(cur().content, {.loc = {line, col}});
     next();
     return out;
+}
+
+ParseNode *Parser::readInLine() {
+    if (accept(TOK_CMD))
+        return readInCmd();
+    if (accept(TOK_EXEC_STMT))
+        return readInExec();
+    MCLError(1, "Invalid token type found.", cur().loc.line, cur().loc.col);
+    return NULL;
+}
+
+ParseNode *Parser::readInExec() {
+    unsigned int line, col;
+    curLoc(line, col);
+    expect(TOK_EXEC_STMT);
+    std::string execType = cur().content;
+    next();
+    expect(TOK_LBRACE), next();
+    expect(TOK_STR);
+    std::string args = cur().content;
+    next();
+    expect(TOK_RBRACE), next();
+    CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
+    return new ExecNode(execType, args, codeblock, {.loc = {line, col}});
 }
 
 void Parser::curLoc(unsigned int &line, unsigned int &col) const {

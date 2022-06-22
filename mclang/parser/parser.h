@@ -7,6 +7,7 @@
 #include "lexer/token.h"
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
+#include "parsenodes/exec.h"
 #include "parsenodes/func.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
@@ -90,6 +91,18 @@ private:
      * @return A pointer to the generated parse node
      */
     ParseNode *readInCmd();
+
+    /**
+     * Read in a "line" of code, which can be a command, statement, etc.
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInLine();
+
+    /**
+     * Read in an execute-like statement
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInExec();
 
     /**
      * Get the line and column of the token currently being read

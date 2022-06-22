@@ -10,11 +10,15 @@ BCManager::BCManager() : uniqueFuncId(1) {
 }
 
 BCManager::~BCManager() {
-
+    for (unsigned int i = 0; i < funcList.size(); i++)
+        delete funcList[i];
 }
 
 std::vector<BCFunc> BCManager::getBytecode() const {
-    return funcList;
+    std::vector<BCFunc> out;
+    for (unsigned int i = 0; i < funcList.size(); i++)
+        out.push_back(*funcList[i]);
+    return out;
 }
 
 BCFunc *BCManager::curFunc() const {
@@ -32,11 +36,16 @@ void BCManager::write(BCInstr instr) {
 void BCManager::addFunc(std::string name) {
     if (name == "")
         name = std::to_string(uniqueFuncId++);
-    funcList.push_back(BCFunc(name));
-    funcStack.push_back(&funcList.back());
+    BCFunc *f = new BCFunc(name);
+    funcList.push_back(f);
+    funcStack.push_back(f);
 }
 
 void BCManager::popFunc() {
     if (funcStack.size() > 0)
         funcStack.pop_back();
+}
+
+BCFunc *BCManager::topFunc() const {
+    return funcStack.back();
 }

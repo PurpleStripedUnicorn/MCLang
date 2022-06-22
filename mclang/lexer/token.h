@@ -27,7 +27,10 @@ enum TokenType {
     // Strings, numbers and other constants
     TOK_NUM, TOK_STR, TOK_TRUE, TOK_FALSE,
     // Comparisons
-    TOK_EQ
+    TOK_EQ,
+    // Execute-like statements, similar to if-statements, but only take strings
+    // inside the round brackets
+    TOK_EXEC_STMT
 };
 
 struct Token {

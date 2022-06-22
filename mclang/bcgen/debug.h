@@ -9,7 +9,8 @@
 
 const std::string instrNames[] = {
     "ERR",
-    "CMD"
+    "CMD",
+    "EXEC_CALL"
 };
 
 /**
