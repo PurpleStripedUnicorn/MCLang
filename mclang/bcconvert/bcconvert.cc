@@ -39,5 +39,5 @@ std::string BCConverter::convertCmd(BCInstr instr) const {
 
 std::string BCConverter::convertExecCall(BCInstr instr) const {
     // TODO: Implement namespaces
-    return "execute " + instr.arg1 + " run function datapack:" + instr.arg2;
+    return "execute " + instr.arg1 + " run function dp:" + instr.arg2;
 }
