@@ -2,7 +2,7 @@
 #include "parsenodes/exec.h"
 
 ExecNode::ExecNode(std::string type, std::string args, CodeBlockNode *codeblock,
-ParseNodeProps props) : ParseNode(PNODE_FUNC, props), execType(type),
+ParseNodeProps props) : ParseNode(PNODE_EXEC_STMT, props), execType(type),
 execArgs(args), codeblock(codeblock) {
 
 }
