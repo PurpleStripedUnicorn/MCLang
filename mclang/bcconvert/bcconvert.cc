@@ -21,6 +21,8 @@ std::vector<CmdFunc> BCConverter::getRawCommands() {
             BCInstr curInstr = (*data)[i].instrList[j];
             if (curInstr.type == INSTR_CMD) {
                 cur.cmdList.push_back(convertCmd(curInstr));
+            } else if (curInstr.type == INSTR_EXEC_CALL) {
+                cur.cmdList.push_back(convertExecCall(curInstr));
             } else {
                 MCLError(1, "Invalid instruction being read. Unexpected error."
                 );
@@ -33,4 +35,9 @@ std::vector<CmdFunc> BCConverter::getRawCommands() {
 
 std::string BCConverter::convertCmd(BCInstr instr) const {
     return instr.arg1;
+}
+
+std::string BCConverter::convertExecCall(BCInstr instr) const {
+    // TODO: Implement namespaces
+    return "execute " + instr.arg1 + " run function datapack:" + instr.arg2;
 }
