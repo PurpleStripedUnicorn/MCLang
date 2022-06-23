@@ -7,11 +7,18 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  Build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-    - name: make
+    - name: Make
       run: make
+  Testing:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Make
+      run: make
+    - name: Test examples
+      run: tests/examples.sh
