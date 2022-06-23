@@ -14,7 +14,7 @@ jobs:
     - name: Make
       run: make
   Testing:
-    needs: build
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
