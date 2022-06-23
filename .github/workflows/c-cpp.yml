@@ -2,16 +2,21 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, "#24-testing" ]
   pull_request:
     branches: [ main ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: make
       run: make
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: test examples
+      run: tests/examples.sh
