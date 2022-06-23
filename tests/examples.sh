@@ -23,6 +23,7 @@ echo
 if [[ $f -gt 0 ]];
 then
     printf "\033[0;31m$f failures, $s successes\n\033[0m"
+    exit 1
 else
     printf "$f failures, $s successes\n"
 fi
