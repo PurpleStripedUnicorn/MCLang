@@ -1,8 +1,7 @@
 
 #include "parser/parser.h"
 
-Parser::Parser(const std::vector<Token> &toks) : toks(toks), curIndex(0),
-out(NULL) {
+Parser::Parser(Compiler *comp) : toks(comp->lexer->tokens()), curIndex(0), out(NULL) {
 
 }
 
@@ -14,7 +13,7 @@ ParseNode *Parser::genTree() {
     curIndex = 0;
     delete out;
     ParseNode *tmp = readInProgram();
-    if (curIndex != toks.size())
+    if (curIndex != toks->size())
         MCLError(1, "Stopped reading before EOF.", cur().loc.line,
         cur().loc.col);
     out = tmp;
@@ -22,9 +21,9 @@ ParseNode *Parser::genTree() {
 }
 
 Token Parser::cur() const {
-    if (curIndex >= toks.size())
+    if (curIndex >= toks->size())
         return Token(TOK_ERRTYPE);
-    return toks[curIndex];
+    return (*toks)[curIndex];
 }
 
 void Parser::next() {

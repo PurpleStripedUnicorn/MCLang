@@ -23,14 +23,14 @@ Compiler::~Compiler() {
 void Compiler::compile() {
     // Lexer
     lexer = new Lexer(this);
-    std::vector<Token> lexOut = lexer->readIn();
+    lexer->readIn();
     if (debugMode) {
         std::ofstream out("mcl_lexer.debug");
-        out << lexerDebugTable(lexOut);
+        out << lexerDebugTable(lexer->tokens());
         out.close();
     }
     // Parser
-    parser = new Parser(lexOut);
+    parser = new Parser(this);
     ParseNode *parsOut = parser->genTree();
     if (debugMode) {
         std::ofstream out("mcl_parser.debug");

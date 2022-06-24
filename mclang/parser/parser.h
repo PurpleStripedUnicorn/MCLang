@@ -2,8 +2,10 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include "compiler/compiler.h"
 #include "errorhandle/handle.h"
 #include "lexer/debug.h"
+#include "lexer/lexer.h"
 #include "lexer/token.h"
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
@@ -21,9 +23,9 @@ public:
 
     /**
      * Constructor
-     * @param toks Vector of input tokens
+     * @param comp The main compiler component
      */
-    Parser(const std::vector<Token> &toks);
+    Parser(Compiler *comp);
 
     /**
      * Destructor
@@ -111,7 +113,7 @@ private:
     void curLoc(unsigned int &line, unsigned int &col) const;
 
     // Vector of input tokens
-    const std::vector<Token> &toks;
+    const std::vector<Token> *toks;
 
     // Current index of the token being read
     unsigned int curIndex;

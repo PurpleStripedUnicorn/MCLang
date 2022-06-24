@@ -44,9 +44,16 @@ public:
 
     /**
      * Read in the stored string and convert it to tokens
-     * @return A vector of tokens generated from the `txt` string
+     * @post The result is stored in the `readTokens` vector
      */
-    std::vector<Token> readIn();
+    void readIn();
+
+    /**
+     * Get the read tokens
+     * @pre `readIn` function has been run before
+     * @return A pointer to a vector of tokens, stored in `readTokens`
+     */
+    std::vector<Token> *tokens() const;
 
 private:
 
