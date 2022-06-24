@@ -1,6 +1,11 @@
 
 #include "compiler/compiler.h"
 
+#include "bcgen/bcgen.h"
+#include "bcconvert/bcconvert.h"
+#include "lexer/lexer.h"
+#include "parser/parser.h"
+
 Compiler::Compiler() : input(""), ns("dp"), outputFolder("out_datapack"),
 debugMode(false), lexer(NULL), parser(NULL), bcMan(NULL), bcConvert(NULL),
 fileMan(NULL) {
@@ -17,7 +22,7 @@ Compiler::~Compiler() {
 
 void Compiler::compile() {
     // Lexer
-    lexer = new Lexer(input);
+    lexer = new Lexer(this);
     std::vector<Token> lexOut = lexer->readIn();
     if (debugMode) {
         std::ofstream out("mcl_lexer.debug");

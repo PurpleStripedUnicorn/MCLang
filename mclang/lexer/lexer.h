@@ -2,6 +2,7 @@
 #ifndef __LEXER_H__
 #define __LEXER_H__
 
+#include "compiler/compiler.h"
 #include "errorhandle/handle.h"
 #include "lexer/token.h"
 #include <iostream>
@@ -37,9 +38,9 @@ public:
 
     /**
      * Constructor
-     * @param inp Input string to be tokenized
+     * @param comp Main compiler component
      */
-    Lexer(std::string inp);
+    Lexer(Compiler *comp);
 
     /**
      * Read in the stored string and convert it to tokens
@@ -113,6 +114,9 @@ private:
      * @return A reference to the last token that was read
      */
     Token &lastRead() const;
+
+    // Compiler component
+    Compiler *comp;
 
     // String to be tokenized
     std::string txt;

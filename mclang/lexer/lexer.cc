@@ -1,7 +1,8 @@
 
 #include "lexer/lexer.h"
 
-Lexer::Lexer(std::string inp) : txt(inp), curIndex(0), atLineStart(true) {
+Lexer::Lexer(Compiler *comp) : comp(comp), txt(comp->input), curIndex(0),
+atLineStart(true) {
 
 }
 

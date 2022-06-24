@@ -2,15 +2,16 @@
 #ifndef __COMPILER_H__
 #define __COMPILER_H__
 
-#include "bcgen/bcgen.h"
+class Lexer;
+class Parser;
+class BCManager;
+class BCConverter;
+
 #include "bcgen/debug.h"
-#include "bcconvert/bcconvert.h"
 #include "bcconvert/debug.h"
 #include "filemanager/manager.h"
 #include "lexer/debug.h"
-#include "lexer/lexer.h"
 #include "parser/debug.h"
-#include "parser/parser.h"
 #include <string>
 
 /**
