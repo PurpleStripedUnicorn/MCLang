@@ -3,6 +3,7 @@
 #include "bcconvert/debug.h"
 #include "bcgen/bcgen.h"
 #include "bcgen/debug.h"
+#include "compiler/compiler.h"
 #include "filemanager/manager.h"
 #include "lexer/lexer.h"
 #include "lexer/debug.h"
@@ -214,41 +215,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     inpFile.close();
-    // Lexer
-    Lexer lex(inp);
-    std::vector<Token> lexOut = lex.readIn();
-    if (debugMode) {
-        std::ofstream out("mcl_lexer.debug");
-        out << lexerDebugTable(lexOut);
-        out.close();
-    }
-    // Parser
-    Parser pars(lexOut);
-    ParseNode *parsOut = pars.genTree();
-    if (debugMode) {
-        std::ofstream out("mcl_parser.debug");
-        out << parserDebugTree(parsOut);
-        out.close();
-    }
-    // Bytecode generator
-    BCManager bcman;
-    parsOut->bytecode(bcman);
-    std::vector<BCFunc> bytecode = bcman.getBytecode();
-    if (debugMode) {
-        std::ofstream out("mcl_bcgen.debug");
-        out << bcgenInstrList(bytecode);
-        out.close();
-    }
-    // Bytecode converter
-    BCConverter bcconv(&bytecode);
-    std::vector<CmdFunc> cmds = bcconv.getRawCommands();
-    if (debugMode) {
-        std::ofstream out("mcl_cmds.debug");
-        out << bcconvertCmdList(cmds);
-        out.close();
-    }
-    // Create output files and folders
-    FileManager fm(outputName, "dp");
-    fm.genDatapack(cmds);
+    // Compile the code inside the file
+    Compiler comp;
+    comp.input = inp;
+    comp.ns = "dp";
+    comp.outputFolder = outputName;
+    comp.debugMode = debugMode;
+    comp.compile();
     return 0;
 }
