@@ -13,11 +13,12 @@ Parser::~Parser() {
 ParseNode *Parser::genTree() {
     curIndex = 0;
     delete out;
-    ParseNode *out = readInProgram();
+    ParseNode *tmp = readInProgram();
     if (curIndex != toks.size())
         MCLError(1, "Stopped reading before EOF.", cur().loc.line,
         cur().loc.col);
-    return out;
+    out = tmp;
+    return tmp;
 }
 
 Token Parser::cur() const {
