@@ -23,6 +23,7 @@
 
 bool debugMode;
 std::string fname;
+std::string ns;
 std::string outputName;
 
 /**************************
@@ -60,6 +61,15 @@ void argOutputFolder(std::string args) {
     outputName = args;
 }
 
+/**
+ * Set the namespace
+ * @param args The namespace as a string, no spaces
+ * @note Assumes that the namespace is indeed a valid namespace name
+ */
+void argNamespace(std::string args) {
+    ns = args;
+}
+
 // List of all command line arguments, for easier use later in the program
 // Use ' ' for no letter or "" for no full name
 const CmdLineArg argList[] = {
@@ -68,7 +78,9 @@ const CmdLineArg argList[] = {
     {'h', "help", 0, argHelpList, "Show the help page."},
     {'o', "output", 1, argOutputFolder, "Set the output folder, default is "
     "'out_datapack'. Warning: this folder will be overwritten by this program! "
-    "Be very careful when selecting an output folder!"}
+    "Be very careful when selecting an output folder!"},
+    {'n', "namespace", 1, argNamespace, "Change the namespace of the output "
+    "datapack, default is 'dp'"}
 };
 
 /**
@@ -196,7 +208,7 @@ void readInArgs(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    debugMode = false, fname = "", outputName = "out_datapack";
+    debugMode = false, fname = "", ns = "dp", outputName = "out_datapack";
     // Read in the arguments provided via the command line
     readInArgs(argc, argv);
     if (fname == "") {
@@ -218,7 +230,7 @@ int main(int argc, char *argv[]) {
     // Compile the code inside the file
     Compiler comp;
     comp.input = inp;
-    comp.ns = "dp";
+    comp.ns = ns;
     comp.outputFolder = outputName;
     comp.debugMode = debugMode;
     comp.compile();
