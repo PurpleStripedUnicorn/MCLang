@@ -4,6 +4,7 @@
 
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
+#include "compiler/compiler.h"
 #include "errorhandle/handle.h"
 #include <string>
 #include <vector>
@@ -28,8 +29,11 @@ public:
      * Constructor
      * @param data A pointer to the list of functions with contained in them
      * bytecode instructions
+     * @param comp The compiler component
+     * @note Data can be retrieved by using the compiler component
      */
-    BCConverter(std::vector<BCFunc> *data);
+    BCConverter(Compiler *comp);
+    // BCConverter(std::vector<BCFunc> *data);
 
     /**
      * Destructor
@@ -58,8 +62,11 @@ private:
      */
     std::string convertExecCall(BCInstr instr) const;
 
+    // The compiler component
+    Compiler *comp;
+
     // Pointer to the list of bytecode functions
-    std::vector<BCFunc> *data;
+    std::vector<BCFunc *> *data;
 
 };
 

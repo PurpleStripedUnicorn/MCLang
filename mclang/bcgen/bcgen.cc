@@ -20,11 +20,12 @@ void BCManager::generate() {
     comp->parser->getTree()->bytecode(*this);
 }
 
-std::vector<BCFunc> BCManager::getBytecode() const {
-    std::vector<BCFunc> out;
-    for (unsigned int i = 0; i < funcList.size(); i++)
-        out.push_back(*funcList[i]);
-    return out;
+const std::vector<BCFunc *> *BCManager::getBytecode() const {
+    // std::vector<BCFunc> out;
+    // for (unsigned int i = 0; i < funcList.size(); i++)
+    //     out.push_back(*funcList[i]);
+    // return out;
+    return &funcList;
 }
 
 BCFunc *BCManager::curFunc() const {

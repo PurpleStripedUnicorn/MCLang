@@ -45,14 +45,13 @@ void Compiler::compile() {
     // Bytecode generator
     bcMan = new BCManager(this);
     bcMan->generate();
-    std::vector<BCFunc> bytecode = bcMan->getBytecode();
     if (debugMode) {
         std::ofstream out("mcl_bcgen.debug");
         out << bcgenInstrList(bcMan->getBytecode());
         out.close();
     }
     // Bytecode converter
-    bcConvert = new BCConverter(&bytecode);
+    bcConvert = new BCConverter(this);
     std::vector<CmdFunc> cmds = bcConvert->getRawCommands();
     if (debugMode) {
         std::ofstream out("mcl_cmds.debug");

@@ -1,10 +1,10 @@
 
 #include "bcgen/debug.h"
 
-std::string bcgenInstrList(const std::vector<BCFunc> &instrList) {
+std::string bcgenInstrList(const std::vector<BCFunc *> *instrList) {
     std::string out = "";
-    for (unsigned int i = 0; i < instrList.size(); i++) {
-        const BCFunc *cur = &instrList[i];
+    for (unsigned int i = 0; i < instrList->size(); i++) {
+        const BCFunc *cur = (*instrList)[i];
         out.append(cur->name + ":");
         for (unsigned int j = 0; j < cur->instrList.size(); j++) {
             BCInstr curInstr = cur->instrList[j];
@@ -18,7 +18,7 @@ std::string bcgenInstrList(const std::vector<BCFunc> &instrList) {
                 curLine.append(", " + curInstr.arg2);
             out.append(curLine);
         }
-        if (i < instrList.size() - 1)
+        if (i < instrList->size() - 1)
             out.append("\n\n");
     }
     return out;
