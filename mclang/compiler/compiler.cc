@@ -5,6 +5,7 @@
 #include "bcgen/debug.h"
 #include "bcconvert/bcconvert.h"
 #include "bcconvert/debug.h"
+#include "filemanager/manager.h"
 #include "lexer/debug.h"
 #include "lexer/lexer.h"
 #include "parser/debug.h"

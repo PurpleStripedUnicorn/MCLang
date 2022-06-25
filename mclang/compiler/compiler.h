@@ -6,8 +6,8 @@ class Lexer;
 class Parser;
 class BCManager;
 class BCConverter;
+class FileManager;
 
-#include "filemanager/manager.h"
 #include <string>
 
 /**

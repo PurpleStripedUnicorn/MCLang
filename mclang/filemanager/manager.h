@@ -2,7 +2,8 @@
 #ifndef __FILEMANAGER_H__
 #define __FILEMANAGER_H__
 
-struct CmdFunc;
+#include "bcconvert/bcconvert.h"
+#include "errorhandle/handle.h"
 
 #include <dirent.h>
 #include <filesystem>
