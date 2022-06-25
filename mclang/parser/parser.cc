@@ -1,7 +1,8 @@
 
 #include "parser/parser.h"
 
-Parser::Parser(Compiler *comp) : toks(comp->lexer->tokens()), curIndex(0), out(NULL) {
+Parser::Parser(Compiler *comp) : comp(comp), toks(NULL), curIndex(0), out(NULL)
+{
 
 }
 
@@ -10,6 +11,7 @@ Parser::~Parser() {
 }
 
 ParseNode *Parser::genTree() {
+    toks = comp->lexer->tokens();
     curIndex = 0;
     delete out;
     ParseNode *tmp = readInProgram();

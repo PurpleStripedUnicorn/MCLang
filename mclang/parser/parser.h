@@ -112,6 +112,9 @@ private:
      */
     void curLoc(unsigned int &line, unsigned int &col) const;
 
+    // Compiler component
+    Compiler *comp;
+
     // Vector of input tokens
     const std::vector<Token> *toks;
 
