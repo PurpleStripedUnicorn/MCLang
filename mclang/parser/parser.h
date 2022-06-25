@@ -35,12 +35,18 @@ public:
 
     /**
      * Construct a parse tree from the stored tokens
-     * @return A pointer to the generated parse tree root node
      * @post Parse tree output pointer is stored in `out` variable
      * @warning Do not delete output tree pointer! This will be deleted on
      * destruction of the parser object!
      */
-    ParseNode *genTree();
+    void genTree();
+
+    /**
+     * Get (a pointer to) the generated parse tree
+     * @return A pointer to the generated parse tree
+     * @note Tree has to be generated with the `genTree` function
+     */
+    ParseNode *getTree();
 
 private:
 

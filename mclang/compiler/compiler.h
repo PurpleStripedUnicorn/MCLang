@@ -7,11 +7,7 @@ class Parser;
 class BCManager;
 class BCConverter;
 
-#include "bcgen/debug.h"
-#include "bcconvert/debug.h"
 #include "filemanager/manager.h"
-#include "lexer/debug.h"
-#include "parser/debug.h"
 #include <string>
 
 /**

@@ -2,8 +2,12 @@
 #include "compiler/compiler.h"
 
 #include "bcgen/bcgen.h"
+#include "bcgen/debug.h"
 #include "bcconvert/bcconvert.h"
+#include "bcconvert/debug.h"
+#include "lexer/debug.h"
 #include "lexer/lexer.h"
+#include "parser/debug.h"
 #include "parser/parser.h"
 
 Compiler::Compiler() : input(""), ns("dp"), outputFolder("out_datapack"),
@@ -31,19 +35,19 @@ void Compiler::compile() {
     }
     // Parser
     parser = new Parser(this);
-    ParseNode *parsOut = parser->genTree();
+    parser->genTree();
     if (debugMode) {
         std::ofstream out("mcl_parser.debug");
-        out << parserDebugTree(parsOut);
+        out << parserDebugTree(parser->getTree());
         out.close();
     }
     // Bytecode generator
-    bcMan = new BCManager();
-    parsOut->bytecode(*bcMan);
+    bcMan = new BCManager(this);
+    bcMan->generate();
     std::vector<BCFunc> bytecode = bcMan->getBytecode();
     if (debugMode) {
         std::ofstream out("mcl_bcgen.debug");
-        out << bcgenInstrList(bytecode);
+        out << bcgenInstrList(bcMan->getBytecode());
         out.close();
     }
     // Bytecode converter

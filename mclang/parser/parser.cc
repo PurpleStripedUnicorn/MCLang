@@ -10,7 +10,7 @@ Parser::~Parser() {
     delete out;
 }
 
-ParseNode *Parser::genTree() {
+void Parser::genTree() {
     toks = comp->lexer->tokens();
     curIndex = 0;
     delete out;
@@ -19,7 +19,10 @@ ParseNode *Parser::genTree() {
         MCLError(1, "Stopped reading before EOF.", cur().loc.line,
         cur().loc.col);
     out = tmp;
-    return tmp;
+}
+
+ParseNode *Parser::getTree() {
+    return out;
 }
 
 Token Parser::cur() const {

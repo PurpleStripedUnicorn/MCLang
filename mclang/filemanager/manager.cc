@@ -1,6 +1,9 @@
 
 #include "filemanager/manager.h"
 
+#include "bcconvert/bcconvert.h"
+#include "errorhandle/handle.h"
+
 FileManager::FileManager(std::string root, std::string ns) : root(root), ns(ns)
 {
     deletePrevPack();
