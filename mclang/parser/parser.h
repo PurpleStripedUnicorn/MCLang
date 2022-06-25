@@ -2,8 +2,10 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include "compiler/compiler.h"
 #include "errorhandle/handle.h"
 #include "lexer/debug.h"
+#include "lexer/lexer.h"
 #include "lexer/token.h"
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
@@ -21,9 +23,9 @@ public:
 
     /**
      * Constructor
-     * @param toks Vector of input tokens
+     * @param comp The main compiler component
      */
-    Parser(const std::vector<Token> &toks);
+    Parser(Compiler *comp);
 
     /**
      * Destructor
@@ -33,12 +35,18 @@ public:
 
     /**
      * Construct a parse tree from the stored tokens
-     * @return A pointer to the generated parse tree root node
      * @post Parse tree output pointer is stored in `out` variable
      * @warning Do not delete output tree pointer! This will be deleted on
      * destruction of the parser object!
      */
-    ParseNode *genTree();
+    void genTree();
+
+    /**
+     * Get (a pointer to) the generated parse tree
+     * @return A pointer to the generated parse tree
+     * @note Tree has to be generated with the `genTree` function
+     */
+    ParseNode *getTree();
 
 private:
 
@@ -110,8 +118,11 @@ private:
      */
     void curLoc(unsigned int &line, unsigned int &col) const;
 
+    // Compiler component
+    Compiler *comp;
+
     // Vector of input tokens
-    const std::vector<Token> &toks;
+    const std::vector<Token> *toks;
 
     // Current index of the token being read
     unsigned int curIndex;

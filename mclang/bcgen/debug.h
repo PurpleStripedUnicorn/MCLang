@@ -19,6 +19,6 @@ const std::string instrNames[] = {
  * instructions
  * @return A string containing the list
  */
-std::string bcgenInstrList(const std::vector<BCFunc> &funcList);
+std::string bcgenInstrList(const std::vector<BCFunc *> *funcList);
 
 #endif

@@ -26,6 +26,6 @@ const std::string tokenTypeNames[] = {
  * @param toks Token vector to generate the table from
  * @return A string containing the table
  */
-std::string lexerDebugTable(std::vector<Token> toks);
+std::string lexerDebugTable(std::vector<Token> *toks);
 
 #endif

@@ -1,11 +1,13 @@
 
 #include "bcgen.h"
 
+#include "parser/parser.h"
+
 BCFunc::BCFunc(std::string name) : name(name) {
 
 }
 
-BCManager::BCManager() : uniqueFuncId(1) {
+BCManager::BCManager(Compiler *comp) : comp(comp), uniqueFuncId(1) {
 
 }
 
@@ -14,11 +16,16 @@ BCManager::~BCManager() {
         delete funcList[i];
 }
 
-std::vector<BCFunc> BCManager::getBytecode() const {
-    std::vector<BCFunc> out;
-    for (unsigned int i = 0; i < funcList.size(); i++)
-        out.push_back(*funcList[i]);
-    return out;
+void BCManager::generate() {
+    comp->parser->getTree()->bytecode(*this);
+}
+
+const std::vector<BCFunc *> *BCManager::getBytecode() const {
+    // std::vector<BCFunc> out;
+    // for (unsigned int i = 0; i < funcList.size(); i++)
+    //     out.push_back(*funcList[i]);
+    // return out;
+    return &funcList;
 }
 
 BCFunc *BCManager::curFunc() const {

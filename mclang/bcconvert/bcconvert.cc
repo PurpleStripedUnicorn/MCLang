@@ -5,7 +5,7 @@ CmdFunc::CmdFunc(std::string name) : name(name) {
 
 }
 
-BCConverter::BCConverter(std::vector<BCFunc> *data) : data(data) {
+BCConverter::BCConverter(Compiler *comp) : comp(comp), data(NULL) {
 
 }
 
@@ -14,11 +14,12 @@ BCConverter::~BCConverter() {
 }
 
 std::vector<CmdFunc> BCConverter::getRawCommands() {
+    data = (std::vector<BCFunc *> *)comp->bcMan->getBytecode();
     std::vector<CmdFunc> out;
     for (unsigned int i = 0; i < data->size(); i++) {
-        CmdFunc cur((*data)[i].name);
-        for (unsigned int j = 0; j < (*data)[i].instrList.size(); j++) {
-            BCInstr curInstr = (*data)[i].instrList[j];
+        CmdFunc cur((*data)[i]->name);
+        for (unsigned int j = 0; j < (*data)[i]->instrList.size(); j++) {
+            BCInstr curInstr = (*data)[i]->instrList[j];
             if (curInstr.type == INSTR_CMD) {
                 cur.cmdList.push_back(convertCmd(curInstr));
             } else if (curInstr.type == INSTR_EXEC_CALL) {
@@ -38,6 +39,6 @@ std::string BCConverter::convertCmd(BCInstr instr) const {
 }
 
 std::string BCConverter::convertExecCall(BCInstr instr) const {
-    // TODO: Implement namespaces
-    return "execute " + instr.arg1 + " run function dp:" + instr.arg2;
+    return "execute " + instr.arg1 + " run function " + comp->ns + ":"
+    + instr.arg2;
 }

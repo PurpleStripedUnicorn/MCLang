@@ -1,11 +1,12 @@
 
 #include "lexer/lexer.h"
 
-Lexer::Lexer(std::string inp) : txt(inp), curIndex(0), atLineStart(true) {
+Lexer::Lexer(Compiler *comp) : comp(comp), txt(comp->input), curIndex(0),
+atLineStart(true) {
 
 }
 
-std::vector<Token> Lexer::readIn() {
+void Lexer::readIn() {
     curIndex = 0, curLoc.line = 1, curLoc.col = 1;
     readTokens.clear();
     Token tok;
@@ -33,10 +34,12 @@ std::vector<Token> Lexer::readIn() {
         // Token not recognized
         } else {
             MCLError(1, "Could not recognize token.", lastLine, lastCol);
-            return readTokens;
         }
     }
-    return readTokens;
+}
+
+std::vector<Token> *Lexer::tokens() const {
+    return (std::vector<Token> *)&readTokens;
 }
 
 void Lexer::next() {
