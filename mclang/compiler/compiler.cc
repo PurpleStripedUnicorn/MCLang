@@ -1,15 +1,15 @@
 
-#include "compiler/compiler.h"
-
 #include "bcgen/bcgen.h"
 #include "bcgen/debug.h"
 #include "bcconvert/bcconvert.h"
 #include "bcconvert/debug.h"
+#include "compiler/compiler.h"
 #include "filemanager/manager.h"
 #include "lexer/debug.h"
 #include "lexer/lexer.h"
 #include "parser/debug.h"
 #include "parser/parser.h"
+#include <string>
 
 Compiler::Compiler() : input(""), ns("dp"), outputFolder("out_datapack"),
 debugMode(false), lexer(NULL), parser(NULL), bcMan(NULL), bcConvert(NULL),
