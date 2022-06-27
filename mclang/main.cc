@@ -1,22 +1,10 @@
 
-#include "bcconvert/bcconvert.h"
-#include "bcconvert/debug.h"
-#include "bcgen/bcgen.h"
-#include "bcgen/debug.h"
 #include "compiler/compiler.h"
-#include "filemanager/manager.h"
-#include "lexer/lexer.h"
-#include "lexer/debug.h"
-#include "lexer/token.h"
-#include "parsenodes/parsenode.h"
-#include "parser/debug.h"
-#include "parser/parser.h"
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <vector>
 
 #define HELPPADLEFT 24
 #define HELPPADRIGHT 100
