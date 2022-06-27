@@ -1,7 +1,10 @@
 
-#include "bcgen.h"
-
+#include "bcgen/bcgen.h"
+#include "bcgen/instr.h"
+#include "compiler/compiler.h"
 #include "parser/parser.h"
+#include <string>
+#include <vector>
 
 BCFunc::BCFunc(std::string name) : name(name) {
 

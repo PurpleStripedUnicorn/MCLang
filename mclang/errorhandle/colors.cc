@@ -1,5 +1,7 @@
 
 #include "errorhandle/colors.h"
+#include <map>
+#include <string>
 
 void colorText(std::ostream &os, const std::string &txt, std::string color) {
     std::string curColor = "";

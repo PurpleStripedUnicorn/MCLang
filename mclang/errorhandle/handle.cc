@@ -1,5 +1,8 @@
 
+#include "errorhandle/colors.h"
 #include "errorhandle/handle.h"
+#include <iostream>
+#include <string>
 
 MCLError::MCLError(unsigned int level, std::string txt, unsigned int line,
 unsigned int col) : level(level), txt(txt), loc({line, col}) {

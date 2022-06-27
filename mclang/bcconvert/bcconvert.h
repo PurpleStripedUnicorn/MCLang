@@ -2,12 +2,12 @@
 #ifndef __BCCONVERT_H__
 #define __BCCONVERT_H__
 
-#include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
-#include "compiler/compiler.h"
-#include "errorhandle/handle.h"
 #include <string>
 #include <vector>
+
+struct BCFunc;
+class Compiler;
 
 /**
  * Raw commands are stored in these functions
@@ -33,7 +33,6 @@ public:
      * @note Data can be retrieved by using the compiler component
      */
     BCConverter(Compiler *comp);
-    // BCConverter(std::vector<BCFunc> *data);
 
     /**
      * Destructor

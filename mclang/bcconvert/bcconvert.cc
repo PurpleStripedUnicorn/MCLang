@@ -1,5 +1,11 @@
 
 #include "bcconvert/bcconvert.h"
+#include "bcgen/bcgen.h"
+#include "bcgen/instr.h"
+#include "compiler/compiler.h"
+#include "errorhandle/handle.h"
+#include <string>
+#include <vector>
 
 CmdFunc::CmdFunc(std::string name) : name(name) {
 

@@ -1,5 +1,11 @@
 
+#include "bcgen/bcgen.h"
+#include "bcgen/instr.h"
+#include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
+#include "parsenodes/parsenode.h"
+#include <string>
+#include <vector>
 
 ExecNode::ExecNode(std::string type, std::string args, CodeBlockNode *codeblock,
 ParseNodeProps props) : ParseNode(PNODE_EXEC_STMT, props), execType(type),

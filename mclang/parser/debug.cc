@@ -1,5 +1,7 @@
 
+#include "parsenodes/parsenode.h"
 #include "parser/debug.h"
+#include <string>
 
 std::string parserDebugTree(ParseNode *root, unsigned int pad) {
     std::string out = "";

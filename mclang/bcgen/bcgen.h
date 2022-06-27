@@ -2,12 +2,12 @@
 #ifndef __BCGEN_H__
 #define __BCGEN_H__
 
-class Parser;
-
 #include "bcgen/instr.h"
-#include "compiler/compiler.h"
 #include <string>
 #include <vector>
+
+class Compiler;
+class Parser;
 
 /**
  * Instructions are stored in functions which can then call each other

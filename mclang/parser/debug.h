@@ -2,8 +2,9 @@
 #ifndef __PARSER_DEBUG_H__
 #define __PARSER_DEBUG_H__
 
-#include "parsenodes/parsenode.h"
 #include <string>
+
+class ParseNode;
 
 const std::string parseNodeNames[] = {
     "ERR",

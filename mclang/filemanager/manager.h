@@ -3,13 +3,7 @@
 #define __FILEMANAGER_H__
 
 #include "bcconvert/bcconvert.h"
-#include "errorhandle/handle.h"
-
-#include <dirent.h>
-#include <filesystem>
-#include <fstream>
 #include <string>
-#include <sys/stat.h>
 #include <vector>
 
 #ifdef _WIN32

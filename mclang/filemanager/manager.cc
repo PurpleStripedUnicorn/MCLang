@@ -1,5 +1,13 @@
 
+#include "bcconvert/bcconvert.h"
+#include "errorhandle/handle.h"
 #include "filemanager/manager.h"
+#include <dirent.h>
+#include <filesystem>
+#include <fstream>
+#include <string>
+#include <sys/stat.h>
+#include <vector>
 
 FileManager::FileManager(std::string root, std::string ns) : root(root), ns(ns)
 {

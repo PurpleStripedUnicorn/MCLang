@@ -1,5 +1,11 @@
 
+#include "compiler/compiler.h"
+#include "errorhandle/handle.h"
 #include "lexer/lexer.h"
+#include "lexer/token.h"
+#include <map>
+#include <string>
+#include <vector>
 
 Lexer::Lexer(Compiler *comp) : comp(comp), txt(comp->input), curIndex(0),
 atLineStart(true) {

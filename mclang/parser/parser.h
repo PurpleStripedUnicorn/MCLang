@@ -2,20 +2,11 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
-#include "compiler/compiler.h"
-#include "errorhandle/handle.h"
-#include "lexer/debug.h"
-#include "lexer/lexer.h"
 #include "lexer/token.h"
-#include "parsenodes/cmd.h"
-#include "parsenodes/codeblock.h"
-#include "parsenodes/exec.h"
-#include "parsenodes/func.h"
 #include "parsenodes/parsenode.h"
-#include "parsenodes/program.h"
-#include <iostream>
-#include <string>
 #include <vector>
+
+class Compiler;
 
 class Parser {
 
