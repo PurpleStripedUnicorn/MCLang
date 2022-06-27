@@ -1,5 +1,8 @@
 
 #include "lexer/debug.h"
+#include "lexer/token.h"
+#include <string>
+#include <vector>
 
 std::string lexerDebugTable(std::vector<Token> *toks) {
     std::string out = "";

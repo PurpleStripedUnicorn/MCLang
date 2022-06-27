@@ -2,13 +2,12 @@
 #ifndef __LEXER_H__
 #define __LEXER_H__
 
-#include "compiler/compiler.h"
-#include "errorhandle/handle.h"
 #include "lexer/token.h"
-#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
+
+class Compiler;
 
 // Two-character tokens list, ordered by first character and then by second
 // character, a space character means it is also a single character

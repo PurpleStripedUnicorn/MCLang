@@ -1,5 +1,6 @@
 
 #include "lexer/token.h"
+#include <string>
 
 Token::Token() : type(TOK_ERRTYPE), content("") {
     
