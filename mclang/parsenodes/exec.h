@@ -3,11 +3,11 @@
 #define __PARSENODE_EXEC_H__
 
 #include "bcgen/bcgen.h"
-#include "bcgen/instr.h"
-#include "parsenodes/codeblock.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
+
+class CodeBlockNode;
 
 class ExecNode : public ParseNode {
 

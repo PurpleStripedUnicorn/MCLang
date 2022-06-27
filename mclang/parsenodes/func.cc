@@ -1,5 +1,10 @@
 
+#include "bcgen/bcgen.h"
+#include "parsenodes/codeblock.h"
 #include "parsenodes/func.h"
+#include "parsenodes/parsenode.h"
+#include <string>
+#include <vector>
 
 FuncNode::FuncNode(std::string name, CodeBlockNode *codeblock,
 ParseNodeProps props) : ParseNode(PNODE_FUNC, props), name(name),

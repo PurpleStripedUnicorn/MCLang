@@ -1,5 +1,8 @@
 
+#include "bcgen/bcgen.h"
+#include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
+#include <vector>
 
 ProgramNode::ProgramNode(std::vector<ParseNode *> childNodes,
 ParseNodeProps props) : ParseNode(PNODE_PROGRAM, props), childNodes(childNodes)
