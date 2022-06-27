@@ -1,5 +1,8 @@
 
+#include "bcconvert/bcconvert.h"
 #include "bcconvert/debug.h"
+#include <string>
+#include <vector>
 
 std::string bcconvertCmdList(const std::vector<CmdFunc> &funcList) {
     std::string out = "";
