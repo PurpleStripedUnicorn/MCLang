@@ -9,6 +9,7 @@
 #include "lexer/lexer.h"
 #include "parser/debug.h"
 #include "parser/parser.h"
+#include <fstream>
 #include <string>
 
 Compiler::Compiler() : input(""), ns("dp"), outputFolder("out_datapack"),
