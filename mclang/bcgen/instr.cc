@@ -1,5 +1,6 @@
 
 #include "bcgen/instr.h"
+#include <string>
 
 BCInstr::BCInstr() : type(INSTR_ERR), arg1(""), arg2("") {
 

@@ -1,5 +1,9 @@
 
 #include "bcgen/debug.h"
+#include "bcgen/bcgen.h"
+#include "bcgen/instr.h"
+#include <string>
+#include <vector>
 
 std::string bcgenInstrList(const std::vector<BCFunc *> *instrList) {
     std::string out = "";

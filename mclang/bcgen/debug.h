@@ -2,10 +2,10 @@
 #ifndef __BCGEN_DEBUG_H__
 #define __BCGEN_DEBUG_H__
 
-#include "bcgen/bcgen.h"
-#include "bcgen/instr.h"
 #include <string>
 #include <vector>
+
+struct BCFunc;
 
 const std::string instrNames[] = {
     "ERR",
