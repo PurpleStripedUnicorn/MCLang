@@ -2,9 +2,7 @@
 #ifndef __ERRORHANDLE_H__
 #define __ERRORHANDLE_H__
 
-#include <iostream>
 #include <string>
-#include "errorhandle/colors.h"
 
 #define LEFT_PAD 3
 #define ERRTXT_PAD 10
