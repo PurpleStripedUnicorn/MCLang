@@ -33,7 +33,6 @@ public:
      * @note Data can be retrieved by using the compiler component
      */
     BCConverter(Compiler *comp);
-    // BCConverter(std::vector<BCFunc> *data);
 
     /**
      * Destructor
