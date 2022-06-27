@@ -131,7 +131,8 @@ resources. So for exmaple when `fileB.h` includes `fileA.h`, and you need both
 ```
 However also use as little includes as possible. If an issue can be resolved by
 using a forward declaration or leaving out the include entirely, it should be
-resolved this way.
+resolved this way. An exception here are standard libraries, so do not make a
+forward declaration for `std::string`, but use `#include <string>`.
 
 When using `.cc` files in combination with `.h` files, the `.cc` file should not
 rely on the includes from the `.h` file. Likewise don't put any includes in the
