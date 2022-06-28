@@ -47,6 +47,9 @@ public:
     // Debug mode switch
     bool debugMode;
 
+    // File output enable/disable
+    bool fileOutput;
+
     // NOTE: These component may still may null values when the compilation is
     // not done
     // Lexer component
