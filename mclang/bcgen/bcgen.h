@@ -3,6 +3,7 @@
 #define __BCGEN_H__
 
 #include "bcgen/instr.h"
+#include "bcgen/varmanager.h"
 #include <string>
 #include <vector>
 
@@ -86,10 +87,13 @@ public:
      */
     BCFunc *topFunc() const;
 
-private:
+    // Variable manager: to keep track of variable names used
+    VarManager varManager;
 
     // The compiler component
     Compiler *comp;
+
+private:
 
     // List of functions that are generated
     std::vector<BCFunc *> funcList;

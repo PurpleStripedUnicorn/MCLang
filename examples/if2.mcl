@@ -1,0 +1,7 @@
+
+void main() {
+    if ("score PurpleStriped levels matches 100..")
+        /say PurpleStriped reached level 100!
+    else
+        /say PurpleStriped has not reach level 100 yet...
+}

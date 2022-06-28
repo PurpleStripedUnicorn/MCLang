@@ -1,0 +1,10 @@
+
+void main() {
+    if ("entity @a[name=PurpurStriped]") {
+        /say Hello PurpurStriped!
+    } else if ("entity @a[name=PurpleStriped]") {
+        /say Hello PurpleStriped!
+    } else {
+        /say Hello stranger!
+    }
+}

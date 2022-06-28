@@ -30,7 +30,9 @@ enum TokenType {
     TOK_EQ,
     // Execute-like statements, similar to if-statements, but only take strings
     // inside the round brackets
-    TOK_EXEC_STMT
+    TOK_EXEC_STMT,
+    // If-statements
+    TOK_IF, TOK_ELSEIF, TOK_ELSE
 };
 
 struct Token {

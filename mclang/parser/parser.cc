@@ -8,6 +8,7 @@
 #include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
 #include "parsenodes/func.h"
+#include "parsenodes/if.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
 #include "parser/parser.h"
@@ -119,6 +120,8 @@ ParseNode *Parser::readInLine() {
         return readInCmd();
     if (accept(TOK_EXEC_STMT))
         return readInExec();
+    if (accept(TOK_IF))
+        return readInIf();
     MCLError(1, "Invalid token type found.", cur().loc.line, cur().loc.col);
     return NULL;
 }
@@ -136,6 +139,38 @@ ParseNode *Parser::readInExec() {
     expect(TOK_RBRACE), next();
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
     return new ExecNode(execType, args, codeblock, {.loc = {line, col}});
+}
+
+ParseNode *Parser::readInIf() {
+    unsigned int line, col;
+    curLoc(line, col);
+    std::vector<std::string> ifArgs;
+    std::vector<CodeBlockNode *> codeblocks;
+    bool foundElse = false;
+    do {
+        // Skip the 'else'
+        if (!accept(TOK_ELSE) && !accept(TOK_ELSEIF)) {
+            // Expect an if-statement at the start
+            expect(TOK_IF);
+        }
+        // "if", "else-if" or "else" statement
+        if (accept(TOK_ELSEIF) || accept(TOK_IF)) {
+            next();
+            expect(TOK_LBRACE), next();
+            expect(TOK_STR);
+            ifArgs.push_back(cur().content);
+            next();
+            expect(TOK_RBRACE), next();
+        } else if (accept(TOK_ELSE)) {
+            next();
+            foundElse = true;
+        } else {
+            MCLError(1, "Unexpected error unccured, invalid token found",
+            cur().loc.line, cur().loc.col);
+        }
+        codeblocks.push_back((CodeBlockNode *)readInCodeBlock());
+    } while ((accept(TOK_ELSEIF) || accept(TOK_ELSE)) && !foundElse);
+    return new IfNode(ifArgs, codeblocks, {.loc = {line, col}});
 }
 
 void Parser::curLoc(unsigned int &line, unsigned int &col) const {

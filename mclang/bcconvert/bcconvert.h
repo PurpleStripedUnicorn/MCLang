@@ -61,6 +61,13 @@ private:
      */
     std::string convertExecCall(BCInstr instr) const;
 
+    /**
+     * Convert a variable assignment
+     * @param instr The instruction to convert, assumed to be of the "set"
+     * type
+     */
+    std::string convertSet(BCInstr instr) const;
+
     // The compiler component
     Compiler *comp;
 

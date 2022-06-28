@@ -1,0 +1,9 @@
+
+void main() {
+    /say before
+    if ("score PurpleStriped levels matches 100..")
+        /say PurpleStriped reached level 100!
+    if ("entity @e[type=frog]") {
+        /say There is a frog here!
+    }
+}
