@@ -17,7 +17,9 @@ enum ParseNodeType {
     // Blocks of code, to group commands
     PNODE_CODEBLOCK,
     // Execute-statement
-    PNODE_EXEC_STMT
+    PNODE_EXEC_STMT,
+    // If-statement
+    PNODE_IF
 };
 
 /**
