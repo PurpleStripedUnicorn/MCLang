@@ -141,6 +141,14 @@ bool Lexer::readInWord(Token &tok) {
     TokenType tt = TOK_WORD;
     if (word == "int" || word == "void")
         tt = TOK_TYPENAME;
+    if (word == "if")
+        tt = TOK_IF;
+    if (readTokens.size() > 0 && word == "if" && lastRead().type == TOK_ELSE) {
+        tt = TOK_ELSEIF;
+        readTokens.pop_back();
+    }
+    if (word == "else")
+        tt = TOK_ELSE;
     for (unsigned int i = 0; i < sizeof(execNames) / sizeof(execNames[0]); i++)
         if (word == execNames[i])
             tt = TOK_EXEC_STMT;
