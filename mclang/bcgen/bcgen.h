@@ -90,10 +90,10 @@ public:
     // Variable manager: to keep track of variable names used
     VarManager varManager;
 
-private:
-
     // The compiler component
     Compiler *comp;
+
+private:
 
     // List of functions that are generated
     std::vector<BCFunc *> funcList;
