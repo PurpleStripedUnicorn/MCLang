@@ -13,8 +13,8 @@
 #include <string>
 
 Compiler::Compiler() : input(""), ns("dp"), outputFolder("out_datapack"),
-debugMode(false), lexer(NULL), parser(NULL), bcMan(NULL), bcConvert(NULL),
-fileMan(NULL) {
+debugMode(false), fileOutput(true), lexer(NULL), parser(NULL), bcMan(NULL),
+bcConvert(NULL), fileMan(NULL) {
     
 }
 
@@ -60,6 +60,8 @@ void Compiler::compile() {
         out.close();
     }
     // Create output files and folders
-    FileManager fm(outputFolder, ns);
-    fm.genDatapack(cmds);
+    if (fileOutput) {
+        FileManager fm(outputFolder, ns);
+        fm.genDatapack(cmds);
+    }
 }
