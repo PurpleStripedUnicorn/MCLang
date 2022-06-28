@@ -12,7 +12,8 @@ const std::string parseNodeNames[] = {
     "FUNC",
     "CMD",
     "CODEBLOCK",
-    "EXEC"
+    "EXEC",
+    "IF"
 };
 
 /**
