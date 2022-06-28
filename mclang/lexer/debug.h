@@ -18,7 +18,8 @@ const std::string tokenTypeNames[] = {
     "+=", "-=", "/=", "*=", "%=",
     "NUM", "STR", "TRUE", "FALSE",
     "==",
-    "EXEC"
+    "EXEC",
+    "IF", "ELSEIF", "ELSE"
 };
 
 /**
