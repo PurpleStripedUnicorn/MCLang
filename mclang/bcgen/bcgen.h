@@ -3,6 +3,7 @@
 #define __BCGEN_H__
 
 #include "bcgen/instr.h"
+#include "bcgen/varmanager.h"
 #include <string>
 #include <vector>
 
@@ -85,6 +86,9 @@ public:
      * @return Top element of `funcStack`
      */
     BCFunc *topFunc() const;
+
+    // Variable manager: to keep track of variable names used
+    VarManager varManager;
 
 private:
 
