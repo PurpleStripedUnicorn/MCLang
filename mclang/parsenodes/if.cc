@@ -1,6 +1,7 @@
 
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
+#include "compiler/compiler.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/if.h"
 #include "parsenodes/parsenode.h"
@@ -26,7 +27,20 @@ IfNode::~IfNode() {
 }
 
 void IfNode::bytecode(BCManager &man) const {
-    // TODO: implement
+    std::string tmpId = man.varManager.getUniqueVar();
+    man.write(BCInstr(INSTR_SET, tmpId, "0"));
+    for (unsigned int i = 0; i < codeblocks.size(); i++) {
+        man.addFunc();
+        std::string fname = man.topFunc()->name;
+        codeblocks[i]->bytecode(man);
+        man.write(BCInstr(INSTR_SET, tmpId, "1"));
+        man.popFunc();
+        std::string cond = "";
+        if (i < ifArgs.size())
+            cond.append("if " + ifArgs[i] + " ");
+        cond.append("if score " + tmpId + " " + man.comp->ns + " matches 0");
+        man.write(BCInstr(INSTR_EXEC_CALL, cond, fname));
+    }
 }
 
 bool IfNode::hasElse() const {
