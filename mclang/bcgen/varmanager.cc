@@ -48,3 +48,12 @@ bool VarManager::hasVar(std::string name) const {
             return true;
     return false;
 }
+
+std::string VarManager::getUniqueVar() {
+    unsigned int i = 0;
+    std::string name = "__tmp0";
+    while (hasVar(name))
+        i++, name = "__tmp" + std::to_string(i);
+    addVar(name);
+    return name;
+}

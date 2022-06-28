@@ -89,6 +89,14 @@ public:
      */
     bool hasVar(std::string name) const;
 
+    /**
+     * Create a unique variable name that does not appear on the context stack,
+     * it will have a name in the form "__tmp[ID]"
+     * @return The variable name
+     * @post The variable is added to the top context on the context stack
+     */
+    std::string getUniqueVar();
+
 private:
 
     // Context stack
