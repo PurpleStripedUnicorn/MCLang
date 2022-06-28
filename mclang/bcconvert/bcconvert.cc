@@ -30,6 +30,8 @@ std::vector<CmdFunc> BCConverter::getRawCommands() {
                 cur.cmdList.push_back(convertCmd(curInstr));
             } else if (curInstr.type == INSTR_EXEC_CALL) {
                 cur.cmdList.push_back(convertExecCall(curInstr));
+            } else if (curInstr.type == INSTR_SET) {
+                cur.cmdList.push_back(convertSet(curInstr));
             } else {
                 MCLError(1, "Invalid instruction being read. Unexpected error."
                 );
@@ -46,5 +48,10 @@ std::string BCConverter::convertCmd(BCInstr instr) const {
 
 std::string BCConverter::convertExecCall(BCInstr instr) const {
     return "execute " + instr.arg1 + " run function " + comp->ns + ":"
+    + instr.arg2;
+}
+
+std::string BCConverter::convertSet(BCInstr instr) const {
+    return "scoreboard players set " + instr.arg1 + " " + comp->ns + " "
     + instr.arg2;
 }
