@@ -11,7 +11,9 @@ enum BCInstrType {
     INSTR_CMD,
     // Execute-statement with function call: arg1 = type + args, arg2 = function
     // to call
-    INSTR_EXEC_CALL
+    INSTR_EXEC_CALL,
+    // Set a variable to a certain value: arg1 = variable name, arg2 = value
+    INSTR_SET
 };
 
 struct BCInstr {
