@@ -1,0 +1,11 @@
+
+void main() {
+    /say before
+    if ("entity @e[type=sheep]")
+        /say There is a sheep!
+    else if ("entity @e[type=pig]") {
+        /say There is a pig!
+        /say Amazing!
+    } else
+        /say There are no pigs or sheep :(
+}
