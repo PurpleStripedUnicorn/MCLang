@@ -10,6 +10,7 @@
 #define HELPPADRIGHT 100
 
 bool debugMode;
+bool fileOutput;
 std::string fname;
 std::string ns;
 std::string outputName;
@@ -58,17 +59,28 @@ void argNamespace(std::string args) {
     ns = args;
 }
 
+/**
+ * Disable file output
+ * @param args Arguments from the command line, not used
+ */
+void argFileOutput(std::string args) {
+    std::string unused = args;
+    fileOutput = false;
+}
+
 // List of all command line arguments, for easier use later in the program
 // Use ' ' for no letter or "" for no full name
 const CmdLineArg argList[] = {
     {'d', "debug", 0, argDebugMode, "Use debugging tools. Debug info will be "
     "dumped in files in the current working directory."},
+    {'D', "disable-output", 0, argFileOutput, "Disable result output to the "
+    "file system. Will even disable output when \"-o\" is given."},
     {'h', "help", 0, argHelpList, "Show the help page."},
+    {'n', "namespace", 1, argNamespace, "Change the namespace of the output "
+    "datapack, default is 'dp'"},
     {'o', "output", 1, argOutputFolder, "Set the output folder, default is "
     "'out_datapack'. Warning: this folder will be overwritten by this program! "
     "Be very careful when selecting an output folder!"},
-    {'n', "namespace", 1, argNamespace, "Change the namespace of the output "
-    "datapack, default is 'dp'"}
 };
 
 /**
@@ -196,7 +208,8 @@ void readInArgs(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    debugMode = false, fname = "", ns = "dp", outputName = "out_datapack";
+    fileOutput = true, debugMode = false, fname = "", ns = "dp",
+    outputName = "out_datapack";
     // Read in the arguments provided via the command line
     readInArgs(argc, argv);
     if (fname == "") {
@@ -221,6 +234,7 @@ int main(int argc, char *argv[]) {
     comp.ns = ns;
     comp.outputFolder = outputName;
     comp.debugMode = debugMode;
+    comp.fileOutput = fileOutput;
     comp.compile();
     return 0;
 }
