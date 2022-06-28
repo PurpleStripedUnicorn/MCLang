@@ -6,7 +6,7 @@ out=""
 for file in ./examples/*
 do
     if [[ ! "$file" =~ invalid ]]; then
-        if ./build/main $file; then
+        if ./build/main -D $file; then
             out+="\033[0;32mSUCCESS:    \033[0m$file\n"
             s=$((s + 1))
         else
