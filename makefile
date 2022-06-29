@@ -9,9 +9,11 @@ ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
 
 ifeq ($(os),LINUX)
 	cc = g++
+	cppargs += -DOS_LINUX
 else ifeq ($(os),WINDOWS)
 	cc = x86_64-w64-mingw32-g++
 	cppargs += -static
+	cppargs += -DOS_WINDOWS
 else
 	exit 1
 endif

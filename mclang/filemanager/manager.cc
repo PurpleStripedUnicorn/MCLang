@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 #include <vector>
 
-#ifdef _WIN32
+#ifdef OS_WINDOWS
     #include <windows.h>
     #define MKDIR_FAIL_CODE -1
     #define DIRSEP std::string("\\")
@@ -83,15 +83,13 @@ void FileManager::createSubFolder(std::string path) const {
     createFolder(root + DIRSEP + path);
 }
 
-#include <iostream>
 void FileManager::createFolder(std::string path) const {
-#ifdef _WIN32
+#ifdef OS_WINDOWS
     int check = mkdir(path.c_str());
 #else
     int check = mkdir(path.c_str(), 0777);
 #endif
     if (check == MKDIR_FAIL_CODE) {
-        std::cout << MKDIR_FAIL_CODE << std::endl;
         MCLError(1, "Could not create folder '" + path + "'");
     }
 }
