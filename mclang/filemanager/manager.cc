@@ -9,6 +9,15 @@
 #include <sys/stat.h>
 #include <vector>
 
+#ifdef OS_WINDOWS
+    #include <windows.h>
+    #define MKDIR_FAIL_CODE -1
+    #define DIRSEP std::string("\\")
+#else
+    #define MKDIR_FAIL_CODE -1
+    #define DIRSEP std::string("/")
+#endif
+
 FileManager::FileManager(std::string root, std::string ns) : root(root), ns(ns)
 {
     deletePrevPack();
@@ -52,10 +61,16 @@ void FileManager::deletePrevPack() const {
     if (!std::filesystem::is_directory(root))
         return;
     std::ifstream metaFile(root + DIRSEP + "pack.mcmeta");
-    if (metaFile.good() || std::filesystem::is_empty(root))
-        std::filesystem::remove_all(root);
-    else
+    if (metaFile.good() || std::filesystem::is_empty(root)) {
+        metaFile.close();
+        std::error_code ec;
+        std::filesystem::remove_all(root, ec);
+        if (ec.value() != 0)
+            MCLError(1, "Something went wrong while deleting old directory.");
+    } else {
+        metaFile.close();
         MCLError(1, "Output folder exists, but is not a datapack.");
+    }
 }
 
 void FileManager::genFolderStructure() const {
@@ -69,7 +84,12 @@ void FileManager::createSubFolder(std::string path) const {
 }
 
 void FileManager::createFolder(std::string path) const {
+#ifdef OS_WINDOWS
+    int check = mkdir(path.c_str());
+#else
     int check = mkdir(path.c_str(), 0777);
-    if (check == MKDIR_FAIL_CODE)
+#endif
+    if (check == MKDIR_FAIL_CODE) {
         MCLError(1, "Could not create folder '" + path + "'");
+    }
 }

@@ -1,16 +1,28 @@
 
-# subfolders = lexer parser parsenodes bcgen
+os ?= LINUX
 subfolders = $(subst mclang,,$(subst mclang/,,$(shell find mclang -type d)))
 cppargs = -std=c++17 -Imclang -Wall -Wextra
-
 buildfolders = $(addprefix build/,$(subfolders))
 ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
 hfiles = $(ccfiles:.cc=.h)
 ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
+testfiles = $(shell find tests/*.cc)
+testbuilds = $(subst .cc,,$(addprefix build/,$(testfiles)))
+
+ifeq ($(os),LINUX)
+	cc = g++
+	cppargs += -DOS_LINUX
+else ifeq ($(os),WINDOWS)
+	cc = x86_64-w64-mingw32-g++
+	cppargs += -static
+	cppargs += -DOS_WINDOWS
+else
+	exit 1
+endif
 
 # Makefile starting point
 .PHONY: all
-all: build $(buildfolders) build/main
+all: build $(buildfolders) build/main $(testbuilds)
 
 # Clean up build fodler and output datapack
 clean: clean_build clean_dp
@@ -26,12 +38,18 @@ clean_dp:
 
 # Create output C++ files and use them to build main.cc
 build/main: mclang/main.cc $(ofiles) $(hfiles)
-	g++ $(cppargs) -o build/main mclang/main.cc $(ofiles)
+	$(cc) $(cppargs) -o build/main mclang/main.cc $(ofiles)
 build/%.o: mclang/%.cc mclang/%.h
-	g++ $(cppargs) -o $@ -c $<
+	$(cc) $(cppargs) -o $@ -c $<
+
+# Testing program
+build/tests/%: tests/%.cc build/tests
+	$(cc) $(cppargs) -o $@ $<
+build/tests:
+	mkdir build/tests
 
 # Create folders if neccessary
 build:
 	mkdir build
-build/%:
+$(buildfolders):
 	mkdir $@
