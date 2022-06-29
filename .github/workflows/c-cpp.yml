@@ -18,7 +18,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact-ubuntu
-        path: build/main
+        path: build
   Testing:
     name: Test (Ubuntu)
     needs: Build
@@ -29,11 +29,13 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build-artifact
-        path: build/main
+        path: build
     - name: Change executable permissions
-      run: chmod +x build/main
+      run: |
+        chmod +x build/main
+        chmod +x build/tests/examples
     - name: Test examples
-      run: tests/examples.sh
+      run: build/tests/examples
   BuildWin:
     name: Build (Windows)
     runs-on: ubuntu-latest
