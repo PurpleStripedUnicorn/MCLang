@@ -6,6 +6,8 @@ buildfolders = $(addprefix build/,$(subfolders))
 ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
 hfiles = $(ccfiles:.cc=.h)
 ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
+testfiles = $(shell find tests/*.cc)
+testbuilds = $(subst .cc,,$(addprefix build/,$(testfiles)))
 
 ifeq ($(os),LINUX)
 	cc = g++
@@ -20,7 +22,7 @@ endif
 
 # Makefile starting point
 .PHONY: all
-all: build $(buildfolders) build/main
+all: build $(buildfolders) build/main $(testbuilds)
 
 # Clean up build fodler and output datapack
 clean: clean_build clean_dp
@@ -40,8 +42,14 @@ build/main: mclang/main.cc $(ofiles) $(hfiles)
 build/%.o: mclang/%.cc mclang/%.h
 	$(cc) $(cppargs) -o $@ -c $<
 
+# Testing program
+build/tests/%: tests/%.cc build/tests
+	$(cc) $(cppargs) -o $@ $<
+build/tests:
+	mkdir build/tests
+
 # Create folders if neccessary
 build:
 	mkdir build
-build/%:
+build/$(subfolders):
 	mkdir $@
