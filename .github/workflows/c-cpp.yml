@@ -24,3 +24,13 @@ jobs:
       run: make
     - name: Test examples
       run: tests/examples.sh
+  BuildWin:
+    name: "Build (Windows)"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
+    - name: Build with MinGW
+      run: make os=WINDOWS
