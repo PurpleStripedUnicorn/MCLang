@@ -28,6 +28,7 @@ jobs:
     name: Build (Windows)
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: Set up MinGW
       uses: egor-tensin/setup-mingw@v2
       with:
