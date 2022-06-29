@@ -14,7 +14,6 @@
     #define MKDIR_FAIL_CODE -1
     #define DIRSEP std::string("\\")
 #else
-    #include <filesystem>
     #define MKDIR_FAIL_CODE -1
     #define DIRSEP std::string("/")
 #endif
@@ -62,10 +61,16 @@ void FileManager::deletePrevPack() const {
     if (!std::filesystem::is_directory(root))
         return;
     std::ifstream metaFile(root + DIRSEP + "pack.mcmeta");
-    if (metaFile.good() || std::filesystem::is_empty(root))
-        std::filesystem::remove_all(root);
-    else
+    if (metaFile.good() || std::filesystem::is_empty(root)) {
+        metaFile.close();
+        std::error_code ec;
+        std::filesystem::remove_all(root, ec);
+        if (ec.value() != 0)
+            MCLError(1, "Something went wrong while deleting old directory.");
+    } else {
+        metaFile.close();
         MCLError(1, "Output folder exists, but is not a datapack.");
+    }
 }
 
 void FileManager::genFolderStructure() const {
