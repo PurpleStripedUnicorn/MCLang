@@ -28,7 +28,7 @@ jobs:
     - name: Download build
       uses: actions/download-artifact@v2
       with:
-        name: build-artifact
+        name: build-artifact-ubuntu
         path: build
     - name: Change executable permissions
       run: |
