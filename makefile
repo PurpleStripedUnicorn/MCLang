@@ -51,5 +51,5 @@ build/tests:
 # Create folders if neccessary
 build:
 	mkdir build
-build/$(subfolders):
+$(buildfolders):
 	mkdir $@
