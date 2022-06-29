@@ -17,8 +17,8 @@ jobs:
     - name: Upload build
       uses: actions/upload-artifact@v2
       with:
-        name: build-artifact
-        path: build
+        name: build-artifact-ubuntu
+        path: build/main
   Testing:
     name: Test (Ubuntu)
     needs: Build
@@ -29,7 +29,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build-artifact
-        path: build
+        path: build/main
     - name: Change executable permissions
       run: chmod +x build/main
     - name: Test examples
