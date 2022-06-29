@@ -8,12 +8,14 @@ on:
 
 jobs:
   Build:
+    name: "Build (Ubuntu)"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Make
       run: make
   Testing:
+    name: "Test (Ubuntu)"
     needs: Build
     runs-on: ubuntu-latest
     steps:
