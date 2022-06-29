@@ -1,31 +1,19 @@
 
-ccflags =
-
-# Detect operating system
-ifeq ($(OS),Windows_NT)
-ccflags += -D WINDOWS
-preps = $(shell echo .\)
-delim = $(shell echo \)
-subfolders = $(subst $(CURDIR)/mclang/,,$(subst \,/,$(shell dir /b /s /ad mclang)))
-cppargs = -std=c++17 -Imclang -Wall -Wextra
-buildfolders = $(addprefix build/,$(subfolders))
-ccfiles = $(foreach sub,$(subfolders),$(subst $(CURDIR)/,,$(subst \,/,$(shell dir /b /s /a mclang\$(sub)\*.cc))))
-hfiles = $(ccfiles:.cc=.h)
-ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
-cc = g++
-else ifeq ($(shell uname -s),Linux)
-delim = /
-ccflags += -D LINUX
-preps = 
+os ?= LINUX
 subfolders = $(subst mclang,,$(subst mclang/,,$(shell find mclang -type d)))
 cppargs = -std=c++17 -Imclang -Wall -Wextra
 buildfolders = $(addprefix build/,$(subfolders))
 ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
 hfiles = $(ccfiles:.cc=.h)
 ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
-cc = g++
+
+ifeq ($(os),LINUX)
+	cc = g++
+else ifeq ($(os),WINDOWS)
+	cc = x86_64-w64-mingw32-g++
+	cppargs += -static
 else
-exit 1
+	exit 1
 endif
 
 # Makefile starting point
@@ -37,7 +25,7 @@ clean: clean_build clean_dp
 
 # Clean up build folder
 clean_build:
-	rm -r build$(delim)*
+	rm -r build/*
 
 # Clean up output datapack and debug files
 clean_dp:
@@ -46,12 +34,12 @@ clean_dp:
 
 # Create output C++ files and use them to build main.cc
 build/main: mclang/main.cc $(ofiles) $(hfiles)
-	$(cc) $(cppargs) $(ccflags) -o $(preps)build$(delim)main $(preps)mclang$(delim)main.cc $(preps)$(subst /,$(delim),$(ofiles))
+	$(cc) $(cppargs) -o build/main mclang/main.cc $(ofiles)
 build/%.o: mclang/%.cc mclang/%.h
-	$(cc) $(cppargs) $(ccflags) -o $(preps)$(subst /,$(delim),$@) -c $(preps)$(subst /,$(delim),$<)
+	$(cc) $(cppargs) -o $@ -c $<
 
 # Create folders if neccessary
 build:
 	mkdir build
 build/%:
-	mkdir $(subst /,$(delim),$@)
+	mkdir $@
