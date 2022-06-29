@@ -11,10 +11,14 @@ int main () {
     std::string out = "";
     for (auto const &entry : std::filesystem::directory_iterator("examples")) {
         if (entry.is_regular_file()) {
-            std::string path = entry.path();
+            std::string path = entry.path().string();
             if (path.find("invalid") != std::string::npos)
                 continue;
+#ifdef _WIN32
+            if (system(("build\\main.exe -D " + path).c_str()) == 0) {
+#else
             if (system(("build/main -D " + path).c_str()) == 0) {
+#endif
                 out += "\033[0;32mSUCCESS:    \033[0m" + path + "\n";
                 success++;
             } else {

@@ -45,5 +45,27 @@ jobs:
       uses: egor-tensin/setup-mingw@v2
       with:
         platform: x64
+    - name: Upload build
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifact-windows
+        path: build
     - name: Build with MinGW
       run: make os=WINDOWS
+  TestWin:
+    name: Test (Windows)
+    needs: BuildWin
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download build
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifact-windows
+        path: build
+    # - name: Change executable permissions
+    #   run: |
+    #     chmod +x build/main
+    #     chmod +x build/tests/examples
+    - name: Test examples
+      run: build\tests\examples
