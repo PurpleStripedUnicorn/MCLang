@@ -9,6 +9,16 @@
 #include <sys/stat.h>
 #include <vector>
 
+#ifdef _WIN32
+    #include <windows.h>
+    #define MKDIR_FAIL_CODE -1
+    #define DIRSEP std::string("\\")
+#else
+    #include <filesystem>
+    #define MKDIR_FAIL_CODE -1
+    #define DIRSEP std::string("/")
+#endif
+
 FileManager::FileManager(std::string root, std::string ns) : root(root), ns(ns)
 {
     deletePrevPack();
@@ -68,8 +78,15 @@ void FileManager::createSubFolder(std::string path) const {
     createFolder(root + DIRSEP + path);
 }
 
+#include <iostream>
 void FileManager::createFolder(std::string path) const {
+#ifdef _WIN32
+    int check = mkdir(path.c_str());
+#else
     int check = mkdir(path.c_str(), 0777);
-    if (check == MKDIR_FAIL_CODE)
+#endif
+    if (check == MKDIR_FAIL_CODE) {
+        std::cout << MKDIR_FAIL_CODE << std::endl;
         MCLError(1, "Could not create folder '" + path + "'");
+    }
 }

@@ -6,14 +6,6 @@
 #include <string>
 #include <vector>
 
-#ifdef _WIN32
-    #define MKDIR_FAIL_CODE 0
-    #define DIRSEP std::string("\\")
-#else
-    #define MKDIR_FAIL_CODE -1
-    #define DIRSEP std::string("/")
-#endif
-
 class FileManager {
 
 public:
