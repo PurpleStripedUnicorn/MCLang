@@ -2,7 +2,7 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, "#48-windows-support" ]
   pull_request:
     branches: [ main ]
 
