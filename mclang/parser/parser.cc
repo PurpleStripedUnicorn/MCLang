@@ -4,6 +4,7 @@
 #include "lexer/debug.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
+#include "parsenodes/call.h"
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
@@ -122,8 +123,11 @@ ParseNode *Parser::readInLine() {
         return readInExec();
     if (accept(TOK_IF))
         return readInIf();
-    MCLError(1, "Invalid token type found.", cur().loc.line, cur().loc.col);
-    return NULL;
+    // If there are no special tokens found, try to read an expression, and then
+    // a semicolon
+    ParseNode *expr = readInExpr();
+    expect(TOK_SEMICOL), next();
+    return expr;
 }
 
 ParseNode *Parser::readInExec() {
@@ -171,6 +175,21 @@ ParseNode *Parser::readInIf() {
         codeblocks.push_back((CodeBlockNode *)readInCodeBlock());
     } while ((accept(TOK_ELSEIF) || accept(TOK_ELSE)) && !foundElse);
     return new IfNode(ifArgs, codeblocks, {.loc = {line, col}});
+}
+
+ParseNode *Parser::readInExpr() {
+    return readInCall();
+}
+
+ParseNode *Parser::readInCall() {
+    unsigned int line, col;
+    curLoc(line, col);
+    expect(TOK_WORD);
+    std::string fname = cur().content;
+    next();
+    expect(TOK_LBRACE), next();
+    expect(TOK_RBRACE), next();
+    return new CallNode(fname, {.loc = {line, col}});
 }
 
 void Parser::curLoc(unsigned int &line, unsigned int &col) const {

@@ -110,6 +110,18 @@ private:
     ParseNode *readInIf();
 
     /**
+     * Read in an expression
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInExpr();
+
+    /**
+     * Read in a function call, part of an expression
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInCall();
+
+    /**
      * Get the line and column of the token currently being read
      * @post The `line` and `col` are modified to reflect the correct position
      */
