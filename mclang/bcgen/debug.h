@@ -11,7 +11,7 @@ const std::string instrNames[] = {
     "ERR",
     "CMD",
     "EXEC",
-    "CALL"
+    "CALL",
     "SET",
     "PUSH",
     "POP",
