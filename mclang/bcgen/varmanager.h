@@ -37,6 +37,12 @@ public:
      */
     bool hasVar(std::string name) const;
 
+    /**
+     * Append all variable names in this context to a given vector
+     * @param list The vector to append the variable names to
+     */
+    void appendVarNames(std::vector<std::string> &list) const;
+
 private:
 
     // Variables stored in this context
@@ -96,6 +102,12 @@ public:
      * @post The variable is added to the top context on the context stack
      */
     std::string getUniqueVar();
+
+    /**
+     * Generate a list of all of the variables that are in the context stack
+     * @param list The variable to put the list of the names of variables in
+     */
+    void getVarNames(std::vector<std::string> &list) const;
 
 private:
 

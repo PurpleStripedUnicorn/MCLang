@@ -22,6 +22,11 @@ bool VarContext::hasVar(std::string name) const {
     return false;
 }
 
+void VarContext::appendVarNames(std::vector<std::string> &list) const {
+    for (unsigned int i = 0; i < vars.size(); i++)
+        list.push_back(vars[i]);
+}
+
 VarManager::VarManager() {
     addContext();
 }
@@ -56,4 +61,10 @@ std::string VarManager::getUniqueVar() {
         i++, name = "__tmp" + std::to_string(i);
     addVar(name);
     return name;
+}
+
+void VarManager::getVarNames(std::vector<std::string> &list) const {
+    list.clear();
+    for (unsigned int i = 0; i < contextStack.size(); i++)
+        contextStack[i].appendVarNames(list);
 }
