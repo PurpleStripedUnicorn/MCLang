@@ -10,8 +10,12 @@ struct BCFunc;
 const std::string instrNames[] = {
     "ERR",
     "CMD",
-    "EXEC_CALL",
-    "SET"
+    "EXEC",
+    "CALL",
+    "SET",
+    "PUSH",
+    "POP",
+    "TOP"
 };
 
 /**

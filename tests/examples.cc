@@ -4,37 +4,51 @@
  */
 #include <iostream>
 #include <filesystem>
+#include <set>
 #include <string>
+#include <vector>
+
+std::set<std::string> getFileNames() {
+    std::set<std::string> out;
+    for (auto const &entry : std::filesystem::directory_iterator("examples"))
+        if (entry.is_regular_file())
+            out.insert(entry.path().string());
+    return out;
+}
+
+void printFileResult(std::string name, bool hasFailed) {
+    std::cout << (hasFailed ? "\033[0;31mFAILURE:" : "\033[0;32mSUCCESS:")
+    << "    \033[0m" << name << std::endl;
+}
 
 int main () {
     unsigned int success = 0, failed = 0;
-    std::string out = "";
-    for (auto const &entry : std::filesystem::directory_iterator("examples")) {
-        if (entry.is_regular_file()) {
-            std::string path = entry.path().string();
-            if (path.find("invalid") != std::string::npos)
-                continue;
+    std::vector<std::string> failedList;
+    std::cout << std::endl;
+    for (const std::string &path : getFileNames()) {
+        if (path.find("invalid") != std::string::npos)
+            continue;
 #ifdef _WIN32
-            if (system(("build\\main.exe -D " + path).c_str()) == 0) {
+        if (system(("build\\main.exe -D " + path).c_str()) == 0) {
 #else
-            if (system(("build/main -D " + path).c_str()) == 0) {
+        if (system(("build/main -D " + path).c_str()) == 0) {
 #endif
-                out += "\033[0;32mSUCCESS:    \033[0m" + path + "\n";
-                success++;
-            } else {
-                out += "\033[0;31mFAILURE:    \033[0m" + path + "\n";
-                failed++;
-            }
+            printFileResult(path, false);
+            success++;
+        } else {
+            printFileResult(path, true);
+            failedList.push_back(path);
+            failed++;
         }
     }
-    std::cout << std::endl << out << std::endl;
+    std::cout << std::endl << (failed > 0 ? "\033[0;31m" : "\033[0;32m")
+    << failed << " failures, " << success << " successes\033[0m" << std::endl
+    << std::endl;
     if (failed > 0) {
-        std::cout << "\033[0;31m" << failed << " failures, " << success
-        << " successes\n\033[0m" << std::endl;
-        return 1;
-    } else {
-        std::cout << failed << " failures, " << success << " successes"
-        << std::endl;
+        std::cout << "\033[0;31mList of failures:" << std::endl;
+        for (unsigned int i = 0; i < failedList.size(); i++)
+            std::cout << "    " << failedList[i] << std::endl;
+        std::cout << "\033[0m" << std::endl;
     }
-    return 0;
+    return failed > 0 ? 1 : 0;
 }

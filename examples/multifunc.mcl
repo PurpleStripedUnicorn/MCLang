@@ -1,7 +1,7 @@
 
 void main() {
     /say PurpleStriped: Hello World!
-    /function joke
+    joke();
 }
 
 void joke() {

@@ -19,7 +19,9 @@ enum ParseNodeType {
     // Execute-statement
     PNODE_EXEC_STMT,
     // If-statement
-    PNODE_IF
+    PNODE_IF,
+    // Function call
+    PNODE_CALL
 };
 
 /**
