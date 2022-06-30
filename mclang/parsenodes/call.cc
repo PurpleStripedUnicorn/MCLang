@@ -7,7 +7,7 @@
 #include <vector>
 
 CallNode::CallNode(std::string fname, ParseNodeProps props) :
-ParseNode(PNODE_CMD, props), fname(fname) {
+ParseNode(PNODE_CALL, props), fname(fname) {
 
 }
 
