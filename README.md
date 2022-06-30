@@ -11,10 +11,10 @@ MCLang is programming language which can be converted to minecraft commands, usi
 
 ## Building the project
 
-- **Linux:** The compiler can be build on Linux by using `make`. *
-- **Windows:** To build the project for Windows, MinGW needs to be installed. Then `make os=WINDOWS` should be run. Note that this command should be run on Linux as well, and not on Windows! The executable can then be sent to a Windows machine. **
+- **Linux:** The compiler can be built on Linux by using `make`. *
+- **Windows:** To build the project for Windows, MinGW needs to be installed. Then `make os=WINDOWS` should be run. Note that this command should be run on Linux as well, and not on Windows! The executable can then be sent to a Windows machine after compilation. **
 
-This will generate either `build/main` or `build\main.exe` depending on the operating system. This program is the compiler.
+This will generate either `build/main` or `build\main.exe`, depending on the operating system. This program is the compiler.
 
 _* Compilation has only been tested on Ubuntu 20.04.3 LTS, g++ version 9.3.0._
 
