@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 
+#define STACK_CREATE "execute unless data storage mclang:stack stack run data "\
+"modify storage mclang:stack stack set value []"
+
 struct BCFunc;
 class Compiler;
 
@@ -48,11 +51,18 @@ public:
 private:
 
     /**
-     * Convert an inserted command to a raw command (trivial)
-     * @param instr The instruction to convert, assumed to be of the command
-     * type
+     * Convert a given bytecode function to raw commands
+     * @param func The function to convert
+     * @return A vector of strings which contain the commands
      */
-    std::string convertCmd(BCInstr instr) const;
+    std::vector<std::string> convertFunc(const BCFunc &func);
+
+    /**
+     * Convert a single bytecode instruction to raw commands
+     * @param instr The instruction to convert
+     * @return A vector of strings which contain the commends
+     */
+    std::vector<std::string> convertInstr(const BCInstr &instr);
 
     /**
      * Convert a custom execute call to a raw command
@@ -67,6 +77,14 @@ private:
      * type
      */
     std::string convertSet(BCInstr instr) const;
+
+    /**
+     * Convert a stack operation instruction
+     * @param instr The instruction to convert, assumed to be a stack operation
+     * instruction
+     * @return A vector of strings containing raw commands
+     */
+    std::vector<std::string> convertStackOp(BCInstr instr) const;
 
     // The compiler component
     Compiler *comp;
