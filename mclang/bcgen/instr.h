@@ -12,6 +12,8 @@ enum BCInstrType {
     // Execute-statement with function call: arg1 = type + args, arg2 = function
     // to call
     INSTR_EXEC_CALL,
+    // Call a function: arg1 = function name
+    INSTR_CALL,
     // Set a variable to a certain value: arg1 = variable name, arg2 = value
     INSTR_SET,
     // Push a value of a variable to the stack: arg1 = variable name
