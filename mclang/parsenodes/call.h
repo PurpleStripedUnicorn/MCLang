@@ -1,6 +1,6 @@
 
-#ifndef __PARSENODE_CMD_H__
-#define __PARSENODE_CMD_H__
+#ifndef __PARSENODE_CALL_H__
+#define __PARSENODE_CALL_H__
 
 #include "bcgen/bcgen.h"
 #include "parsenodes/parsenode.h"
