@@ -21,7 +21,9 @@ void myFunction() {
 }
 ```
 
-Multiple functions can be put in the same file simply by putting them below each other.
+Multiple functions can be put in the same file simply by putting them below each other. See [Function calls](#function-calls) for how to call a function inside another function.
+
+Any function can be run in Minecraft by using `/function <namespace>:<function-name>`. The default namespace is `dp`.
 
 ## Comments
 
@@ -84,3 +86,34 @@ void myAsStatement() {
 ```
 
 This prevents having to make a lot of separate functions.
+
+## Function calls
+
+Functions can be called using the function name and then round brackets, followed by a semicolon. A warning will be shown when using `/function [function-name]`, since is a potentially unsafe way of calling a function and has unexpected behaviour. Calling a function in this way should therefore be avoided! An example of a function call is shown below:
+
+```
+void myFuncB() {
+    /say Function B
+}
+
+void myFuncA() {
+    /say Function A
+    myFuncB();
+}
+```
+
+## If-statements
+
+If-statements can be used in a very similar way to [execute-like statements](#execute-like-statements), except that the use of `else if` and `else` is also supported. See the following example:
+
+```
+void myFunction() {
+    if ("entity @e[name=PurpleStriped]") {
+        /say Hello PurpleStriped!
+    } else if ("entity @e[name=PurpurStriped]") {
+        /say Hello PurpurStriped!
+    } else {
+        /say Hello World!
+    }
+}
+```
