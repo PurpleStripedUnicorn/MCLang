@@ -30,7 +30,7 @@ As stated above, the executable name is either `build/main` or `build\main.exe`,
 
 ## Syntax
 
-The syntax is very similar to that of `C`. Minecraft commands can be inserted by using `/` at the start of a line. An example program is shown below:
+The syntax is very similar to that of C. Minecraft commands can be inserted by using `/` at the start of a line. An example program is shown below:
 ```
 void main() {
     /say Hey hello
@@ -44,4 +44,4 @@ void main() {
     }
 }
 ```
-After compilation and putting the generated datapack in the correct folder, this function can be run in Minecraft with `/function dp:main`. Refer to the [Syntax documentation](../blob/main/docs/mclang/syntax.md) for more information.
+After compilation and putting the generated datapack in the correct folder, this function can be run in Minecraft with `/function dp:main`. Refer to the [Syntax documentation](/docs/mclang/syntax.md) for more information.
