@@ -65,18 +65,29 @@ private:
     std::vector<std::string> convertInstr(const BCInstr &instr);
 
     /**
+     * Convert a raw inserted command, also checks if the command calls a
+     * function, to show a warning
+     * @param instr The instruction to convert, assumed to be of the inserted
+     * command type
+     * @return A vector of strings containing the output commands
+     */
+    std::vector<std::string> convertCmd(BCInstr instr) const;
+
+    /**
      * Convert a custom execute call to a raw command
      * @param instr The instruction to convert, assumed to be of the exec-call
      * type
+     * @return A vector of strings containing the output commands
      */
-    std::string convertExecCall(BCInstr instr) const;
+    std::vector<std::string> convertExecCall(BCInstr instr) const;
 
     /**
      * Convert a variable assignment
      * @param instr The instruction to convert, assumed to be of the "set"
      * type
+     * @return A vector of strings containing the output commands
      */
-    std::string convertSet(BCInstr instr) const;
+    std::vector<std::string> convertSet(BCInstr instr) const;
 
     /**
      * Convert a stack operation instruction

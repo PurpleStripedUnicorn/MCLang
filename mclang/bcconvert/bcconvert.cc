@@ -50,13 +50,13 @@ std::vector<std::string> BCConverter::convertFunc(const BCFunc &func) {
 
 std::vector<std::string> BCConverter::convertInstr(const BCInstr &instr) {
     if (instr.type == INSTR_CMD)
-        return {instr.arg1};
+        return convertCmd(instr);
     if (instr.type == INSTR_EXEC_CALL)
-        return {convertExecCall(instr)};
+        return convertExecCall(instr);
     if (instr.type == INSTR_CALL)
         return {"function " + comp->ns + ":" + instr.arg1};
     if (instr.type == INSTR_SET)
-        return {convertSet(instr)};
+        return convertSet(instr);
     if (instr.type == INSTR_PUSH || instr.type == INSTR_POP
     || instr.type == INSTR_TOP)
         return convertStackOp(instr);
@@ -64,14 +64,21 @@ std::vector<std::string> BCConverter::convertInstr(const BCInstr &instr) {
     return {};
 }
 
-std::string BCConverter::convertExecCall(BCInstr instr) const {
-    return "execute " + instr.arg1 + " run function " + comp->ns + ":"
-    + instr.arg2;
+std::vector<std::string> BCConverter::convertCmd(BCInstr instr) const {
+    if (instr.arg1.rfind("function ", 0) == 0)
+        MCLError(0, "Raw function call insertion has undefined behaviour, use "
+        "a function call instead!");
+    return {instr.arg1};
 }
 
-std::string BCConverter::convertSet(BCInstr instr) const {
-    return "scoreboard players set " + instr.arg1 + " " + comp->ns + " "
-    + instr.arg2;
+std::vector<std::string> BCConverter::convertExecCall(BCInstr instr) const {
+    return {"execute " + instr.arg1 + " run function " + comp->ns + ":"
+    + instr.arg2};
+}
+
+std::vector<std::string> BCConverter::convertSet(BCInstr instr) const {
+    return {"scoreboard players set " + instr.arg1 + " " + comp->ns + " "
+    + instr.arg2};
 }
 
 std::vector<std::string> BCConverter::convertStackOp(BCInstr instr) const {
