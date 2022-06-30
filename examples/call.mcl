@@ -1,0 +1,11 @@
+
+void func() {
+    /say Hello World!
+}
+
+void main() {
+    if ("entity @p")
+        func();
+    else
+        /say Nobody here?
+}
