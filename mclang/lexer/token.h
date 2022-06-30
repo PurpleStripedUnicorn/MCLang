@@ -11,6 +11,8 @@ enum TokenType {
     TOK_EMPTY,
     // Basic command insertion
     TOK_CMD,
+    // Semicolon
+    TOK_SEMICOL,
     // Normal word
     TOK_WORD,
     // Typenames and other special words

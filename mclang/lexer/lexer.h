@@ -16,6 +16,7 @@ const std::map<char, std::map<char, TokenType>> twoLetterTokens = {
     {')', {{' ', TOK_RBRACE}}},
     {'{', {{' ', TOK_LCBRACE}}},
     {'}', {{' ', TOK_RCBRACE}}},
+    {';', {{' ', TOK_SEMICOL}}},
     {'+', {{' ', TOK_ADD}, {'=', TOK_ASSIGN_ADD}}},
     {'-', {{' ', TOK_SUB}, {'=', TOK_ASSIGN_SUB}}},
     {'/', {{' ', TOK_DIV}, {'=', TOK_ASSIGN_DIV}}},
