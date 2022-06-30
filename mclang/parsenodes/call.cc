@@ -20,5 +20,17 @@ std::vector<ParseNode *> CallNode::children() const {
 }
 
 void CallNode::bytecode(BCManager &man) const {
-    // TODO: implement bytecode generation
+    // TODO: Add check if given function actually exists, implement function
+    // arguments, etc.
+    std::vector<std::string> varList;
+    man.varManager.getVarNames(varList);
+    for (unsigned int i = 0; i < varList.size(); i++)
+        man.write(BCInstr(INSTR_PUSH, varList[i]));
+    man.write(BCInstr(INSTR_CALL, fname));
+    if (varList.size() > 0) {
+        for (unsigned int i = varList.size() - 1; i >= 0; i--) {
+            man.write(BCInstr(INSTR_TOP, varList[i]));
+            man.write(BCInstr(INSTR_POP));
+        }
+    }
 }
