@@ -1,0 +1,6 @@
+
+void main() {
+    if if ("entity @p") {
+        /say Hello!
+    }
+}

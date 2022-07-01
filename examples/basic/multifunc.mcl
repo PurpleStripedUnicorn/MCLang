@@ -1,0 +1,9 @@
+
+void hello() {
+    /say Hello there!
+}
+
+void hey() {
+    /say Hey there!
+    /say What's up?
+}

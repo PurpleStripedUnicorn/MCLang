@@ -1,0 +1,20 @@
+
+void main() {
+    /say Let's see what's happening today...
+    if ("entity @a[name=PurpleStriped]") {
+        /say PurpleStriped is here!
+    } else if ("entity @e[type=villager]") {
+        as ("@e[type=villager]") {
+            /say Do you want to trade?
+        }
+    } else if ("score PurpleStriped levels matches 30..") {
+        /say Enchantments!
+    } else if ("entity @e[type=pig]") {
+        /tellraw @a {"text":"There is a pig present!","color":"pink"}
+        as ("@a")
+            /say yay!
+    } else {
+        /say I'm bored
+        /say *sigh*
+    }
+}
