@@ -15,6 +15,7 @@ std::string fname;
 std::string ns;
 std::string outputName;
 std::string scoreboardName;
+std::string mcVersion;
 
 /**************************
  * Command line arguments
@@ -78,6 +79,14 @@ void argScoreboardName(std::string args) {
     scoreboardName = args;
 }
 
+/**
+ * Set the Minecraft version being used
+ * @param args The version number
+ */
+void argVersion(std::string args) {
+    mcVersion = args;
+}
+
 // List of all command line arguments, for easier use later in the program
 // Use ' ' for no letter or "" for no full name
 const CmdLineArg argList[] = {
@@ -85,14 +94,17 @@ const CmdLineArg argList[] = {
     "dumped in files in the current working directory."},
     {'D', "disable-output", 0, argFileOutput, "Disable result output to the "
     "file system. Will even disable output when \"-o\" is given."},
-    {'h', "help", 0, argHelpList, "Show the help page."},
     {'n', "namespace", 1, argNamespace, "Change the namespace of the output "
     "datapack, default is 'dp'"},
-    {' ', "scoreboard", 1, argScoreboardName, "Set the scoreboard objective "
-    "used for variables. Default is \"mclang\"."},
+    {'h', "help", 0, argHelpList, "Show the help page."},
     {'o', "output", 1, argOutputFolder, "Set the output folder, default is "
     "'out_datapack'. Warning: this folder will be overwritten by this program! "
     "Be very careful when selecting an output folder!"},
+    {' ', "scoreboard", 1, argScoreboardName, "Set the scoreboard objective "
+    "used for variables. Default is \"mclang\"."},
+    {'v', "version", 1, argVersion, "Set the Minecraft version to output as a "
+    "datapack. Only supports normal versions after 1.17. Default is \"latest\""
+    },
 };
 
 /**
@@ -221,7 +233,8 @@ void readInArgs(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
     fileOutput = true, debugMode = false, fname = "", ns = "dp",
-    outputName = "out_datapack", scoreboardName = "mclang";
+    outputName = "out_datapack", scoreboardName = "mclang",
+    mcVersion = "latest";
     // Read in the arguments provided via the command line
     readInArgs(argc, argv);
     if (fname == "") {
@@ -248,6 +261,7 @@ int main(int argc, char *argv[]) {
     comp.debugMode = debugMode;
     comp.fileOutput = fileOutput;
     comp.scoreboardName = scoreboardName;
+    comp.mcVersion = mcVersion;
     comp.compile();
     return 0;
 }
