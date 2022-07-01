@@ -14,6 +14,7 @@ bool fileOutput;
 std::string fname;
 std::string ns;
 std::string outputName;
+std::string scoreboardName;
 
 /**************************
  * Command line arguments
@@ -68,6 +69,15 @@ void argFileOutput(std::string args) {
     fileOutput = false;
 }
 
+/**
+ * Set the scoreboard objective name being used
+ * @param args The scoreboard objective name, no spaces
+ * @note Assumes that the given name is indeed a valid scoreboard objective name
+ */
+void argScoreboardName(std::string args) {
+    scoreboardName = args;
+}
+
 // List of all command line arguments, for easier use later in the program
 // Use ' ' for no letter or "" for no full name
 const CmdLineArg argList[] = {
@@ -78,6 +88,8 @@ const CmdLineArg argList[] = {
     {'h', "help", 0, argHelpList, "Show the help page."},
     {'n', "namespace", 1, argNamespace, "Change the namespace of the output "
     "datapack, default is 'dp'"},
+    {' ', "scoreboard", 1, argScoreboardName, "Set the scoreboard objective "
+    "used for variables. Default is \"mclang\"."},
     {'o', "output", 1, argOutputFolder, "Set the output folder, default is "
     "'out_datapack'. Warning: this folder will be overwritten by this program! "
     "Be very careful when selecting an output folder!"},
@@ -209,7 +221,7 @@ void readInArgs(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
     fileOutput = true, debugMode = false, fname = "", ns = "dp",
-    outputName = "out_datapack";
+    outputName = "out_datapack", scoreboardName = "mclang";
     // Read in the arguments provided via the command line
     readInArgs(argc, argv);
     if (fname == "") {
@@ -235,6 +247,7 @@ int main(int argc, char *argv[]) {
     comp.outputFolder = outputName;
     comp.debugMode = debugMode;
     comp.fileOutput = fileOutput;
+    comp.scoreboardName = scoreboardName;
     comp.compile();
     return 0;
 }

@@ -35,13 +35,13 @@ public:
      */
     void compile();
 
-    // Text input folder the compiler
+    // Text input for the compiler
     std::string input;
 
     // Namespace to use in the output
     std::string ns;
 
-    // Output folder
+    // Datpack output folder
     std::string outputFolder;
 
     // Debug mode switch
@@ -49,6 +49,9 @@ public:
 
     // File output enable/disable
     bool fileOutput;
+
+    // Scoreboard objective name
+    std::string scoreboardName;
 
     // NOTE: These component may still may null values when the compilation is
     // not done
