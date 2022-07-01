@@ -48,10 +48,17 @@ void FileManager::genFunctionFile(const CmdFunc &func) const {
     file.close();
 }
 
+int FileManager::getPackFormat() const {
+    std::string ver = comp->mcVersion;
+    if (packVersions.find(ver) == packVersions.end())
+        MCLError(1, "Unsupported version given: '" + ver + "'.");
+    return packVersions.find(ver)->second;
+}
+
 void FileManager::genPackFile() const {
     std::ofstream file(root + DIRSEP + "pack.mcmeta");
     if (file.is_open()) {
-        file << "{\"pack\":{\"pack_format\":10,"
+        file << "{\"pack\":{\"pack_format\":" << getPackFormat() << ","
         << "\"description\":\"Generated with MCLang.\"}}";
     } else {
         MCLError(1, "Could not write to file 'pack.mcmeta'.");

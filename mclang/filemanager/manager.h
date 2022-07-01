@@ -3,10 +3,24 @@
 #define __FILEMANAGER_H__
 
 #include "bcconvert/bcconvert.h"
+#include <map>
 #include <string>
 #include <vector>
 
 class Compiler;
+
+/**
+ * List of minecraft versions and their respective pack formats
+ */
+std::map<std::string, int> packVersions = {
+    {"latest", 10},
+    {"1.19", 10},
+    {"1.18.2", 9},
+    {"1.18.1", 8},
+    {"1.18", 8},
+    {"1.17.1", 7},
+    {"1.17", 7},
+};
 
 class FileManager {
 
@@ -39,6 +53,12 @@ private:
      * command content
      */
     void genFunctionFile(const CmdFunc &func) const;
+
+    /**
+     * Get the pack format for the output datapack, based on the version given
+     * by the compiler
+     */
+    int getPackFormat() const;
 
     /**
      * Create the "pack.mcmeta" file associated to this datapack
