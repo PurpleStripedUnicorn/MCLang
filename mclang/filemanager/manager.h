@@ -12,7 +12,7 @@ class Compiler;
 /**
  * List of minecraft versions and their respective pack formats
  */
-std::map<std::string, int> packVersions = {
+const std::map<std::string, int> packVersions = {
     {"latest", 10},
     {"1.19", 10},
     {"1.18.2", 9},
