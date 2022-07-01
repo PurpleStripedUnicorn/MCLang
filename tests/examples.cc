@@ -8,11 +8,22 @@
 #include <string>
 #include <vector>
 
-std::set<std::string> getFileNames() {
+#ifdef _WIN32
+    #define DIRSEP "\\"
+#else
+    #define DIRSEP "/"
+#endif
+
+std::set<std::string> getFileNames(std::string path = "examples") {
     std::set<std::string> out;
-    for (auto const &entry : std::filesystem::directory_iterator("examples"))
+    for (auto const &entry : std::filesystem::directory_iterator(path)) {
         if (entry.is_regular_file())
             out.insert(entry.path().string());
+        if (entry.is_directory()) {
+            std::set<std::string> sub = getFileNames(entry.path().string());
+            out.insert(sub.begin(), sub.end());
+        }
+    }
     return out;
 }
 
