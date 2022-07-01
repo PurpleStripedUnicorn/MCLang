@@ -62,7 +62,7 @@ void Compiler::compile() {
     }
     // Create output files and folders
     if (fileOutput) {
-        FileManager fm(outputFolder, ns);
+        FileManager fm(this);
         fm.genDatapack(cmds);
     }
 }

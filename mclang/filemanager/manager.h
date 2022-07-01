@@ -6,18 +6,18 @@
 #include <string>
 #include <vector>
 
+class Compiler;
+
 class FileManager {
 
 public:
 
     /**
      * Constructor
-     * @param root The target directory root folder. Does not have to exist yet,
-     * but parent folder does have to exist
-     * @param ns The namespace of the datapack
+     * @param comp The main compiler component
      * @post Target folder is created
      */
-    FileManager(std::string root, std::string ns);
+    FileManager(Compiler *comp);
 
     /**
      * Destructor
@@ -76,6 +76,9 @@ private:
 
     // The namespace of the datapack
     std::string ns;
+
+    // The compiler component
+    Compiler *comp;
 
 };
 

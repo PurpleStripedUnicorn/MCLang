@@ -1,5 +1,6 @@
 
 #include "bcconvert/bcconvert.h"
+#include "compiler/compiler.h"
 #include "errorhandle/handle.h"
 #include "filemanager/manager.h"
 #include <dirent.h>
@@ -18,8 +19,8 @@
     #define DIRSEP std::string("/")
 #endif
 
-FileManager::FileManager(std::string root, std::string ns) : root(root), ns(ns)
-{
+FileManager::FileManager(Compiler *comp) : root(comp->outputFolder),
+ns(comp->ns), comp(comp) {
     deletePrevPack();
     createSubFolder("");
 }
