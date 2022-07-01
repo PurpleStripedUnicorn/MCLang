@@ -13,8 +13,9 @@
 #include <string>
 
 Compiler::Compiler() : input(""), ns("dp"), outputFolder("out_datapack"),
-debugMode(false), fileOutput(true), scoreboardName("mclang"), lexer(NULL),
-parser(NULL), bcMan(NULL), bcConvert(NULL), fileMan(NULL) {
+debugMode(false), fileOutput(true), scoreboardName("mclang"),
+mcVersion("latest"), lexer(NULL), parser(NULL), bcMan(NULL), bcConvert(NULL),
+fileMan(NULL) {
     
 }
 
@@ -61,7 +62,7 @@ void Compiler::compile() {
     }
     // Create output files and folders
     if (fileOutput) {
-        FileManager fm(outputFolder, ns);
+        FileManager fm(this);
         fm.genDatapack(cmds);
     }
 }

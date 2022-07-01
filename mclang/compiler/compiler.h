@@ -53,6 +53,9 @@ public:
     // Scoreboard objective name
     std::string scoreboardName;
 
+    // Minecraft version
+    std::string mcVersion;
+
     // NOTE: These component may still may null values when the compilation is
     // not done
     // Lexer component
