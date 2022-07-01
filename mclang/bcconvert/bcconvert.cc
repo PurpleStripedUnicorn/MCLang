@@ -77,20 +77,20 @@ std::vector<std::string> BCConverter::convertExecCall(BCInstr instr) const {
 }
 
 std::vector<std::string> BCConverter::convertSet(BCInstr instr) const {
-    return {"scoreboard players set " + instr.arg1 + " " + comp->ns + " "
-    + instr.arg2};
+    return {"scoreboard players set " + instr.arg1 + " " + comp->scoreboardName
+    + " " + instr.arg2};
 }
 
 std::vector<std::string> BCConverter::convertStackOp(BCInstr instr) const {
     std::string param = instr.arg1;
     if (instr.type == INSTR_TOP)
-        return {"execute store result score " + param + " " + comp->ns +
-        " run data get storage mclang:stack stack[0]"};
+        return {"execute store result score " + param + " "
+        + comp->scoreboardName + " run data get storage mclang:stack stack[0]"};
     if (instr.type == INSTR_PUSH)
         return {
             "data modify storage mclang:stack stack prepend value 0",
             "execute store result storage mclang:stack stack[0] int 1 run "
-            "scoreboard players get " + param + " " + comp->ns
+            "scoreboard players get " + param + " " + comp->scoreboardName
         };
     if (instr.type == INSTR_POP)
         return {"data remove storage mclang:stack stack[0]"};

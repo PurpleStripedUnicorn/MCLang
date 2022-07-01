@@ -38,7 +38,8 @@ void IfNode::bytecode(BCManager &man) const {
         std::string cond = "";
         if (i < ifArgs.size())
             cond.append("if " + ifArgs[i] + " ");
-        cond.append("if score " + tmpId + " " + man.comp->ns + " matches 0");
+        cond.append("if score " + tmpId + " " + man.comp->scoreboardName
+        + " matches 0");
         man.write(BCInstr(INSTR_EXEC_CALL, cond, fname));
     }
 }
