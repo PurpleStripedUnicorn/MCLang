@@ -1,0 +1,8 @@
+
+void main() {
+    /say hello
+    /*
+        It's a comment!
+    */
+    /say hi
+}
