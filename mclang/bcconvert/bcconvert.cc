@@ -45,6 +45,10 @@ std::vector<std::string> BCConverter::convertFunc(const BCFunc &func) {
     }
     if (hasStackOp)
         out.insert(out.begin(), STACK_CREATE);
+    // Create scoreboard objective to store variables, if it doesn't exist
+    // already
+    out.insert(out.begin(), "scoreboard objectives add " + comp->scoreboardName
+    + " dummy");
     return out;
 }
 
