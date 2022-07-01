@@ -37,29 +37,36 @@ int main () {
     std::vector<std::string> failedList;
     std::cout << std::endl;
     for (const std::string &path : getFileNames()) {
+        bool isInvalid = false;
         if (path.find("invalid") != std::string::npos)
-            continue;
+            isInvalid = true;
 #ifdef _WIN32
         if (system(("build\\main.exe -D " + path).c_str()) == 0) {
 #else
         if (system(("build/main -D " + path).c_str()) == 0) {
 #endif
-            printFileResult(path, false);
-            success++;
+            printFileResult(path, isInvalid);
+            if (isInvalid)
+                failed++, failedList.push_back(path);
+            else
+                success++;
         } else {
-            printFileResult(path, true);
-            failedList.push_back(path);
-            failed++;
+            printFileResult(path, !isInvalid);
+            if (isInvalid)
+                success++;
+            else
+                failed++, failedList.push_back(path);
         }
     }
     std::cout << std::endl << (failed > 0 ? "\033[0;31m" : "\033[0;32m")
-    << failed << " failures, " << success << " successes\033[0m" << std::endl
-    << std::endl;
+    << "---------------------------------------------" << std::endl << std::endl
+    << failed << " failures, " << success << " successes" << std::endl;
     if (failed > 0) {
-        std::cout << "\033[0;31mList of failures:" << std::endl;
+        std::cout << std::endl << "List of failures:" << std::endl;
         for (unsigned int i = 0; i < failedList.size(); i++)
             std::cout << "    " << failedList[i] << std::endl;
-        std::cout << "\033[0m" << std::endl;
     }
+    std::cout << std::endl << "---------------------------------------------"
+    << std::endl << std::endl << "\033[0m";
     return failed > 0 ? 1 : 0;
 }
