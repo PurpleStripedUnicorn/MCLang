@@ -1,0 +1,9 @@
+
+void foo() {
+    /say foo
+}
+
+void bar() {
+    /say bar
+    foo;
+}
