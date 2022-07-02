@@ -7,7 +7,7 @@
 #include <vector>
 
 NSNode::NSNode(std::string fname, ParseNodeProps props) :
-ParseNode(PNODE_CALL, props), nsName(nsName) {
+ParseNode(PNODE_NAMESPACE, props), nsName(nsName) {
 
 }
 

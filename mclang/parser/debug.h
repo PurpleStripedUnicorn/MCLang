@@ -14,7 +14,8 @@ const std::string parseNodeNames[] = {
     "CODEBLOCK",
     "EXEC",
     "IF",
-    "CALL"
+    "CALL",
+    "NAMESPACE"
 };
 
 /**
