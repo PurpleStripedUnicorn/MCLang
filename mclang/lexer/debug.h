@@ -2,9 +2,10 @@
 #ifndef __LEXER__DEBUG_H__
 #define __LEXER__DEBUG_H__
 
-#include "lexer/token.h"
 #include <string>
 #include <vector>
+
+struct Token;
 
 const std::string tokenTypeNames[] = {
     "ERR",
