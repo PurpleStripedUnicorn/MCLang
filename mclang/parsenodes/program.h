@@ -35,6 +35,13 @@ public:
 
 private:
 
+    /**
+     * Search for global settings in the parse tree and apply them to the
+     * compiler. A global setting for example is the namespace
+     * @post Compiler component has settings applied
+     */
+    void applyGlobalSettings(BCManager &man) const;
+
     // Child nodes of the main program
     std::vector<ParseNode *> childNodes;
 
