@@ -67,8 +67,14 @@ ParseNode *Parser::readInProgram() {
     unsigned int line, col;
     curLoc(line, col);
     std::vector<ParseNode *> childNodes;
-    while (accept(TOK_TYPENAME))
-        childNodes.push_back(readInFunc());
+    while (true) {
+        if (accept(TOK_TYPENAME))
+            childNodes.push_back(readInFunc());
+        else if (accept(TOK_NAMESPACE))
+            childNodes.push_back(readInNamespace());
+        else
+            break;
+    }
     return new ProgramNode(childNodes, {.loc = {line, col}});
 }
 
@@ -124,8 +130,6 @@ ParseNode *Parser::readInLine() {
         return readInExec();
     if (accept(TOK_IF))
         return readInIf();
-    if (accept(TOK_NAMESPACE))
-        return readInNamespace();
     // If there are no special tokens found, try to read an expression, and then
     // a semicolon
     ParseNode *expr = readInExpr();
