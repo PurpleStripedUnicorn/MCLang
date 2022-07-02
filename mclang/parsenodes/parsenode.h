@@ -22,7 +22,9 @@ enum ParseNodeType {
     // If-statement
     PNODE_IF,
     // Function call
-    PNODE_CALL
+    PNODE_CALL,
+    // Namespace setting
+    PNODE_NAMESPACE
 };
 
 /**

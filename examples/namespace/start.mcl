@@ -1,0 +1,6 @@
+
+namespace mypack;
+
+void main() {
+    /say Hello!
+}

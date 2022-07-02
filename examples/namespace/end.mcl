@@ -1,0 +1,12 @@
+
+void func() {
+    /say Hello World!
+}
+
+
+void main() {
+    /say Hello!
+    func();
+}
+
+namespace pack_ns;

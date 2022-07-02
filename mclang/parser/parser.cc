@@ -10,6 +10,7 @@
 #include "parsenodes/exec.h"
 #include "parsenodes/func.h"
 #include "parsenodes/if.h"
+#include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
 #include "parser/parser.h"
@@ -66,8 +67,14 @@ ParseNode *Parser::readInProgram() {
     unsigned int line, col;
     curLoc(line, col);
     std::vector<ParseNode *> childNodes;
-    while (accept(TOK_TYPENAME))
-        childNodes.push_back(readInFunc());
+    while (true) {
+        if (accept(TOK_TYPENAME))
+            childNodes.push_back(readInFunc());
+        else if (accept(TOK_NAMESPACE))
+            childNodes.push_back(readInNamespace());
+        else
+            break;
+    }
     return new ProgramNode(childNodes, {.loc = {line, col}});
 }
 
@@ -190,6 +197,17 @@ ParseNode *Parser::readInCall() {
     expect(TOK_LBRACE), next();
     expect(TOK_RBRACE), next();
     return new CallNode(fname, {.loc = {line, col}});
+}
+
+ParseNode *Parser::readInNamespace() {
+    unsigned int line, col;
+    curLoc(line, col);
+    expect(TOK_NAMESPACE), next();
+    expect(TOK_WORD);
+    std::string nsName = cur().content;
+    next();
+    expect(TOK_SEMICOL), next();
+    return new NSNode(nsName, {.loc = {line, col}});
 }
 
 void Parser::curLoc(unsigned int &line, unsigned int &col) const {
