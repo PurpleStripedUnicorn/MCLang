@@ -2,7 +2,6 @@
 #ifndef __BCCONVERT_H__
 #define __BCCONVERT_H__
 
-#include "bcgen/instr.h"
 #include <string>
 #include <vector>
 
@@ -10,6 +9,7 @@
 "modify storage mclang:stack stack set value []"
 
 struct BCFunc;
+struct BCInstr;
 class Compiler;
 
 /**

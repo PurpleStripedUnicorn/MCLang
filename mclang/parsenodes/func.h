@@ -2,11 +2,11 @@
 #ifndef __PARSENODE_FUNC_H__
 #define __PARSENODE_FUNC_H__
 
-#include "bcgen/bcgen.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
 
+class BCManager;
 class CodeBlockNode;
 
 class FuncNode : public ParseNode {

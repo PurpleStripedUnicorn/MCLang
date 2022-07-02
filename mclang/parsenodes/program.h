@@ -2,9 +2,10 @@
 #ifndef __PARSENODE_PROGRAM_H__
 #define __PARSENODE_PROGRAM_H__
 
-#include "bcgen/bcgen.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
+
+class BCManager;
 
 class ProgramNode : public ParseNode {
 
