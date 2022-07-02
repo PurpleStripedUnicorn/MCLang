@@ -141,6 +141,8 @@ bool Lexer::readInWord(Token &tok) {
     TokenType tt = TOK_WORD;
     if (word == "int" || word == "void")
         tt = TOK_TYPENAME;
+    if (word == "namespace")
+        tt = TOK_NAMESPACE;
     if (word == "if")
         tt = TOK_IF;
     if (readTokens.size() > 0 && word == "if" && lastRead().type == TOK_ELSE) {
