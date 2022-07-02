@@ -13,7 +13,7 @@ const std::string tokenTypeNames[] = {
     "CMD",
     ";",
     "WORD",
-    "TYPENAME",
+    "TYPENAME", "NAMESPACE",
     "(", ")", "{", "}",
     "+", "-", "/", "*", "%",
     "=",
