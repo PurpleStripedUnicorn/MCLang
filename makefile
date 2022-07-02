@@ -3,9 +3,10 @@ os ?= LINUX
 subfolders = $(subst mclang,,$(subst mclang/,,$(shell find mclang -type d)))
 cppargs = -std=c++17 -Imclang -Wall -Wextra
 buildfolders = $(addprefix build/,$(subfolders))
-ccfiles = $(foreach dir,$(subfolders),$(shell find mclang/$(dir)/*.cc))
+ccfiles = $(shell find mclang -name "*.cc")
 hfiles = $(ccfiles:.cc=.h)
 ofiles = $(subst mclang,build,$(ccfiles:.cc=.o))
+dfiles = $(ofiles:.o=.d)
 testfiles = $(shell find tests/*.cc)
 testbuilds = $(subst .cc,,$(addprefix build/,$(testfiles)))
 
@@ -29,18 +30,23 @@ clean: clean_build clean_dp
 
 # Clean up build folder
 clean_build:
-	rm -r build/*
+	rm -r -f build/*
 
 # Clean up output datapack and debug files
 clean_dp:
-	rm -r out_datapack
-	rm *.debug
+	rm -r -f out_datapack/*
+	rm -f *.debug
 
 # Create output C++ files and use them to build main.cc
-build/main: mclang/main.cc $(ofiles) $(hfiles)
-	$(cc) $(cppargs) -o build/main mclang/main.cc $(ofiles)
-build/%.o: mclang/%.cc mclang/%.h
-	$(cc) $(cppargs) -o $@ -c $<
+build/main: $(ofiles)
+	$(cc) $(cppargs) -o build/main $(ofiles)
+
+# Dependency files
+-include $(dfiles)
+
+# Output C++ files
+build/%.o: mclang/%.cc makefile
+	$(cc) $(cppargs) -MMD -MP -c $< -o $@
 
 # Testing program
 build/tests/%: tests/%.cc build/tests
