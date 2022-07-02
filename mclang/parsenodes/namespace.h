@@ -1,6 +1,6 @@
 
-#ifndef __PARSENODE_CALL_H__
-#define __PARSENODE_CALL_H__
+#ifndef __PARSENODE_NS_H__
+#define __PARSENODE_NS_H__
 
 #include "parsenodes/parsenode.h"
 #include <string>
