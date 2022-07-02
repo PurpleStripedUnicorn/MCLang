@@ -2,9 +2,10 @@
 #ifndef __BCCONVERT_DEBUG_H__
 #define __BCCONVERT_DEBUG_H__
 
-#include "bcconvert/bcconvert.h"
 #include <string>
 #include <vector>
+
+struct CmdFunc;
 
 /**
  * Returns a string with the raw commands in the given functions
