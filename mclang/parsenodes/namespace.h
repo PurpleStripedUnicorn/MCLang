@@ -36,6 +36,12 @@ public:
      */
     virtual void bytecode(BCManager &man) const override;
 
+    /**
+     * Get the namespace name
+     * @return The namespace name
+     */
+    std::string getName() const;
+
 private:
 
     // The name of the function to call

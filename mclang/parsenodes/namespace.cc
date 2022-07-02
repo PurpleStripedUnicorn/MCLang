@@ -23,3 +23,7 @@ void NSNode::bytecode(BCManager &man) const {
     // No bytecode is generated, because this node serves as a global setting,
     // which is handled by the "program" parse node instead
 }
+
+std::string NSNode::getName() const {
+    return nsName;
+}
