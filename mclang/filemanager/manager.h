@@ -2,11 +2,11 @@
 #ifndef __FILEMANAGER_H__
 #define __FILEMANAGER_H__
 
-#include "bcconvert/bcconvert.h"
 #include <map>
 #include <string>
 #include <vector>
 
+struct CmdFunc;
 class Compiler;
 
 /**
