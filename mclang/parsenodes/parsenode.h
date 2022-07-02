@@ -2,8 +2,9 @@
 #ifndef __PARSENODE_H__
 #define __PARSENODE_H__
 
-#include "bcgen/bcgen.h"
 #include <vector>
+
+class BCManager;
 
 enum ParseNodeType {
     // Error type
