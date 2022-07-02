@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
 #include "compiler/compiler.h"
+#include "parsenodes/parsenode.h"
 #include "parser/parser.h"
 #include <string>
 #include <vector>

@@ -3,10 +3,10 @@
 #define __PARSER_H__
 
 #include "lexer/token.h"
-#include "parsenodes/parsenode.h"
 #include <vector>
 
 class Compiler;
+class ParseNode;
 
 class Parser {
 
