@@ -122,6 +122,12 @@ private:
     ParseNode *readInCall();
 
     /**
+     * Read in a namespace statement
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInNamespace();
+
+    /**
      * Get the line and column of the token currently being read
      * @post The `line` and `col` are modified to reflect the correct position
      */
