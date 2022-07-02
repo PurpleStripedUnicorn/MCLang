@@ -1,0 +1,13 @@
+
+namespace ns1;
+
+void func() {
+    /say Hello World!
+}
+
+namespace ns2;
+
+void main() {
+    /say Hello!
+    func();
+}
