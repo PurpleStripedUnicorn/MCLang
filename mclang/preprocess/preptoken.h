@@ -16,13 +16,17 @@ enum PrepTokenType {
     // Basic command insertion
     PTOK_CMD,
     // Identifier, later converted to words, namespace def's, etc.
-    PTOK_IDEN,
+    PTOK_IDENT,
     // Operator/puctuator, e.g. +, -, ++, *=, ;, etc.
     PTOK_PUNCT,
     // String literals
     PTOK_STR,
     // Number literals
-    PTOK_NUM
+    PTOK_NUM,
+    // Preprocessor statement
+    PTOK_PREP_STMT,
+    // Standard library include (so with syntax `<library>`)
+    PTOK_INCL_LIB
 };
 
 /**

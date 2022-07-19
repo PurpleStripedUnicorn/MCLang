@@ -1,15 +1,16 @@
 
+#include "errorhandle/handle.h"
 #include "preprocess/preplexer.h"
 #include "preprocess/preptoken.h"
+#include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
 PrepLexer::PrepLexer(std::string &input, std::string filename,
-std::vector<PrepToken> *out) : input(input), loc({filename, 1, 1}), curIndex(0),
+std::vector<PrepToken> &out) : input(input), loc({filename, 1, 1}), curIndex(0),
 out(out) {
-    out->clear();
-    // Possible line ending escaped at the start of the file!
-    ignoreEnds();
+    out.clear();
 }
 
 PrepLexer::~PrepLexer() {
@@ -53,4 +54,138 @@ void PrepLexer::ignoreEnds() {
 
 bool PrepLexer::atEnd() const {
     return curIndex >= input.size();
+}
+
+void PrepLexer::lex() {
+    // Possible line ending escaped at the start of the file!
+    ignoreEnds();
+    bool atLineStart = true;
+    while (!atEnd()) {
+        if (cur() == '\n') {
+            atLineStart = true, next();
+            continue;
+        }
+        if (cur() == ' ' || cur() == '\t') {
+            next();
+            continue;
+        }
+        if (atLineStart && cur() == '/') {
+            readCmd();
+            continue;
+        }
+        if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')
+        || cur() == '_') {
+            readIdent();
+            continue;
+        }
+        if (cur() == '#') {
+            readPrepStmt();
+            continue;
+        }
+        if (cur() == '<' && out.size() >= 1 && out.back().type == PTOK_PREP_STMT
+        && out.back().content == "include") {
+            readInclLib();
+            continue;
+        }
+        if ('0' <= cur() && cur() <= '9') {
+            readNumber();
+            continue;
+        }
+        if (cur() == '"') {
+            readString();
+            continue;
+        }
+        // Check for punctuation symbols
+        if (checkPunctSymbols())
+            continue;
+        MCLError(1, "Unrecognized token.", loc.line, loc.col);
+        return;
+    }
+}
+
+std::vector<PrepToken> &PrepLexer::getOutput() const {
+    return out;
+}
+
+void PrepLexer::readCmd() {
+    // Skip the '/'
+    next();
+    std::string content = "";
+    while (!atEnd() && cur() != '\n')
+        content.push_back(cur()), next();
+    if (content.size() == 0)
+        MCLError(1, "Empty command.", loc.line, loc.col);
+    if (content.substr(0, 9) == "function ")
+        MCLError(0, "Inserted functions can create undefined behaviour!",
+        loc.line, loc.col);
+    // Skip the newline
+    next();
+    out.push_back(PrepToken(PTOK_CMD, content));
+}
+
+bool PrepLexer::isAlphaNumUS() const {
+    return ('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')
+    || ('0' <= cur() && cur() <= '9') || cur() == '_';
+}
+
+void PrepLexer::readIdent() {
+    std::string content = "";
+    while (!atEnd() && isAlphaNumUS())
+        content.push_back(cur()), next();
+    out.push_back(PrepToken(PTOK_IDENT, content));
+}
+
+void PrepLexer::readPrepStmt() {
+    // Skip the '#'
+    next();
+    std::string content = "";
+    while (!atEnd() && isAlphaNumUS())
+        content.push_back(cur()), next();
+    out.push_back(PrepToken(PTOK_PREP_STMT, content));
+}
+
+void PrepLexer::readNumber() {
+    std::string content = "";
+    while (!atEnd() && '0' <= cur() && cur() <= '9')
+        content.push_back(cur()), next();
+    out.push_back(PrepToken(PTOK_NUM, content));
+}
+
+void PrepLexer::readString() {
+    // Skip the first '"'
+    next();
+    std::string content = "";
+    while (!atEnd() && cur() != '"') {
+        if (cur() == '\\')
+            content.push_back(readEscapeChar());
+        else
+            content.push_back(cur()), next();
+    }
+    // Skip the last '"'
+    next();
+    out.push_back(PrepToken(PTOK_STR, content));
+}
+
+char PrepLexer::readEscapeChar() {
+    // Skip the '\\'
+    next();
+    if (escapeChars.count(cur()) == 0)
+        return cur();
+    return escapeChars.find(cur())->second;
+}
+
+void PrepLexer::readInclLib() {
+    // Skip the '<'
+    next();
+    std::string content = "";
+    while (!atEnd() && isAlphaNumUS())
+        content.push_back(cur()), next();
+    if (cur() != '>')
+        MCLError(1, "Invalid include", loc.line, loc.col);
+    // Skip the '>'
+    next();
+}
+
+bool PrepLexer::checkPunctSymbols() {
+    // TODO: Implement...
 }
