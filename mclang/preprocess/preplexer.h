@@ -25,7 +25,7 @@ public:
      * construction and destruction of this object! The string contents should
      * also not change!
      */
-    PrepLexer(std::string *input, std::string filename,
+    PrepLexer(std::string &input, std::string filename,
     std::vector<PrepToken> *out);
 
     /**
@@ -33,10 +33,36 @@ public:
      */
     ~PrepLexer();
 
+    /**
+     * Get the current character being read
+     * @return The character at `input[curIndex]`
+     * @note Returns ' ' if `atEnd()` is true
+     */
+    char cur() const;
+
+    /**
+     * Move to the next character
+     * @post `curIndex` is incremented and line and column numbers are changed
+     * accordingly
+     */
+    void next();
+
+    /**
+     * Ignore escaped line endings and '\r'
+     * @note Does not use the `next()` function!
+     */
+    void ignoreEnds();
+
+    /**
+     * Check if the current index is past the length of the input string
+     * @return Boolean indicating if `input.size() <= curIndex`
+     */
+    bool atEnd() const;
+
 private:
 
     // A pointer to the input string to read
-    std::string *input;
+    std::string &input;
 
     // Current location and filename
     struct {
