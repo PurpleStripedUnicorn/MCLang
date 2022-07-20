@@ -168,6 +168,7 @@ void PrepLexer::readInclLib() {
         MCLError(1, "Invalid include", loc.line, loc.col);
     // Skip the '>'
     next();
+    out.push_back(PrepToken(PTOK_INCL_LIB, content, loc));
 }
 
 bool PrepLexer::checkPunctSymbols() {
