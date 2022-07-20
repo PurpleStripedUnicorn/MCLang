@@ -7,8 +7,6 @@
 #include <sstream>
 #include <string>
 
-#include <iostream>
-
 Preprocessor::Preprocessor() : includeDepth(0), doOutput(true) {
 
 }
