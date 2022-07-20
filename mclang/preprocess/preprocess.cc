@@ -1,43 +1,15 @@
 
 #include "errorhandle/handle.h"
+#include "preprocess/preplexer.h"
 #include "preprocess/preprocess.h"
-#include <string>
+#include "preprocess/preptoken.h"
 #include <fstream>
+#include <sstream>
+#include <string>
 
-InpStream::InpStream(std::string filename) : stream(filename),
-filename(filename), line(1), col(0) {
+#include <iostream>
 
-}
-
-InpStream::~InpStream() {
-    stream.close();
-}
-
-char InpStream::get() {
-    char out = stream.get();
-    if (out == '\r')
-        out = stream.get();
-    col++;
-    if (out == '\n')
-        line++, col = 0;
-    return out;
-}
-
-char InpStream::peek() {
-    char out;
-    out = stream.peek();
-    if (out == '\r') {
-        stream.get();
-        out = stream.peek();
-    }
-    return out;
-}
-
-bool InpStream::good() {
-    return stream.good() && stream.is_open();
-}
-
-Preprocessor::Preprocessor() : curRead(""), includeDepth(0), doOutput(true) {
+Preprocessor::Preprocessor() : includeDepth(0), doOutput(true) {
 
 }
 
@@ -46,45 +18,45 @@ Preprocessor::~Preprocessor() {
 }
 
 void Preprocessor::processFile(std::string filename) {
-    InpStream fs(filename);
-    readCodeBlock(fs);
+    std::ifstream file(filename);
+    if (!file.is_open())
+        MCLError(1, "Could not open given file \"" + filename + "\"");
+    std::stringstream contentStream;
+    contentStream << file.rdbuf();
+    std::string content = contentStream.str();
+    tokenStack.push_back(std::vector<PrepToken>());
+    readIndexStack.push_back(0);
+    PrepLexer lex(content, filename, tokenStack.back());
+    lex.lex();
+    readProgram();
+    tokenStack.pop_back();
+    readIndexStack.pop_back();
 }
 
-void Preprocessor::readCodeBlock(InpStream &fs) {
-    
+std::vector<PrepToken> &Preprocessor::getOutput() const {
+    return (std::vector<PrepToken> &)out;
 }
 
-Preprocessor::PrepLine Preprocessor::readLine(InpStream &fs) {
-    PrepLine out;
-    char cur;
-    bool atLineStart = true;
-    bool isCmd = false;
-    bool inCmdWord = false;
-    std::string cmdWord = "";
-    fs.stream.get(cur);
-    while (fs.stream.good() && fs.stream.is_open() && cur != '\n') {
-        out.content.push_back(cur);
-        if (atLineStart) {
-            if (cur == '#') {
-                isCmd = true;
-                inCmdWord = true;
-            } else if (cur != ' ' && cur != '\t') {
-                atLineStart = false;
-            }
-        }
-        if (inCmdWord) {
-            if (cur == ' ') {
-                inCmdWord = false;
-                out.content = "";
-            } else {
-                cmdWord.push_back(cur);
-            }
-        }
-        fs.stream.get(cur);
+std::vector<PrepToken> &Preprocessor::curTokenList() const {
+    return (std::vector<PrepToken> &)tokenStack.back();
+}
+
+bool Preprocessor::atTokenListEnd() const {
+    return readIndexStack.back() >= tokenStack.back().size();
+}
+
+PrepToken Preprocessor::curToken() const {
+    return tokenStack.back()[readIndexStack.back()];
+}
+
+void Preprocessor::nextToken() {
+    readIndexStack.back()++;
+}
+
+void Preprocessor::readProgram() {
+    while (!atTokenListEnd()) {
+        PrepToken cur = curToken();
+        out.push_back(cur);
+        nextToken();
     }
-    if (cmdWord == "include")
-        out.type = LINE_INCL;
-    else
-        MCLError(1, "Invalid preprocessor statement");
-    
 }

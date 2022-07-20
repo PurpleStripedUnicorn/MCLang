@@ -2,7 +2,8 @@
 #ifndef __PREPROCESS_H__
 #define __PREPROCESS_H__
 
-#include "preprocess/codetext.h"
+#include "preprocess/preplexer.h"
+#include "preprocess/preptoken.h"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -10,57 +11,8 @@
 #define MAX_INCLUDE_DEPTH 128
 
 /**
- * Wrapper around input file stream objects, used to keep track of information
- * like line and column numbers
+ * Main preprocessor, uses the preprocessor lexer internaly
  */
-class InpStream {
-
-public:
-
-    /**
-     * Constructor
-     * @param filename The file to be read
-     */
-    InpStream(std::string filename);
-
-    /**
-     * Destructor
-     */
-    ~InpStream();
-
-    /**
-     * Get a character from the stream
-     * @return The character read
-     * @post `stream`, `line` and `col` are changed accordingly
-     */
-    char get();
-
-    /**
-     * Peek to see the next character that will be read with get
-     * @return The character to be read next
-     */
-    char peek();
-
-    /**
-     * Check if the end of the file has been reached or the stream has exited
-     * @return Boolean indicating that reading can continue and there are still
-     * characters to be read
-     */
-    bool good();
-
-    // Raw input filestream
-    std::ifstream stream;
-
-private:
-
-    // Filename, for convenience
-    std::string filename;
-
-    // Current line and column of the stream
-    unsigned int line, col;
-
-};
-
 class Preprocessor {
 
 public:
@@ -83,42 +35,45 @@ public:
      */
     void processFile(std::string filename);
 
+    /**
+     * Get the generated output
+     * @return A reference to `out`
+     */
+    std::vector<PrepToken> &getOutput() const;
+
 private:
 
     /**
-     * Command type, or just raw text
+     * Get the current top vector of token stack
+     * @return Reference to last item in `tokenStack`
      */
-    enum PrepLineType {
-        LINE_TXT, LINE_INCL
-    };
+    std::vector<PrepToken> &curTokenList() const;
 
     /**
-     * Used internally when reading lines
-     * Content is just the entire line when dealing with raw text, or anything
-     * that comes after the statement when dealing with a preprocessor statement
+     * Check if we are currently reading past the end of the current token list
+     * @return Boolean indicating the result
      */
-    struct PrepLine {
-        PrepLineType type = LINE_TXT;
-        std::string content = "";
-    };
+    bool atTokenListEnd() const;
 
     /**
-     * Read in a preprocessor code block
-     * @param fs The current input filestream
-     * @post The output is appended in `out`, if needed
+     * Get the current top token iterator
+     * @note Assumes that `atTokenListEnd()` returns false
+     * @return The token currently being read
      */
-    void readCodeBlock(InpStream &fs);
+    PrepToken curToken() const;
 
     /**
-     * Read in a single line. Depending on wether it is raw text or a
-     * preprocessor statement, an action is taken
-     * @param fs The current input filestream
-     * @note Skips over the endline at the end
+     * Move to the next item in the current token list
+     * @post Index on the top of the `readIndexStack` has been incremented
      */
-    PrepLine readLine(InpStream &fs);
+    void nextToken();
 
-    // The line that has been read up to this point
-    std::string curRead;
+    /**
+     * Read in and convert a program
+     * Assumes that the `tokenStack` and `tokenIter` are not empty
+     * @post The output tokens are put in `out`
+     */
+    void readProgram();
 
     // Current include depth: number of includes that are above the current file
     // being read
@@ -127,8 +82,15 @@ private:
     // Output switch
     bool doOutput;
 
+    // Stack of vectors used to store lexed files
+    std::vector<std::vector<PrepToken>> tokenStack;
+
+    // Stack of indexes indicating the items on the token stack being currently
+    // read
+    std::vector<unsigned int> readIndexStack;
+
     // Output
-    CodeText out;
+    std::vector<PrepToken> out;
 
 };
 
