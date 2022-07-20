@@ -101,8 +101,6 @@ void PrepLexer::readCmd() {
     if (content.substr(0, 9) == "function ")
         MCLError(0, "Inserted functions can create undefined behaviour!",
         loc.line, loc.col);
-    // Skip the newline
-    next();
     out.push_back(PrepToken(PTOK_CMD, content));
 }
 
