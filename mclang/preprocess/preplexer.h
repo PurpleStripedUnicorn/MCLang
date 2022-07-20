@@ -49,7 +49,7 @@ public:
      * construction and destruction of this object! The string contents should
      * also not change!
      */
-    PrepLexer(std::string &input, std::string filename,
+    PrepLexer(const std::string &input, std::string filename,
     std::vector<PrepToken> &out);
 
     /**
@@ -155,7 +155,7 @@ private:
     bool checkPunctSymbols();
 
     // A pointer to the input string to read
-    std::string &input;
+    const std::string &input;
 
     // Current location and filename
     Loc loc;
