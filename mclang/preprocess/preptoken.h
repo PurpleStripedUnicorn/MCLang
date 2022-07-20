@@ -26,7 +26,9 @@ enum PrepTokenType {
     // Preprocessor statement
     PTOK_PREP_STMT,
     // Standard library include (so with syntax `<library>`)
-    PTOK_INCL_LIB
+    PTOK_INCL_LIB,
+    // End of line, used to determine the ends of preprocessor statements
+    PTOK_ENDL
 };
 
 /**

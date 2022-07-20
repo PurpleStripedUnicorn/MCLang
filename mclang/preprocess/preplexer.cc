@@ -61,45 +61,28 @@ void PrepLexer::lex() {
     ignoreEnds();
     bool atLineStart = true;
     while (!atEnd()) {
-        if (cur() == '\n') {
-            atLineStart = true, next();
-            continue;
-        }
-        if (cur() == ' ' || cur() == '\t') {
+        if (cur() == '\n')
+            out.push_back(PrepToken(PTOK_ENDL)), atLineStart = true, next();
+        else if (cur() == ' ' || cur() == '\t')
             next();
-            continue;
-        }
-        if (atLineStart && cur() == '/') {
+        else if (atLineStart && cur() == '/')
             readCmd();
-            continue;
-        }
-        if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')
-        || cur() == '_') {
+        else if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <=
+        'Z') || cur() == '_')
             readIdent();
-            continue;
-        }
-        if (cur() == '#') {
+        else if (cur() == '#')
             readPrepStmt();
-            continue;
-        }
-        if (cur() == '<' && out.size() >= 1 && out.back().type == PTOK_PREP_STMT
-        && out.back().content == "include") {
+        else if (cur() == '<' && out.size() >= 1 && out.back().type ==
+        PTOK_PREP_STMT && out.back().content == "include")
             readInclLib();
-            continue;
-        }
-        if ('0' <= cur() && cur() <= '9') {
+        else if ('0' <= cur() && cur() <= '9')
             readNumber();
-            continue;
-        }
-        if (cur() == '"') {
+        else if (cur() == '"')
             readString();
-            continue;
-        }
-        // Check for punctuation symbols
-        if (checkPunctSymbols())
-            continue;
-        MCLError(1, "Unrecognized token.", loc.line, loc.col);
-        return;
+        else if (checkPunctSymbols())
+            ;
+        else
+            MCLError(1, "Unrecognized token.", loc.line, loc.col);
     }
 }
 
@@ -156,10 +139,13 @@ void PrepLexer::readString() {
     next();
     std::string content = "";
     while (!atEnd() && cur() != '"') {
-        if (cur() == '\\')
-            content.push_back(readEscapeChar());
-        else
+        if (cur() == '\\') {
+            char esc = readEscapeChar();
+            if (esc != '\n')
+                content.push_back(esc);
+        } else {
             content.push_back(cur()), next();
+        }
     }
     // Skip the last '"'
     next();

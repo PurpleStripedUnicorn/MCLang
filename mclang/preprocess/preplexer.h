@@ -3,6 +3,7 @@
 #define __PREPLEXER_H__
 
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -11,7 +12,7 @@ struct PrepToken;
 // NOTE: Arithmatic operators should also be in this list when implemented
 // NOTE: For any symbols containing two or more characters, EVERY suffix of this
 // symbol should also be a symbol!
-const std::string punctSymbols[] = {
+const std::set<std::string> punctSymbols = {
     ";",
     "(", ")",
     "{", "}",
