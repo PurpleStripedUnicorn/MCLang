@@ -52,6 +52,8 @@ void Preprocessor::nextToken() {
 }
 
 void Preprocessor::readProgram() {
+    // TODO: Change this to process preprocessor statements and replace
+    // definitions
     while (!atTokenListEnd()) {
         PrepToken cur = curToken();
         out.push_back(cur);
