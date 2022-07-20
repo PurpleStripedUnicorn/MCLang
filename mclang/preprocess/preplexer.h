@@ -2,6 +2,7 @@
 #ifndef __PREPLEXER_H__
 #define __PREPLEXER_H__
 
+#include "general/loc.h"
 #include <map>
 #include <set>
 #include <string>
@@ -157,10 +158,7 @@ private:
     std::string &input;
 
     // Current location and filename
-    struct {
-        std::string filename;
-        unsigned int line, col;
-    } loc;
+    Loc loc;
 
     // The current index of the character being read
     unsigned int curIndex;

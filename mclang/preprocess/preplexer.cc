@@ -62,7 +62,7 @@ void PrepLexer::lex() {
     bool atLineStart = true;
     while (!atEnd()) {
         if (cur() == '\n')
-            out.push_back(PrepToken(PTOK_ENDL)), atLineStart = true, next();
+            out.push_back(PrepToken(PTOK_ENDL, loc)), atLineStart = true, next();
         else if (cur() == ' ' || cur() == '\t')
             next();
         else if (atLineStart && cur() == '/')
@@ -101,7 +101,7 @@ void PrepLexer::readCmd() {
     if (content.substr(0, 9) == "function ")
         MCLError(0, "Inserted functions can create undefined behaviour!",
         loc.line, loc.col);
-    out.push_back(PrepToken(PTOK_CMD, content));
+    out.push_back(PrepToken(PTOK_CMD, content, loc));
 }
 
 bool PrepLexer::isAlphaNumUS() const {
@@ -113,7 +113,7 @@ void PrepLexer::readIdent() {
     std::string content = "";
     while (!atEnd() && isAlphaNumUS())
         content.push_back(cur()), next();
-    out.push_back(PrepToken(PTOK_IDENT, content));
+    out.push_back(PrepToken(PTOK_IDENT, content, loc));
 }
 
 void PrepLexer::readPrepStmt() {
@@ -122,14 +122,14 @@ void PrepLexer::readPrepStmt() {
     std::string content = "";
     while (!atEnd() && isAlphaNumUS())
         content.push_back(cur()), next();
-    out.push_back(PrepToken(PTOK_PREP_STMT, content));
+    out.push_back(PrepToken(PTOK_PREP_STMT, content, loc));
 }
 
 void PrepLexer::readNumber() {
     std::string content = "";
     while (!atEnd() && '0' <= cur() && cur() <= '9')
         content.push_back(cur()), next();
-    out.push_back(PrepToken(PTOK_NUM, content));
+    out.push_back(PrepToken(PTOK_NUM, content, loc));
 }
 
 void PrepLexer::readString() {
@@ -147,7 +147,7 @@ void PrepLexer::readString() {
     }
     // Skip the last '"'
     next();
-    out.push_back(PrepToken(PTOK_STR, content));
+    out.push_back(PrepToken(PTOK_STR, content, loc));
 }
 
 char PrepLexer::readEscapeChar() {
@@ -176,5 +176,5 @@ bool PrepLexer::checkPunctSymbols() {
         content.push_back(cur()), next();
     if (content.size() == 0)
         return false;
-    out.push_back(PrepToken(PTOK_PUNCT, content));
+    out.push_back(PrepToken(PTOK_PUNCT, content, loc));
 }

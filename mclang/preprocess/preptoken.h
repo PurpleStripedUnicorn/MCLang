@@ -2,6 +2,7 @@
 #ifndef __PREPTOKEN_H__
 #define __PREPTOKEN_H__
 
+#include "general/loc.h"
 #include <string>
 
 /**
@@ -36,10 +37,11 @@ enum PrepTokenType {
  * Later converted to actual token by the "main lexer"
  */
 struct PrepToken {
-    PrepToken(PrepTokenType type);
-    PrepToken(PrepTokenType type, std::string content);
+    PrepToken(PrepTokenType type, Loc loc);
+    PrepToken(PrepTokenType type, std::string content, Loc loc);
     PrepTokenType type;
     std::string content;
+    Loc loc;
 };
 
 #endif
