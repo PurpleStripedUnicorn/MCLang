@@ -171,5 +171,10 @@ void PrepLexer::readInclLib() {
 }
 
 bool PrepLexer::checkPunctSymbols() {
-    // TODO: Implement...
+    std::string content = "";
+    while (punctSymbols.count(content + cur()))
+        content.push_back(cur()), next();
+    if (content.size() == 0)
+        return false;
+    out.push_back(PrepToken(PTOK_PUNCT, content));
 }
