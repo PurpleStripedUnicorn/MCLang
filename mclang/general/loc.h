@@ -10,6 +10,7 @@
  */
 struct Loc {
     Loc(std::string filename, unsigned int line, unsigned int col);
+    const static Loc unknown;
     std::string filename;
     unsigned int line, col;
 };
