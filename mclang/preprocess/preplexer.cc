@@ -17,6 +17,40 @@ PrepLexer::~PrepLexer() {
 
 }
 
+void PrepLexer::lex() {
+    // Possible line ending escaped at the start of the file!
+    ignoreEnds();
+    atLineStart = true;
+    while (!atEnd()) {
+        if (cur() == '\n')
+            out.push_back(PrepToken(PTOK_ENDL, loc)), atLineStart = true, next();
+        else if (cur() == ' ' || cur() == '\t')
+            next();
+        else if (cur() == '/')
+            readSlash();
+        else if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <=
+        'Z') || cur() == '_')
+            readIdent();
+        else if (cur() == '#')
+            readPrepStmt();
+        else if (cur() == '<' && out.size() >= 1 && out.back().type ==
+        PTOK_PREP_STMT && out.back().content == "include")
+            readInclLib();
+        else if ('0' <= cur() && cur() <= '9')
+            readNumber();
+        else if (cur() == '"')
+            readString();
+        else if (checkPunctSymbols())
+            ;
+        else
+            MCLError(1, "Unrecognized token.", loc.line, loc.col);
+    }
+}
+
+std::vector<PrepToken> &PrepLexer::getOutput() const {
+    return out;
+}
+
 char PrepLexer::cur() const {
     if (atEnd())
         return ' ';
@@ -56,43 +90,47 @@ bool PrepLexer::atEnd() const {
     return curIndex >= input.size();
 }
 
-void PrepLexer::lex() {
-    // Possible line ending escaped at the start of the file!
-    ignoreEnds();
-    bool atLineStart = true;
-    while (!atEnd()) {
-        if (cur() == '\n')
-            out.push_back(PrepToken(PTOK_ENDL, loc)), atLineStart = true, next();
-        else if (cur() == ' ' || cur() == '\t')
-            next();
-        else if (atLineStart && cur() == '/')
-            readCmd();
-        else if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <=
-        'Z') || cur() == '_')
-            readIdent();
-        else if (cur() == '#')
-            readPrepStmt();
-        else if (cur() == '<' && out.size() >= 1 && out.back().type ==
-        PTOK_PREP_STMT && out.back().content == "include")
-            readInclLib();
-        else if ('0' <= cur() && cur() <= '9')
-            readNumber();
-        else if (cur() == '"')
-            readString();
-        else if (checkPunctSymbols())
-            ;
+void PrepLexer::readSlash() {
+    // Skip the '/'
+    next();
+    if (atEnd()) {
+        out.push_back(PrepToken(PTOK_PUNCT, "/", loc));
+        return;
+    }
+    if (cur() == '/')
+        next(), readSingleComment();
+    else if (cur() == '*')
+        next(), readMultiComment();
+    else if (atLineStart)
+        readCmd();
+    else
+        // NOTE: This will always return true because of the prefix
+        checkPunctSymbols("/");
+}
+
+void PrepLexer::readSingleComment() {
+    while (!atEnd() && cur() != '\n')
+        next();
+    // Also skip over the line ending
+    if (!atEnd() && cur() == '\n')
+        next();
+}
+
+void PrepLexer::readMultiComment() {
+    // Number of characters into "*/" that have been read
+    unsigned int readStop = 0;
+    while (!atEnd() && readStop < 2) {
+        if (cur() == '*')
+            readStop = 1;
+        else if (readStop == 1 && cur() == '/')
+            readStop = 2;
         else
-            MCLError(1, "Unrecognized token.", loc.line, loc.col);
+            readStop = 0;
+        next();
     }
 }
 
-std::vector<PrepToken> &PrepLexer::getOutput() const {
-    return out;
-}
-
 void PrepLexer::readCmd() {
-    // Skip the '/'
-    next();
     std::string content = "";
     while (!atEnd() && cur() != '\n')
         content.push_back(cur()), next();
@@ -101,10 +139,12 @@ void PrepLexer::readCmd() {
     if (content.substr(0, 9) == "function ")
         MCLError(0, "Inserted functions can create undefined behaviour!",
         loc.line, loc.col);
-    out.push_back(PrepToken(PTOK_CMD, content, loc));
+    // Ignore single-line comments
+    if (content[0] != '/')
+        out.push_back(PrepToken(PTOK_CMD, content, loc));
 }
 
-bool PrepLexer::isAlphaNumUS() const {
+inline bool PrepLexer::isAlphaNumUS() const {
     return ('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')
     || ('0' <= cur() && cur() <= '9') || cur() == '_';
 }
@@ -171,8 +211,8 @@ void PrepLexer::readInclLib() {
     out.push_back(PrepToken(PTOK_INCL_LIB, content, loc));
 }
 
-bool PrepLexer::checkPunctSymbols() {
-    std::string content = "";
+bool PrepLexer::checkPunctSymbols(std::string prefix) {
+    std::string content = prefix;
     while (punctSymbols.count(content + cur()))
         content.push_back(cur()), next();
     if (content.size() == 0)

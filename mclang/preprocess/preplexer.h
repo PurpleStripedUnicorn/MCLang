@@ -58,6 +58,20 @@ public:
     ~PrepLexer();
 
     /**
+     * Run the lexer
+     * @post The output is stored in `out`
+     */
+    void lex();
+
+    /**
+     * Get the lexer output
+     * @return A reference to the output of the lexer
+     */
+    std::vector<PrepToken> &getOutput() const;
+
+private:
+
+    /**
      * Get the current character being read
      * @return The character at `input[curIndex]`
      * @note Returns ' ' if `atEnd()` is true
@@ -84,21 +98,27 @@ public:
     bool atEnd() const;
 
     /**
-     * Run the lexer
-     * @post The output is stored in `out`
+     * Read in a slash, which can become a command, a punctuation symbol, or a
+     * comment (borth single-line and multi-line)
+     * @post Location is changed accordingly
      */
-    void lex();
+    void readSlash();
 
     /**
-     * Get the lexer output
-     * @return A reference to the output of the lexer
+     * Skip over a single-line comment, note that "//" has already been read
+     * @post Location is changed accordingly
      */
-    std::vector<PrepToken> &getOutput() const;
-
-private:
+    void readSingleComment();
 
     /**
-     * Read in a basic inserted command
+     * Skip over a multi-line comment, note that "/""*" has already been read
+     * @post Location is changed accordingly
+     */
+    void readMultiComment();
+
+    /**
+     * Read in a basic inserted command, note that the '/' should have already
+     * been read
      * @post Location is changed accordingly
      */
     void readCmd();
@@ -107,7 +127,7 @@ private:
      * Check if the current character is a letter, a number or an underscore
      * @return Boolean indicating the result
      */
-    bool isAlphaNumUS() const;
+    inline bool isAlphaNumUS() const;
 
     /**
      * Read in an identifier, which is a sequence of letters, numbers and
@@ -149,10 +169,12 @@ private:
 
     /**
      * Check for punctuation symbols and read them in
+     * @param prefix Punctuation symbols already read that should be taken into
+     * account as well
      * @return A boolean indicating if a punctuation symbol was actually read
      * @post Location is changed accordingly
      */
-    bool checkPunctSymbols();
+    bool checkPunctSymbols(std::string prefix = "");
 
     // A pointer to the input string to read
     const std::string &input;
@@ -165,6 +187,9 @@ private:
 
     // Pointer to where the output should be put
     std::vector<PrepToken> &out;
+
+    // Are we at the start of a line (not counting whitespace)
+    bool atLineStart;
 
 };
 
