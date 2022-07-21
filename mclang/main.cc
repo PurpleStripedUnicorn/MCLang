@@ -241,21 +241,9 @@ int main(int argc, char *argv[]) {
         std::cerr << "No filename given." << std::endl;
         return 1;
     }
-    // Read the contents of the given file
-    std::ifstream inpFile(fname);
-    std::string inp;
-    if (inpFile.is_open()) {
-        std::ostringstream ss;
-        ss << inpFile.rdbuf();
-        inp = ss.str();
-    } else {
-        std::cerr << "Unable to open file '" << fname << "'." << std::endl;
-        return 1;
-    }
-    inpFile.close();
     // Compile the code inside the file
     Compiler comp;
-    comp.input = inp;
+    comp.filename = fname;
     comp.ns = ns;
     comp.outputFolder = outputName;
     comp.debugMode = debugMode;

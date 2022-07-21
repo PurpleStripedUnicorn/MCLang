@@ -1,0 +1,7 @@
+
+#define HELLO \
+/say Hello World!
+
+void main() {
+    HELLO
+}

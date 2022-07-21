@@ -1,0 +1,7 @@
+
+#define ALL_PLAYERS "@a"
+
+void main() {
+    as (ALL_PLAYERS)
+        /say Hello!
+}
