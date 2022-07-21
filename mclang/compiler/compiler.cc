@@ -9,6 +9,7 @@
 #include "lexer/lexer.h"
 #include "parser/debug.h"
 #include "parser/parser.h"
+#include "preprocess/debug.h"
 #include "preprocess/preprocess.h"
 #include <fstream>
 #include <string>
@@ -33,6 +34,11 @@ void Compiler::compile() {
     // Preprocessor
     prep = new Preprocessor();
     prep->processFile(filename);
+    if (debugMode) {
+        std::ofstream out("mcl_prep.debug");
+        out << prepDebugTable(&prep->getOutput());
+        out.close();
+    }
     // Lexer
     lexer = new Lexer(this);
     lexer->readIn();
