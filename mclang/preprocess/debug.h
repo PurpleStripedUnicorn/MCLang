@@ -11,6 +11,7 @@ struct PrepToken;
 const std::string prepTokenNames[] = {
     "ERR",
     "EMPTY",
+    "EOF",
     "CMD",
     "IDENT",
     "PUNCT",
