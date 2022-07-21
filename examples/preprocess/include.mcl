@@ -1,0 +1,6 @@
+
+#include "includechild.mcl"
+
+void main() {
+    /say Hello!
+}
