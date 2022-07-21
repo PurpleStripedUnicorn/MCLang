@@ -9,17 +9,19 @@
 #include "lexer/lexer.h"
 #include "parser/debug.h"
 #include "parser/parser.h"
+#include "preprocess/preprocess.h"
 #include <fstream>
 #include <string>
 
-Compiler::Compiler() : input(""), ns("dp"), outputFolder("out_datapack"),
+Compiler::Compiler() : filename(""), ns("dp"), outputFolder("out_datapack"),
 debugMode(false), fileOutput(true), scoreboardName("mclang"),
-mcVersion("latest"), lexer(NULL), parser(NULL), bcMan(NULL), bcConvert(NULL),
-fileMan(NULL) {
+mcVersion("latest"), prep(NULL), lexer(NULL), parser(NULL), bcMan(NULL),
+bcConvert(NULL), fileMan(NULL) {
     
 }
 
 Compiler::~Compiler() {
+    delete prep;
     delete lexer;
     delete parser;
     delete bcMan;
@@ -28,6 +30,9 @@ Compiler::~Compiler() {
 }
 
 void Compiler::compile() {
+    // Preprocessor
+    prep = new Preprocessor();
+    prep->processFile(filename);
     // Lexer
     lexer = new Lexer(this);
     lexer->readIn();

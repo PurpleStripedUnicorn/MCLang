@@ -3,43 +3,33 @@
 #include "errorhandle/handle.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
+#include "preprocess/preprocess.h"
+#include "preprocess/preptoken.h"
 #include <map>
 #include <string>
 #include <vector>
 
-Lexer::Lexer(Compiler *comp) : comp(comp), txt(comp->input), curIndex(0),
-atLineStart(true) {
+Lexer::Lexer(Compiler *comp) : comp(comp), input(comp->prep->getOutput()),
+curIndex(0) {
 
 }
 
 void Lexer::readIn() {
-    curIndex = 0, curLoc.line = 1, curLoc.col = 1;
+    curIndex = 0;
     readTokens.clear();
     Token tok;
     while (!atEnd()) {
-        unsigned int lastLine = curLoc.line, lastCol = curLoc.col;
-        // Ignore whitespace, atLineStart remains the same, because whitespace
-        // is not counted for this
-        if (cur() == ' ' || cur() == '\t') {
-            next();
-        // Keep track of the start of a line, for inserted commands
-        // Also keeps track of line numbers
-        } else if (cur() == '\n') {
-            next();
-            atLineStart = true;
-            curLoc.line++;
-            curLoc.col = 1;
-        // Read in normal tokens
-        } else if (readInToken(tok)) {
+        Loc lastLoc = cur().loc;
+        if (readInToken(tok)) {
             if (tok.type != TOK_EMPTY) {
-                tok.loc.col = lastCol;
-                tok.loc.line = lastLine;
+                tok.loc.col = lastLoc.col;
+                tok.loc.line = lastLoc.line;
                 readTokens.push_back(tok);
-                atLineStart = false;
             }
         // Token not recognized
         } else {
-            MCLError(1, "Could not recognize token.", lastLine, lastCol);
+            MCLError(1, "Could not recognize token.", lastLoc.line, lastLoc.col
+            );
         }
     }
 }
@@ -48,161 +38,75 @@ std::vector<Token> *Lexer::tokens() const {
     return (std::vector<Token> *)&readTokens;
 }
 
-void Lexer::next() {
-    curIndex++, curLoc.col++;
+inline void Lexer::next() {
+    curIndex++;
 }
 
-bool Lexer::atEnd() const {
-    return curIndex >= txt.size();
+inline bool Lexer::atEnd() const {
+    return curIndex >= input.size();
 }
 
-char Lexer::cur() const {
+PrepToken Lexer::cur() const {
     if (atEnd())
-        return '$';
-    return txt[curIndex];
+        return PrepToken(PTOK_EOF, Loc::unknown);
+    return input[curIndex];
 }
 
 bool Lexer::readInToken(Token &tok) {
-    // '/' is special because it can be division, the start of a command or the
-    // start of a comment
-    if (cur() == '/') {
-        next();
-        // Start of a comment
-        if (cur() == '/') {
-            while (cur() != '\n' && !atEnd())
-                next();
-            tok = Token(TOK_EMPTY);
-            return true;
-        // Start of a multiline comment
-        } else if (cur() == '*') {
-            while (true) {
-                next();
-                while (cur() == '*') {
-                    next();
-                    if (cur() == '/') {
-                        next();
-                        tok = Token(TOK_EMPTY);
-                        atLineStart = false;
-                        return true;
-                    }
-                }
-            }
-            // Reached end of file without closing comment
-            return false;
-        // Start of a command
-        } else if (atLineStart) {
-            return readInCmd(tok);
-        // Division assignment
-        } else if (cur() == '=') {
-            tok = Token(TOK_ASSIGN_DIV);
-            next();
-        } else {
-            tok = Token(TOK_DIV);
-            next();
-        }
+    if (cur().type == PTOK_EMPTY || cur().type == PTOK_EOF || cur().type ==
+    PTOK_ENDL) {
+        tok = Token(TOK_EMPTY), next();
         return true;
     }
-    // Checks for both one- and two-character tokens
-    if (twoLetterTokens.count(cur())) {
-        const std::map<char, TokenType> &curLook = twoLetterTokens.find(
-        cur())->second;
-        next();
-        // Two characters
-        if (curLook.count(cur())) {
-            tok = Token(curLook.find(cur())->second);
-            next();
-            return true;
-        }
-        // One character
-        if (curLook.count(' ')) {
-            tok = Token(curLook.find(' ')->second);
-            return true;
-        }
-        return false;
+    if (cur().type == PTOK_CMD) {
+        tok = Token(TOK_CMD, cur().content), next();
+        return true;
     }
-    if (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')) {
-        return readInWord(tok);
+    if (cur().type == PTOK_IDENT) {
+        tok = convertIdent(cur().content), next();
+        return true;
     }
-    if (cur() == '"')
-        return readInString(tok);
+    if (cur().type == PTOK_PUNCT) {
+        tok = convertPunct(cur().content), next();
+        return true;
+    }
+    if (cur().type == PTOK_STR) {
+        tok = Token(TOK_STR, cur().content), next();
+        return true;
+    }
+    if (cur().type == PTOK_NUM) {
+        tok = Token(TOK_NUM, cur().content), next();
+        return true;
+    }
     return false;
 }
 
-bool Lexer::readInWord(Token &tok) {
-    std::string word = "";
-    while (('a' <= cur() && cur() <= 'z') || ('A' <= cur() && cur() <= 'Z')
-    || cur() == '_' || ('0' <= cur() && cur() <= '9')) {
-        word.push_back(cur());
-        next();
-    }
-    if (word == "")
-        return false;
-    // Detect typenames and special words
+inline Token &Lexer::lastRead() const {
+    return (Token &)readTokens[readTokens.size() - 1];
+}
+
+Token Lexer::convertIdent(std::string ident) {
     TokenType tt = TOK_WORD;
-    if (word == "int" || word == "void")
+    if (ident == "int" || ident == "void")
         tt = TOK_TYPENAME;
-    if (word == "namespace")
+    if (ident == "namespace")
         tt = TOK_NAMESPACE;
-    if (word == "if")
+    if (ident == "if")
         tt = TOK_IF;
-    if (readTokens.size() > 0 && word == "if" && lastRead().type == TOK_ELSE) {
+    if (readTokens.size() > 0 && ident == "if" && lastRead().type == TOK_ELSE) {
         tt = TOK_ELSEIF;
         readTokens.pop_back();
     }
-    if (word == "else")
+    if (ident == "else")
         tt = TOK_ELSE;
     for (unsigned int i = 0; i < sizeof(execNames) / sizeof(execNames[0]); i++)
-        if (word == execNames[i])
+        if (ident == execNames[i])
             tt = TOK_EXEC_STMT;
-    tok = Token(tt, word);
-    return true;
+    return Token(tt, ident);
 }
 
-bool Lexer::readInCmd(Token &tok) {
-    // NOTE: The '/' has already been skipped
-    std::string out = "";
-    while (cur() != '\n') {
-        out += cur();
-        next();
-    }
-    // NOTE: The line ending needs to still be there when exiting this function
-    atLineStart = false;
-    tok = Token(TOK_CMD, out);
-    return true;
-}
-
-bool Lexer::readInString(Token &tok) {
-    std::string out = "";
-    // Skip the '"'
-    next();
-    while (cur() != '"') {
-        if (atEnd())
-            MCLError(1, "Reached EOF before end of string.", curLoc.line,
-            curLoc.col);
-        if (cur() == '\\') {
-            next();
-            out += convertEscapeChar(cur());
-        } else {
-            out += cur();
-        }
-        next();
-    }
-    // Skip the '"'
-    next();
-    tok = Token(TOK_STR, out);
-    return true;
-}
-
-char Lexer::convertEscapeChar(char inp) {
-    // NOTE: The ''', '"' and '\' characters sometimes need to be escaped but
-    // still are output the same by this function
-    if (inp == 'n')
-        return '\n';
-    if (inp == 't')
-        return '\t';
-    return inp;
-}
-
-Token &Lexer::lastRead() const {
-    return (Token &)readTokens[readTokens.size() - 1];
+Token Lexer::convertPunct(std::string punct) {
+    if (punctTable.count(punct) == 0)
+        MCLError(1, "Unexpected error reading punctuation");
+    return Token(punctTable.find(punct)->second);
 }

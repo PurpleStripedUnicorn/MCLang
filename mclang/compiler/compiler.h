@@ -7,6 +7,7 @@ class Parser;
 class BCManager;
 class BCConverter;
 class FileManager;
+class Preprocessor;
 
 #include <string>
 
@@ -35,8 +36,8 @@ public:
      */
     void compile();
 
-    // Text input for the compiler
-    std::string input;
+    // Input filename
+    std::string filename;
 
     // Namespace to use in the output
     std::string ns;
@@ -58,6 +59,8 @@ public:
 
     // NOTE: These component may still may null values when the compilation is
     // not done
+    // Preprocessor compoenent
+    Preprocessor *prep;
     // Lexer component
     Lexer *lexer;
     // Parser component

@@ -3,25 +3,25 @@
 #define __LEXER_H__
 
 #include "lexer/token.h"
+#include "preprocess/preptoken.h"
 #include <map>
 #include <string>
 #include <vector>
 
 class Compiler;
 
-// Two-character tokens list, ordered by first character and then by second
-// character, a space character means it is also a single character
-const std::map<char, std::map<char, TokenType>> twoLetterTokens = {
-    {'(', {{' ', TOK_LBRACE}}},
-    {')', {{' ', TOK_RBRACE}}},
-    {'{', {{' ', TOK_LCBRACE}}},
-    {'}', {{' ', TOK_RCBRACE}}},
-    {';', {{' ', TOK_SEMICOL}}},
-    {'+', {{' ', TOK_ADD}, {'=', TOK_ASSIGN_ADD}}},
-    {'-', {{' ', TOK_SUB}, {'=', TOK_ASSIGN_SUB}}},
-    {'/', {{' ', TOK_DIV}, {'=', TOK_ASSIGN_DIV}}},
-    {'*', {{' ', TOK_MUL}, {'=', TOK_ASSIGN_MUL}}},
-    {'=', {{' ', TOK_ASSIGN}, {'=', TOK_EQ}}}
+const std::map<std::string, TokenType> punctTable = {
+    {"(", TOK_LBRACE},
+    {")", TOK_RBRACE},
+    {"{", TOK_LCBRACE},
+    {"}", TOK_RCBRACE},
+    {";", TOK_SEMICOL},
+    {"+", TOK_ADD}, {"+=", TOK_ASSIGN_ADD},
+    {"-", TOK_SUB}, {"-=", TOK_ASSIGN_SUB},
+    {"*", TOK_MUL}, {"*=", TOK_ASSIGN_MUL},
+    {"/", TOK_DIV}, {"/=", TOK_ASSIGN_DIV},
+    {"%", TOK_MOD}, {"%=", TOK_ASSIGN_MOD},
+    {"=", TOK_ASSIGN}, {"==", TOK_EQ}
 };
 
 // Execute-statement indicators, i.e. positioned, as, at, etc.
@@ -43,7 +43,7 @@ public:
     Lexer(Compiler *comp);
 
     /**
-     * Read in the stored string and convert it to tokens
+     * Read in the stored input and convert it to tokens
      * @post The result is stored in the `readTokens` vector
      */
     void readIn();
@@ -58,23 +58,23 @@ public:
 private:
 
     /**
-     * Move to the next character
-     * @post `curIndex` is incremented, `curLoc.col` is incremented
+     * Move to the next preprocessor token
+     * @post `curIndex` is incremented
      */
-    void next();
+    inline void next();
 
     /**
-     * Check if the lexer is at the end of the input string
+     * Check if the lexer is at the end of the input
      * @return Boolean indicating if the current index is past the end of the
-     * input string
+     * input vector of preprocessor tokens
      */
-    bool atEnd() const;
+    inline bool atEnd() const;
 
     /**
-     * Get the current character
-     * @return The character at the `curIndex` position in `txt`
+     * Get the current preprocessor token
+     * @return The preprocessor token at the `curIndex` position in `input`
      */
-    char cur() const;
+    PrepToken cur() const;
 
     /**
      * Read in one token
@@ -85,64 +85,40 @@ private:
     bool readInToken(Token &tok);
 
     /**
-     * Read in a word, typename, etc.
-     * @param tok Reference to a token object where the found token will be
-     * placed, if any is found
-     * @return Boolean indicating if a token could be read
-     */
-    bool readInWord(Token &tok);
-
-    /**
-     * Read in a word, typename, etc.
-     * @param tok Reference to a token object where the found token will be
-     * placed, if any is found
-     * @return Boolean indicating if a token could be read
-     */
-    bool readInCmd(Token &tok);
-
-    /**
-     * Read in a string literal
-     * @param tok Reference to a token object where the found token will be
-     * placed, if any is found
-     * @return Boolean indicating if a token could be read
-     */
-    bool readInString(Token &tok);
-
-    /**
-     * Convert an escaped character to its escaped version
-     * @param inp The input character
-     * @return The escaped character that the input character represents. If
-     * none can be found, the input character is returned
-     */
-    char convertEscapeChar(char inp);
-
-    /**
      * Get the last read token. This can be used to edit the last token
+     * @warning Assumes that at least one token has been read!
      * @return A reference to the last token that was read
      */
-    Token &lastRead() const;
+    inline Token &lastRead() const;
+
+    /**
+     * Convert an identifier to a token, can be a simple word, namespace
+     * definition, etc.
+     * @param ident The identifier content as a string
+     * @return The token associated to the identifier
+     * @note May change the `readTokens` vector in order to account for
+     * accumulation of tokens being joined
+     */
+    Token convertIdent(std::string ident);
+
+    /**
+     * Convert punctuation to a token, e.g. ;, ++, etc.
+     * @param punct The punctation content as a string
+     * @return The token associated to the punctuation
+     */
+    Token convertPunct(std::string punct);
 
     // Compiler component
     Compiler *comp;
 
-    // String to be tokenized
-    std::string txt;
+    // Preprocessor tokens to be converted to lexer tokens
+    const std::vector<PrepToken> &input;
 
     // Index of the current character being read
     unsigned int curIndex;
 
-    // Indicates wether we're still reading the start of a line (excluding
-    // spaces/tabs)
-    bool atLineStart;
-
     // Vector of currently read tokens
     std::vector<Token> readTokens;
-
-    // Current location where we are reading, line and column (both start
-    // counting from 1)
-    struct {
-        unsigned int line, col;
-    } curLoc;
 
 };
 
