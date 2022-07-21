@@ -1,5 +1,6 @@
 
 #include "errorhandle/handle.h"
+#include "general/loc.h"
 #include "preprocess/preplexer.h"
 #include "preprocess/preprocess.h"
 #include "preprocess/preptoken.h"
@@ -39,24 +40,114 @@ std::vector<PrepToken> &Preprocessor::curTokenList() const {
     return (std::vector<PrepToken> &)tokenStack.back();
 }
 
-bool Preprocessor::atTokenListEnd() const {
-    return readIndexStack.back() >= tokenStack.back().size();
+inline bool Preprocessor::atEnd() const {
+    return readIndexStack.back() >= curTokenList().size();
 }
 
-PrepToken Preprocessor::curToken() const {
+inline PrepToken Preprocessor::cur() const {
+    if (atEnd()) {
+        Loc lastLoc = tokenStack.back().back().loc;
+        return PrepToken(PTOK_EOF, lastLoc);
+    }
     return tokenStack.back()[readIndexStack.back()];
 }
 
-void Preprocessor::nextToken() {
+inline void Preprocessor::next() {
     readIndexStack.back()++;
 }
 
+void Preprocessor::expect(PrepTokenType type) {
+    if (cur().type != type)
+        MCLError(1, "Unexpected token.", cur().loc.line, cur().loc.col);
+}
+
+void Preprocessor::expect(PrepTokenType type, std::string content) {
+    if (cur().type != type || cur().content != content)
+        MCLError(1, "Unexpected token.", cur().loc.line, cur().loc.col);
+}
+
+void Preprocessor::write(PrepToken tok) {
+    if (doOutput)
+        out.push_back(tok);
+}
+
 void Preprocessor::readProgram() {
-    // TODO: Change this to process preprocessor statements and replace
-    // definitions
-    while (!atTokenListEnd()) {
-        PrepToken cur = curToken();
-        out.push_back(cur);
-        nextToken();
+    doOutput = true;
+    readCodeBlock();
+    if (!atEnd())
+        MCLError(1, "Stopped reading before EOF.", cur().loc.line,
+        cur().loc.col);
+}
+
+void Preprocessor::readCodeBlock() {
+    while (!atEnd()) {
+        if (cur().type == PTOK_IDENT)
+            readIdent();
+        else if (cur().type == PTOK_PREP_STMT)
+            readPrepStmt();
+        else if (cur().type == PTOK_INCL_LIB)
+            MCLError(1, "Unexpected include library.", cur().loc.line,
+            cur().loc.col);
+        else
+            write(cur()), next();
     }
+}
+
+void Preprocessor::readIdent() {
+    expect(PTOK_IDENT);
+    std::vector<PrepToken> tmp = convertIdent(cur());
+    for (unsigned int i = 0; i < tmp.size(); i++)
+        write(tmp[i]);
+    next();
+}
+
+void Preprocessor::readPrepStmt() {
+    expect(PTOK_PREP_STMT);
+    std::string stmt = cur().content;
+    if (stmt == "include")
+        readInclude();
+    else if (stmt == "define")
+        readDefine();
+    else
+        MCLError(1, "Unrecognized statement \"" + stmt + "\".", cur().loc.line,
+        cur().loc.col);
+}
+
+void Preprocessor::readInclude() {
+    expect(PTOK_PREP_STMT, "include"), next();
+    if (cur().type == PTOK_STR) {
+        processFile(cur().content);
+    } else if (cur().type == PTOK_INCL_LIB) {
+        // TODO: implement
+        MCLError(1, "Feature not implemented.", cur().loc.line, cur().loc.col);
+    } else {
+        MCLError(1, "Expected include file.", cur().loc.line, cur().loc.col);
+    }
+    // Skip the include file text
+    next();
+    expect(PTOK_ENDL), next();
+}
+
+std::vector<PrepToken> Preprocessor::convertIdent(PrepToken tok) const {
+    if (tok.type == PTOK_IDENT && defs.count(tok.content) > 0)
+        return defs.find(tok.content)->second;
+    return {tok};
+}
+
+void Preprocessor::readDefine() {
+    expect(PTOK_PREP_STMT, "define"), next();
+    // Indentifier to define
+    expect(PTOK_IDENT);
+    std::string name = cur().content;
+    next();
+    std::vector<PrepToken> replace;
+    while (!atEnd() && cur().type != PTOK_ENDL) {
+        std::vector<PrepToken> tmp = convertIdent(cur());
+        replace.insert(replace.end(), tmp.begin(), tmp.end());
+    }
+    if (replace.empty())
+        MCLError(1, "Empty definition", cur().loc.line, cur().loc.col);
+    defs.insert({name, replace});
+    // Skip end of line
+    next();
 }

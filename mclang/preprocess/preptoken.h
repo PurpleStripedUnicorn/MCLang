@@ -14,6 +14,8 @@ enum PrepTokenType {
     PTOK_ERR,
     // Empty token type, purely internal
     PTOK_EMPTY,
+    // End of file, used internally
+    PTOK_EOF,
     // Basic command insertion
     PTOK_CMD,
     // Identifier, later converted to words, namespace def's, etc.
