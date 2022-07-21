@@ -144,6 +144,7 @@ void Preprocessor::readDefine() {
     while (!atEnd() && cur().type != PTOK_ENDL) {
         std::vector<PrepToken> tmp = convertIdent(cur());
         replace.insert(replace.end(), tmp.begin(), tmp.end());
+        next();
     }
     if (replace.empty())
         MCLError(1, "Empty definition", cur().loc.line, cur().loc.col);

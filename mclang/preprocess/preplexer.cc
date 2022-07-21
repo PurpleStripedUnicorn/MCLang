@@ -178,4 +178,5 @@ bool PrepLexer::checkPunctSymbols() {
     if (content.size() == 0)
         return false;
     out.push_back(PrepToken(PTOK_PUNCT, content, loc));
+    return true;
 }
