@@ -1,6 +1,7 @@
 
 #include "errorhandle/handle.h"
 #include "general/loc.h"
+#include "general/relfiles.h"
 #include "preprocess/preplexer.h"
 #include "preprocess/preprocess.h"
 #include "preprocess/preptoken.h"
@@ -8,7 +9,7 @@
 #include <sstream>
 #include <string>
 
-Preprocessor::Preprocessor() : includeDepth(0), doOutput(true) {
+Preprocessor::Preprocessor() : includeDepth(0), doOutput(true), curFile("") {
 
 }
 
@@ -17,9 +18,11 @@ Preprocessor::~Preprocessor() {
 }
 
 void Preprocessor::processFile(std::string filename) {
+    std::string tmp = curFile;
     std::ifstream file(filename);
     if (!file.is_open())
         MCLError(1, "Could not open given file \"" + filename + "\"");
+    curFile = filename;
     std::stringstream contentStream;
     contentStream << file.rdbuf();
     std::string content = contentStream.str();
@@ -30,6 +33,7 @@ void Preprocessor::processFile(std::string filename) {
     readProgram();
     tokenStack.pop_back();
     readIndexStack.pop_back();
+    curFile = tmp;
 }
 
 std::vector<PrepToken> &Preprocessor::getOutput() const {
@@ -116,7 +120,7 @@ void Preprocessor::readPrepStmt() {
 void Preprocessor::readInclude() {
     expect(PTOK_PREP_STMT, "include"), next();
     if (cur().type == PTOK_STR) {
-        processFile(cur().content);
+        processFile(getReferencePath(curFilename(), cur().content));
     } else if (cur().type == PTOK_INCL_LIB) {
         // TODO: implement
         MCLError(1, "Feature not implemented.", cur().loc.line, cur().loc.col);
@@ -151,4 +155,8 @@ void Preprocessor::readDefine() {
     defs.insert({name, replace});
     // Skip end of line
     next();
+}
+
+inline std::string Preprocessor::curFilename() const {
+    return curFile;
 }

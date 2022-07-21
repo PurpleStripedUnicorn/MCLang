@@ -136,6 +136,12 @@ private:
      */
     void readDefine();
 
+    /**
+     * Get the file name of the current file being read
+     * @return The file name as a string
+     */
+    inline std::string curFilename() const;
+
     // Current include depth: number of includes that are above the current file
     // being read
     unsigned int includeDepth;
@@ -155,6 +161,9 @@ private:
 
     // Output
     std::vector<PrepToken> out;
+
+    // File currently being read
+    std::string curFile;
 
 };
 
