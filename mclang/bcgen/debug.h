@@ -15,7 +15,8 @@ const std::string instrNames[] = {
     "SET",
     "PUSH",
     "POP",
-    "TOP"
+    "TOP",
+    "ADD", "SUB", "MUL", "DIV", "MOD"
 };
 
 /**

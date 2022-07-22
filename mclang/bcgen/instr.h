@@ -22,7 +22,10 @@ enum BCInstrType {
     INSTR_POP,
     // Get the top value on the stack, does not modify the stack: arg1 =
     // variable to put the value in
-    INSTR_TOP
+    INSTR_TOP,
+    // Arithmatic, applies operation to two arguments and then puts result in
+    // arg1
+    INSTR_ADD, INSTR_SUB, INSTR_MUL, INSTR_DIV, INSTR_MOD
 };
 
 struct BCInstr {
