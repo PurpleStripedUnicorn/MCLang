@@ -32,7 +32,7 @@ enum ParseNodeType {
     // Variable initialization
     PNODE_VARINIT,
     // Variable name/word
-    PNODE_WORD
+    PNODE_WORD, PNODE_NUM
 };
 
 /**

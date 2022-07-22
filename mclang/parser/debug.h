@@ -19,7 +19,7 @@ const std::string parseNodeNames[] = {
     "ADD", "SUB", "MUL", "DIV", "MOD", "AADD", "ASUB", "AMUL", "ADIV", "AMOD",
     "ASSIGN",
     "VARINIT",
-    "WORD"
+    "WORD", "NUM"
 };
 
 /**
