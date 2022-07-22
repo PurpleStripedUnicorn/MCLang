@@ -234,7 +234,7 @@ ParseNode *Parser::readInCall() {
         expect(TOK_RBRACE), next();
         return new CallNode(fname, {.loc = {line, col}});
     }
-    return new WordNode(fname, {.loc = line, col});
+    return new WordNode(fname, {.loc = {line, col}});
 }
 
 ParseNode *Parser::readInNamespace() {
