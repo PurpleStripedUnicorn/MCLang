@@ -11,6 +11,7 @@
 #include "parsenodes/expr/add.h"
 #include "parsenodes/expr/assign.h"
 #include "parsenodes/expr/expr.h"
+#include "parsenodes/expr/num.h"
 #include "parsenodes/func.h"
 #include "parsenodes/if.h"
 #include "parsenodes/namespace.h"
@@ -135,6 +136,8 @@ ParseNode *Parser::readInLine() {
         return readInExec();
     if (accept(TOK_IF))
         return readInIf();
+    if (accept(TOK_TYPENAME))
+        return readInVarInit();
     // If there are no special tokens found, try to read an expression, and then
     // a semicolon
     ParseNode *expr = readInExpr();
@@ -226,6 +229,12 @@ ParseNode *Parser::readInSum() {
 ParseNode *Parser::readInCall() {
     unsigned int line, col;
     curLoc(line, col);
+    // NOTE: This should be changed later to ensure proper order of operations
+    if (accept(TOK_NUM)) {
+        std::string content = cur().content;
+        next();
+        return new NumNode(content, {.loc = {line, col}});
+    }
     expect(TOK_WORD);
     std::string fname = cur().content;
     next();
