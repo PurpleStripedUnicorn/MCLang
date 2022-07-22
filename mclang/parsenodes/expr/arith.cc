@@ -17,11 +17,11 @@ ArithNode::~ArithNode() {
 
 void ArithNode::bytecode(BCManager &man) const {
     // Puts the result in "__res"
-    left->bytecode(man);
+    right->bytecode(man);
     man.varManager.addContext();
     std::string tmpVar = man.varManager.getUniqueVar();
     man.write(BCInstr(INSTR_COPY, tmpVar, "__res"));
-    right->bytecode(man);
+    left->bytecode(man);
     if (instrTypeTable.count(getType()) == 0)
         MCLError(1, "Unexpected error while converting arithmatic");
     BCInstrType instrType = instrTypeTable.find(getType())->second;
