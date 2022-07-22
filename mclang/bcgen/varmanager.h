@@ -84,6 +84,9 @@ public:
      * Add a variable to the current cotext
      * @param name The variable name
      * @pre `contextStack` is not empty
+     * @note Names starting with "__" should not be used by the programmer and
+     * are for internal use only
+     * @warning "__res" should never be reserved!
      */
     void addVar(std::string name);
 

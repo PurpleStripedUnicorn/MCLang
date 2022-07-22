@@ -1,0 +1,8 @@
+
+// When using a define, commands can also be inserted, it's like the start of
+// a new line after the identifier HELLO
+#define HELLO /say Hello World!
+
+void main() {
+    HELLO
+}

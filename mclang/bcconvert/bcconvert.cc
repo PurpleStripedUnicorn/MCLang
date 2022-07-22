@@ -64,6 +64,11 @@ std::vector<std::string> BCConverter::convertInstr(const BCInstr &instr) {
     if (instr.type == INSTR_PUSH || instr.type == INSTR_POP
     || instr.type == INSTR_TOP)
         return convertStackOp(instr);
+    if (instr.type == INSTR_COPY)
+        return {"scoreboard players operation " + instr.arg1 + " " +
+        comp->scoreboardName + " = " + instr.arg2 + " " + comp->scoreboardName};
+    if (IMARK_ARITH_START < instr.type && instr.type < IMARK_ARITH_END)
+        return convertArith(instr);
     MCLError(1, "Unexpected error, reading undefined instruction");
     return {};
 }
@@ -101,4 +106,21 @@ std::vector<std::string> BCConverter::convertStackOp(BCInstr instr) const {
     MCLError(1, "Unexpected error, reading undefined stack operation "
     "instruction");
     return {};
+}
+
+std::vector<std::string> BCConverter::convertArith(BCInstr instr) const {
+    std::string op = "";
+    if (instr.type == INSTR_ADD)
+        op = "+=";
+    if (instr.type == INSTR_SUB)
+        op = "-=";
+    if (instr.type == INSTR_MUL)
+        op = "*=";
+    if (instr.type == INSTR_DIV)
+        op = "/=";
+    if (instr.type == INSTR_MOD)
+        op = "%=";
+    return {"scoreboard players operation " + instr.arg1 + " "
+    + comp->scoreboardName + " " + op + " " + instr.arg2 + " "
+    + comp->scoreboardName};
 }

@@ -23,7 +23,7 @@ void PrepLexer::lex() {
     atLineStart = true;
     while (!atEnd()) {
         if (cur() == '\n')
-            out.push_back(PrepToken(PTOK_ENDL, loc)), atLineStart = true, next();
+            out.push_back(PrepToken(PTOK_ENDL, loc)), next();
         else if (cur() == ' ' || cur() == '\t')
             next();
         else if (cur() == '/')
@@ -60,8 +60,10 @@ char PrepLexer::cur() const {
 void PrepLexer::next() {
     // Escaped line endings are ignored here!
     // Also '\r' is ignored
+    if (cur() != ' ' && cur() != '\t')
+        atLineStart = false;
     if (cur() == '\n')
-        loc.line++, loc.col = 1;
+        loc.line++, loc.col = 1, atLineStart = true;
     else
         loc.col++;
     curIndex++;
@@ -92,6 +94,7 @@ bool PrepLexer::atEnd() const {
 
 void PrepLexer::readSlash() {
     // Skip the '/'
+    bool tmpLineStart = atLineStart;
     next();
     if (atEnd()) {
         out.push_back(PrepToken(PTOK_PUNCT, "/", loc));
@@ -101,7 +104,7 @@ void PrepLexer::readSlash() {
         next(), readSingleComment();
     else if (cur() == '*')
         next(), readMultiComment();
-    else if (atLineStart)
+    else if (tmpLineStart)
         readCmd();
     else
         // NOTE: This will always return true because of the prefix
@@ -153,6 +156,11 @@ void PrepLexer::readIdent() {
     std::string content = "";
     while (!atEnd() && isAlphaNumUS())
         content.push_back(cur()), next();
+    // Because we want to treat the point after the identifier in a "#define"
+    // statement as the start of a new line, we have an extra check here
+    if (out.size() >= 1 && out.back().type == PTOK_PREP_STMT
+    && out.back().content == "define")
+        atLineStart = true;
     out.push_back(PrepToken(PTOK_IDENT, content, loc));
 }
 

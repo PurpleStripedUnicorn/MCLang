@@ -15,7 +15,11 @@ const std::string parseNodeNames[] = {
     "EXEC",
     "IF",
     "CALL",
-    "NAMESPACE"
+    "NAMESPACE",
+    "ADD", "SUB", "MUL", "DIV", "MOD", "AADD", "ASUB", "AMUL", "ADIV", "AMOD",
+    "ASSIGN",
+    "VARINIT",
+    "WORD", "NUM"
 };
 
 /**

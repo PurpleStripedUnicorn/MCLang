@@ -1,0 +1,12 @@
+
+void myFunc() {
+    int x = 7;
+}
+
+void main() {
+    int x = 5;
+    int y = 10;
+    myFunc();
+    // This should print "5" to the chat
+    /tellraw @a {"score":{"name":"x","objective":"mclang"}}
+}

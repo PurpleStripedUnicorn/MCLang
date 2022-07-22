@@ -8,11 +8,17 @@
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
+#include "parsenodes/expr/arith.h"
+#include "parsenodes/expr/assign.h"
+#include "parsenodes/expr/expr.h"
+#include "parsenodes/expr/num.h"
 #include "parsenodes/func.h"
 #include "parsenodes/if.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
+#include "parsenodes/varinit.h"
+#include "parsenodes/word.h"
 #include "parser/parser.h"
 #include <iostream>
 #include <string>
@@ -130,6 +136,8 @@ ParseNode *Parser::readInLine() {
         return readInExec();
     if (accept(TOK_IF))
         return readInIf();
+    if (accept(TOK_TYPENAME))
+        return readInVarInit();
     // If there are no special tokens found, try to read an expression, and then
     // a semicolon
     ParseNode *expr = readInExpr();
@@ -185,18 +193,78 @@ ParseNode *Parser::readInIf() {
 }
 
 ParseNode *Parser::readInExpr() {
-    return readInCall();
+    return readInAssign();
+}
+
+ParseNode *Parser::readInAssign() {
+    // Assignment is right associative
+    unsigned int line, col;
+    curLoc(line, col);
+    ParseNode *left = readInSum();
+    if (accept(TOK_ASSIGN)) {
+        next();
+        ParseNode *right = readInAssign();
+        if (left->getType() != PNODE_WORD)
+            MCLError(1, "Left side of assignment is not a variable name", line,
+            col);
+        return new AssignNode(((WordNode *)left)->getContent(), right, {.loc =
+        {line, col}});
+    }
+    return left;
+}
+
+ParseNode *Parser::readInSum() {
+    // Sums are left associative
+    unsigned int line, col;
+    curLoc(line, col);
+    ParseNode *cur = readInProd();
+    while (accept(TOK_ADD) || accept(TOK_SUB)) {
+        ParseNodeType ptype = PNODE_ADD;
+        if (accept(TOK_SUB))
+            ptype = PNODE_SUB;
+        next();
+        ParseNode *right = readInProd();
+        cur = new ArithNode(ptype, cur, right, {.loc = {line, col}});
+    }
+    return cur;
+}
+
+ParseNode *Parser::readInProd() {
+    // Sums are left associative
+    unsigned int line, col;
+    curLoc(line, col);
+    ParseNode *cur = readInCall();
+    while (accept(TOK_MUL) || accept(TOK_DIV) || accept(TOK_MOD)) {
+        ParseNodeType ptype = PNODE_MUL;
+        if (accept(TOK_DIV))
+            ptype = PNODE_DIV;
+        if (accept(TOK_MOD))
+            ptype = PNODE_MOD;
+        next();
+        ParseNode *right = readInCall();
+        cur = new ArithNode(ptype, cur, right, {.loc = {line, col}});
+    }
+    return cur;
 }
 
 ParseNode *Parser::readInCall() {
     unsigned int line, col;
     curLoc(line, col);
+    // NOTE: This should be changed later to ensure proper order of operations
+    if (accept(TOK_NUM)) {
+        std::string content = cur().content;
+        next();
+        return new NumNode(content, {.loc = {line, col}});
+    }
     expect(TOK_WORD);
     std::string fname = cur().content;
     next();
-    expect(TOK_LBRACE), next();
-    expect(TOK_RBRACE), next();
-    return new CallNode(fname, {.loc = {line, col}});
+    if (accept(TOK_LBRACE)) {
+        next();
+        expect(TOK_RBRACE), next();
+        return new CallNode(fname, {.loc = {line, col}});
+    }
+    return new WordNode(fname, {.loc = {line, col}});
 }
 
 ParseNode *Parser::readInNamespace() {
@@ -208,6 +276,17 @@ ParseNode *Parser::readInNamespace() {
     next();
     expect(TOK_SEMICOL), next();
     return new NSNode(nsName, {.loc = {line, col}});
+}
+
+ParseNode *Parser::readInVarInit() {
+    unsigned int line, col;
+    curLoc(line, col);
+    expect(TOK_TYPENAME);
+    std::string varType = cur().content;
+    next();
+    ParseNode *childExpr = readInExpr();
+    expect(TOK_SEMICOL), next();
+    return new VarInitNode(varType, childExpr, {.loc = {line, col}});
 }
 
 void Parser::curLoc(unsigned int &line, unsigned int &col) const {

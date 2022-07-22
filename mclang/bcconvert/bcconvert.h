@@ -97,6 +97,14 @@ private:
      */
     std::vector<std::string> convertStackOp(BCInstr instr) const;
 
+    /**
+     * Convert an arithmatic operation instruction
+     * @param iinstr THe instruction to convert, assumed to be an arithmatic
+     * operation instruction
+     * @return A vector of string containing raw commands
+     */
+    std::vector<std::string> convertArith(BCInstr instr) const;
+
     // The compiler component
     Compiler *comp;
 
