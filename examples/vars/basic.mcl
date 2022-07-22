@@ -1,0 +1,6 @@
+
+void main() {
+    int x = 1;
+    int y = x + 2;
+    /tellraw @a {"score":{"name":"x","objective":"mclang"}}
+}
