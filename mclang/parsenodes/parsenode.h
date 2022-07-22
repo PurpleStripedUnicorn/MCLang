@@ -28,7 +28,9 @@ enum ParseNodeType {
     // Expressions
     PNODE_ADD, PNODE_SUB, PNODE_MUL, PNODE_DIV, PNODE_MOD, PNODE_ASSIGN_ADD,
     PNODE_ASSIGN_SUB, PNODE_ASSIGN_MUL, PNODE_ASSIGN_DIV, PNODE_ASSIGN_MOD,
-    PNODE_ASSIGN
+    PNODE_ASSIGN,
+    // Variable initialization
+    PNODE_VARINIT
 };
 
 /**
