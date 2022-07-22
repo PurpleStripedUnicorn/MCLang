@@ -217,11 +217,32 @@ ParseNode *Parser::readInSum() {
     // Sums are left associative
     unsigned int line, col;
     curLoc(line, col);
+    ParseNode *cur = readInProd();
+    while (accept(TOK_ADD) || accept(TOK_SUB)) {
+        ParseNodeType ptype = PNODE_ADD;
+        if (accept(TOK_SUB))
+            ptype = PNODE_SUB;
+        next();
+        ParseNode *right = readInProd();
+        cur = new ArithNode(ptype, cur, right, {.loc = {line, col}});
+    }
+    return cur;
+}
+
+ParseNode *Parser::readInProd() {
+    // Sums are left associative
+    unsigned int line, col;
+    curLoc(line, col);
     ParseNode *cur = readInCall();
-    while (accept(TOK_ADD)) {
+    while (accept(TOK_MUL) || accept(TOK_DIV) || accept(TOK_MOD)) {
+        ParseNodeType ptype = PNODE_MUL;
+        if (accept(TOK_DIV))
+            ptype = PNODE_DIV;
+        if (accept(TOK_MOD))
+            ptype = PNODE_MOD;
         next();
         ParseNode *right = readInCall();
-        cur = new ArithNode(PNODE_ADD, cur, right, {.loc = {line, col}});
+        cur = new ArithNode(ptype, cur, right, {.loc = {line, col}});
     }
     return cur;
 }
