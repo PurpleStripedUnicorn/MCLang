@@ -3,6 +3,8 @@
 #include "errorhandle/handle.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/word.h"
+#include <string>
+#include <vector>
 
 WordNode::WordNode(std::string content, ParseNodeProps props) :
 ParseNode(PNODE_WORD, props) {
@@ -24,4 +26,8 @@ void WordNode::bytecode(BCManager &man) const {
         props.loc.line, props.loc.col);
     // Return the variable value to "__res"
     man.write(BCInstr(INSTR_COPY, "__res", content));
+}
+
+std::string WordNode::getContent() const {
+    return content;
 }

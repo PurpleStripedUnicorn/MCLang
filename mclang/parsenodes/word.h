@@ -36,6 +36,12 @@ public:
      */
     virtual void bytecode(BCManager &man) const = 0;
 
+    /**
+     * Get the content of the word
+     * @return The content as a string
+     */
+    std::string getContent() const;
+
 protected:
 
     // The word content
