@@ -23,7 +23,8 @@ void PrepLexer::lex() {
     atLineStart = true;
     while (!atEnd()) {
         if (cur() == '\n')
-            out.push_back(PrepToken(PTOK_ENDL, loc)), atLineStart = true, next();
+            out.push_back(PrepToken(PTOK_ENDL, loc)), atLineStart = true,
+            next();
         else if (cur() == ' ' || cur() == '\t')
             next();
         else if (cur() == '/')
@@ -60,8 +61,10 @@ char PrepLexer::cur() const {
 void PrepLexer::next() {
     // Escaped line endings are ignored here!
     // Also '\r' is ignored
+    if (cur() != ' ' && cur() != '\t')
+        atLineStart = false;
     if (cur() == '\n')
-        loc.line++, loc.col = 1;
+        loc.line++, loc.col = 1, atLineStart = true;
     else
         loc.col++;
     curIndex++;
