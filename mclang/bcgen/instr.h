@@ -4,6 +4,10 @@
 
 #include <string>
 
+/**
+ * Bytecode instruction type
+ * @note Has some markers in between the types for creating categories
+ */
 enum BCInstrType {
     // Error type
     INSTR_ERR,
@@ -27,7 +31,9 @@ enum BCInstrType {
     INSTR_COPY,
     // Arithmatic, applies operation to two arguments and then puts result in
     // arg1
-    INSTR_ADD, INSTR_SUB, INSTR_MUL, INSTR_DIV, INSTR_MOD
+    IMARK_ARITH_START,
+    INSTR_ADD, INSTR_SUB, INSTR_MUL, INSTR_DIV, INSTR_MOD,
+    IMARK_ARITH_END
 };
 
 struct BCInstr {
