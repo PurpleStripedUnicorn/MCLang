@@ -8,7 +8,7 @@
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
-#include "parsenodes/expr/add.h"
+#include "parsenodes/expr/arith.h"
 #include "parsenodes/expr/assign.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/expr/num.h"
@@ -221,7 +221,7 @@ ParseNode *Parser::readInSum() {
     while (accept(TOK_ADD)) {
         next();
         ParseNode *right = readInCall();
-        cur = new AddNode(cur, right, {.loc = {line, col}});
+        cur = new ArithNode(PNODE_ADD, cur, right, {.loc = {line, col}});
     }
     return cur;
 }
