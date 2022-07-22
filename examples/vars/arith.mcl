@@ -1,0 +1,6 @@
+
+void main() {
+    // This should result in x = 33
+    // With parentheses: (8 * 4) + ((6 / 4) % 2)
+    int x = 8 * 4 + 6 / 4 % 2;
+}
