@@ -86,6 +86,7 @@ public:
      * @pre `contextStack` is not empty
      * @note Names starting with "__" should not be used by the programmer and
      * are for internal use only
+     * @warning "__res" should never be reserved!
      */
     void addVar(std::string name);
 
