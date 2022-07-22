@@ -8,7 +8,8 @@
 #include <string>
 
 VarInitNode::VarInitNode(std::string varType, ParseNode *childExpr,
-ParseNodeProps props): ParseNode(PNODE_VARINIT, props) {
+ParseNodeProps props): ParseNode(PNODE_VARINIT, props), varType(varType),
+childExpr(childExpr) {
 
 }
 

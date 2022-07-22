@@ -7,7 +7,7 @@
 #include <vector>
 
 WordNode::WordNode(std::string content, ParseNodeProps props) :
-ParseNode(PNODE_WORD, props) {
+ParseNode(PNODE_WORD, props), content(content) {
 
 }
 
