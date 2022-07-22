@@ -116,8 +116,24 @@ private:
     ParseNode *readInExpr();
 
     /**
+     * Read in an assignment
+     * @return A pointer to the genrated parse node
+     * @note Can also just return an operation lower in the order of operators
+     */
+    ParseNode *readInAssign();
+
+    /**
+     * Read in a sum
+     * @return A pointer to the genrated parse node
+     * @note Can also just return an operation lower in the order of operators
+     */
+    ParseNode *readInSum();
+
+    /**
      * Read in a function call, part of an expression
      * @return A pointer to the generated parse node
+     * @note Can also just return an operation lower in the order of operators,
+     * such as a word node, which is not listed separately
      */
     ParseNode *readInCall();
 
@@ -126,6 +142,12 @@ private:
      * @return A pointer to the generated parse node
      */
     ParseNode *readInNamespace();
+
+    /**
+     * Read in a variable initialization
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInVarInit();
 
     /**
      * Get the line and column of the token currently being read

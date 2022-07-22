@@ -8,11 +8,16 @@
 #include "parsenodes/cmd.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
+#include "parsenodes/expr/add.h"
+#include "parsenodes/expr/assign.h"
+#include "parsenodes/expr/expr.h"
 #include "parsenodes/func.h"
 #include "parsenodes/if.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
+#include "parsenodes/varinit.h"
+#include "parsenodes/word.h"
 #include "parser/parser.h"
 #include <iostream>
 #include <string>
@@ -185,7 +190,37 @@ ParseNode *Parser::readInIf() {
 }
 
 ParseNode *Parser::readInExpr() {
-    return readInCall();
+    return readInAssign();
+}
+
+ParseNode *Parser::readInAssign() {
+    // Assignment is right associative
+    unsigned int line, col;
+    curLoc(line, col);
+    ParseNode *left = readInSum();
+    if (accept(TOK_ASSIGN)) {
+        next();
+        ParseNode *right = readInAssign();
+        if (left->getType() != PNODE_WORD)
+            MCLError(1, "Left side of assignment is not a variable name", line,
+            col);
+        return new AssignNode(((WordNode *)left)->getContent(), right, {.loc =
+        {line, col}});
+    }
+    return left;
+}
+
+ParseNode *Parser::readInSum() {
+    // Sums are left associative
+    unsigned int line, col;
+    curLoc(line, col);
+    ParseNode *cur = readInCall();
+    while (accept(TOK_ADD)) {
+        next();
+        ParseNode *right = readInCall();
+        cur = new AddNode(cur, right, {.loc = {line, col}});
+    }
+    return cur;
 }
 
 ParseNode *Parser::readInCall() {
@@ -194,9 +229,12 @@ ParseNode *Parser::readInCall() {
     expect(TOK_WORD);
     std::string fname = cur().content;
     next();
-    expect(TOK_LBRACE), next();
-    expect(TOK_RBRACE), next();
-    return new CallNode(fname, {.loc = {line, col}});
+    if (accept(TOK_LBRACE)) {
+        next();
+        expect(TOK_RBRACE), next();
+        return new CallNode(fname, {.loc = {line, col}});
+    }
+    return new WordNode(fname, {.loc = line, col});
 }
 
 ParseNode *Parser::readInNamespace() {
@@ -208,6 +246,17 @@ ParseNode *Parser::readInNamespace() {
     next();
     expect(TOK_SEMICOL), next();
     return new NSNode(nsName, {.loc = {line, col}});
+}
+
+ParseNode *Parser::readInVarInit() {
+    unsigned int line, col;
+    curLoc(line, col);
+    expect(TOK_TYPENAME);
+    std::string varType = cur().content;
+    next();
+    ParseNode *childExpr = readInExpr();
+    expect(TOK_SEMICOL), next();
+    return new VarInitNode(varType, childExpr, {.loc = {line, col}});
 }
 
 void Parser::curLoc(unsigned int &line, unsigned int &col) const {
