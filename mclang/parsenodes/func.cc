@@ -22,6 +22,8 @@ FuncNode::~FuncNode() {
 
 void FuncNode::bytecode(BCManager &man) const {
     man.addFunc(name);
+    man.varManager.addContext();
     codeblock->bytecode(man);
+    man.varManager.popContext();
     man.popFunc();
 }
