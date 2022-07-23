@@ -7,7 +7,7 @@ int lives;
  */
 void death() {
     /tellraw @a {"color":"purple","text":"Oops! You died!"}
-    death--;
+    lives = lives - 1;
 }
 
 /**
@@ -27,7 +27,7 @@ void tick() {
         int x = 0;
         as ("@e[distance=..6]") {
             /effect give @s levitation 2 0
-            x++;
+            x = x + 1;
         }
         /tellraw @s [{"color":"orange","text":"There are "},{"color":"orange","score":{"name":"x","objective":"mclang"}},{"color":"orange","text":"pigs around you."},]
     }
