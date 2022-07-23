@@ -21,5 +21,9 @@
             "scopeName": "source.mcl",
             "path": "./syntaxes/mclang.tmLanguage.json"
         }]
+    },
+    "repository": {
+        "url": "https://github.com/PurpleStripedUnicorn/MCLang",
+        "directory": "vscode/mclang"
     }
 }
