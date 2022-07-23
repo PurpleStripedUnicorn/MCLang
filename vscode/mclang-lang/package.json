@@ -1,0 +1,25 @@
+{
+    "name": "mclang-lang",
+    "displayName": "MCLang Lang",
+    "description": "Syntax highlighting for MCLang",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.69.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "mclang",
+            "aliases": ["MCLang", "mclang"],
+            "extensions": [".mcl",".mclang"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "mclang",
+            "scopeName": "source.mcl",
+            "path": "./syntaxes/mclang.tmLanguage.json"
+        }]
+    }
+}
