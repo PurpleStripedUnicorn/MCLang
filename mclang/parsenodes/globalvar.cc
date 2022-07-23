@@ -21,6 +21,7 @@ std::vector<ParseNode *> GlobalVarNode::children() const {
 }
 
 void GlobalVarNode::bytecode(BCManager &man) const {
+    // TODO: Implement different variable types
     // Check if the global variable name isn't already in use
     if (man.varManager.hasVar(varName))
         MCLError(1, "Global variable \"" + varName + "\" already defined",
