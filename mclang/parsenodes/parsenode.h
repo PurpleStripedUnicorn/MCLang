@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_H__
 #define __PARSENODE_H__
 
+#include "general/loc.h"
 #include <vector>
 
 class BCManager;
@@ -37,16 +38,6 @@ enum ParseNodeType {
     PNODE_WORD, PNODE_NUM
 };
 
-/**
- * This type is used to store properties of parse nodes, without taking up many
- * function arguments
- */
-struct ParseNodeProps {
-    struct {
-        unsigned int line = 0, col = 0;
-    } loc;
-};
-
 class ParseNode {
 
 public:
@@ -54,8 +45,9 @@ public:
     /**
      * Constructor
      * @param type The node type
+     * @param loc The location of the parse node
      */
-    ParseNode(ParseNodeType type, ParseNodeProps props);
+    ParseNode(ParseNodeType type, Loc loc);
 
     /**
      * Destructor
@@ -80,13 +72,19 @@ public:
      */
     virtual void bytecode(BCManager &man) const = 0;
 
-    // General parse node properties, such as location
-    ParseNodeProps props;
+    /**
+     * Get the location of the parse node
+     * @return The location as a "Loc" type
+     */
+    Loc getLoc() const;
 
 protected:
 
     // Node type
     ParseNodeType type;
+
+    // The location of the parse node
+    Loc loc;
 
 };
 

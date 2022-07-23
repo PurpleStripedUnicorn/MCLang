@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_CMD_H__
 #define __PARSENODE_CMD_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
@@ -15,8 +16,9 @@ public:
     /**
      * Constructor
      * @param cmd A string with the command
+     * @param loc The location of the parse node
      */
-    CmdNode(std::string cmd, ParseNodeProps props);
+    CmdNode(std::string cmd, Loc loc);
 
     /**
      * Destructor

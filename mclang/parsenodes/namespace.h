@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_NS_H__
 #define __PARSENODE_NS_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
@@ -15,9 +16,9 @@ public:
     /**
      * Constructor
      * @param nsName The name of the namespace
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      */
-    NSNode(std::string nsName, ParseNodeProps props);
+    NSNode(std::string nsName, Loc loc);
 
     /**
      * Destructor

@@ -3,6 +3,7 @@
 #define __PARSENODE_ARITH_H__
 
 #include "bcgen/instr.h"
+#include "general/loc.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"
 #include <map>
@@ -33,10 +34,9 @@ public:
      * @param type The arithmatic node type
      * @param left The left child node of the expression
      * @param right The right child node of the expression
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      */
-    ArithNode(ParseNodeType type, ParseNode *left, ParseNode *right,
-    ParseNodeProps props);
+    ArithNode(ParseNodeType type, ParseNode *left, ParseNode *right, Loc loc);
 
     /**
      * Destructor

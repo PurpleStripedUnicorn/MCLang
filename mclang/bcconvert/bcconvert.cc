@@ -74,9 +74,6 @@ std::vector<std::string> BCConverter::convertInstr(const BCInstr &instr) {
 }
 
 std::vector<std::string> BCConverter::convertCmd(BCInstr instr) const {
-    if (instr.arg1.rfind("function ", 0) == 0)
-        MCLError(0, "Raw function call insertion has undefined behaviour, use "
-        "a function call instead!");
     return {instr.arg1};
 }
 

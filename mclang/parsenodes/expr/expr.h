@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_EXPR_H__
 #define __PARSENODE_EXPR_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 
@@ -14,12 +15,12 @@ public:
     /**
      * Constructor
      * @param type The type of the expression node
+     * @param loc The location of the parse node
      * @param left The left child node of the expression, can be the only one
      * @param right The right child node of the expression, can be omitted for
      * no right child
-     * @param props General parse node properties
      */
-    ExprNode(ParseNodeType type, ParseNodeProps props,  ParseNode *left,
+    ExprNode(ParseNodeType type, Loc loc,  ParseNode *left,
     ParseNode *right = NULL);
 
     /**

@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
 #include "compiler/compiler.h"
+#include "general/loc.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/if.h"
 #include "parsenodes/parsenode.h"
@@ -9,7 +10,7 @@
 #include <vector>
 
 IfNode::IfNode(std::vector<std::string> args, std::vector<CodeBlockNode *>
-codeblocks, ParseNodeProps props) : ParseNode(PNODE_IF, props), ifArgs(args),
+codeblocks, Loc loc) : ParseNode(PNODE_IF, loc), ifArgs(args),
 codeblocks(codeblocks) {
 
 }

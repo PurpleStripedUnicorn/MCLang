@@ -5,8 +5,8 @@
 
 std::string parserDebugTree(ParseNode *root, unsigned int pad) {
     std::string out = "";
-    out.append("Line: " + std::to_string(root->props.loc.line) + "["
-    + std::to_string(root->props.loc.col) + "]    ");
+    out.append("Line: " + std::to_string(root->getLoc().line) + "["
+    + std::to_string(root->getLoc().col) + "]    ");
     for (unsigned int i = 0; i < pad; i++)
         out.append("  ");
     out += parseNodeNames[(unsigned int)root->getType()];

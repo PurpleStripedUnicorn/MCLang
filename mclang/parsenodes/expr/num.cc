@@ -1,13 +1,14 @@
 
 #include "bcgen/bcgen.h"
 #include "errorhandle/handle.h"
+#include "general/loc.h"
 #include "parsenodes/expr/num.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
 
-NumNode::NumNode(std::string content, ParseNodeProps props) :
-ParseNode(PNODE_NUM, props), content(content) {
+NumNode::NumNode(std::string content, Loc loc) : ParseNode(PNODE_NUM, loc),
+content(content) {
 
 }
 

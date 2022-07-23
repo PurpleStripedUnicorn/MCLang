@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_IF_H__
 #define __PARSENODE_IF_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
@@ -19,10 +20,10 @@ public:
      * end this list should have one less element than `codeblocks`, otherwise
      * it should have the same amount
      * @param codeblocks Code inside the statement blocks in the if-statements
-     * @param props General properties of the parse node
+     * @param loc The location of the parse node
      */
     IfNode(std::vector<std::string> args, std::vector<CodeBlockNode *>
-    codeblocks, ParseNodeProps props);
+    codeblocks, Loc loc);
 
     /**
      * Destructor

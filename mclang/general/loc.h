@@ -9,8 +9,10 @@
  * number
  */
 struct Loc {
+    Loc(unsigned int line = 0, unsigned int col = 0);
     Loc(std::string filename, unsigned int line, unsigned int col);
     const static Loc unknown;
+    const static std::string nofile;
     std::string filename;
     unsigned int line, col;
 };

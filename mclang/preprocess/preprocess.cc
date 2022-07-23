@@ -62,12 +62,12 @@ inline void Preprocessor::next() {
 
 void Preprocessor::expect(PrepTokenType type) {
     if (cur().type != type)
-        MCLError(1, "Unexpected token.", cur().loc.line, cur().loc.col);
+        MCLError(1, "Unexpected token.", cur().loc);
 }
 
 void Preprocessor::expect(PrepTokenType type, std::string content) {
     if (cur().type != type || cur().content != content)
-        MCLError(1, "Unexpected token.", cur().loc.line, cur().loc.col);
+        MCLError(1, "Unexpected token.", cur().loc);
 }
 
 void Preprocessor::write(PrepToken tok) {
@@ -79,8 +79,7 @@ void Preprocessor::readProgram() {
     doOutput = true;
     readCodeBlock();
     if (!atEnd())
-        MCLError(1, "Stopped reading before EOF.", cur().loc.line,
-        cur().loc.col);
+        MCLError(1, "Stopped reading before EOF.", cur().loc);
 }
 
 void Preprocessor::readCodeBlock() {
@@ -90,8 +89,7 @@ void Preprocessor::readCodeBlock() {
         else if (cur().type == PTOK_PREP_STMT)
             readPrepStmt();
         else if (cur().type == PTOK_INCL_LIB)
-            MCLError(1, "Unexpected include library.", cur().loc.line,
-            cur().loc.col);
+            MCLError(1, "Unexpected include library.", cur().loc);
         else
             write(cur()), next();
     }
@@ -113,8 +111,7 @@ void Preprocessor::readPrepStmt() {
     else if (stmt == "define")
         readDefine();
     else
-        MCLError(1, "Unrecognized statement \"" + stmt + "\".", cur().loc.line,
-        cur().loc.col);
+        MCLError(1, "Unrecognized statement \"" + stmt + "\".", cur().loc);
 }
 
 void Preprocessor::readInclude() {
@@ -123,9 +120,9 @@ void Preprocessor::readInclude() {
         processFile(getReferencePath(curFilename(), cur().content));
     } else if (cur().type == PTOK_INCL_LIB) {
         // TODO: implement
-        MCLError(1, "Feature not implemented.", cur().loc.line, cur().loc.col);
+        MCLError(1, "Feature not implemented.", cur().loc);
     } else {
-        MCLError(1, "Expected include file.", cur().loc.line, cur().loc.col);
+        MCLError(1, "Expected include file.", cur().loc);
     }
     // Skip the include file text
     next();
@@ -151,7 +148,7 @@ void Preprocessor::readDefine() {
         next();
     }
     if (replace.empty())
-        MCLError(1, "Empty definition", cur().loc.line, cur().loc.col);
+        MCLError(1, "Empty definition", cur().loc);
     defs.insert({name, replace});
     // Skip end of line
     next();

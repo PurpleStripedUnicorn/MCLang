@@ -1,14 +1,15 @@
 
 #include "bcgen/bcgen.h"
 #include "errorhandle/handle.h"
+#include "general/loc.h"
 #include "parsenodes/expr/assign.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
 
-AssignNode::AssignNode(std::string varName, ParseNode *expr,
-ParseNodeProps props) : ExprNode(PNODE_ASSIGN, props, expr), varName(varName) {
+AssignNode::AssignNode(std::string varName, ParseNode *expr, Loc loc) :
+ExprNode(PNODE_ASSIGN, loc, expr), varName(varName) {
 
 }
 
@@ -21,8 +22,7 @@ void AssignNode::bytecode(BCManager &man) const {
     // expression at the rhs)
     // Check if the variable is initialized
     if (!man.varManager.hasVar(varName))
-        MCLError(1, "Use of uninitialized variable \"" + varName + "\"",
-        props.loc.line, props.loc.col);
+        MCLError(1, "Use of uninitialized variable \"" + varName + "\"", loc);
     left->bytecode(man);
     man.write(BCInstr(INSTR_COPY, varName, "__res"));
 }

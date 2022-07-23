@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_PROGRAM_H__
 #define __PARSENODE_PROGRAM_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 
@@ -13,8 +14,11 @@ public:
 
     /**
      * Constructor
+     * @param childNodes The main components of the program (functions, global
+     * vars, etc.)
+     * @param loc The location of the parse node
      */
-    ProgramNode(std::vector<ParseNode *> childNodes, ParseNodeProps props);
+    ProgramNode(std::vector<ParseNode *> childNodes, Loc loc);
 
     /**
      * Destructor

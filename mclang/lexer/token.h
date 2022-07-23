@@ -2,6 +2,7 @@
 #ifndef __LEXER_TOKEN_H__
 #define __LEXER_TOKEN_H__
 
+#include "general/loc.h"
 #include <string>
 
 enum TokenType {
@@ -41,11 +42,10 @@ struct Token {
     Token();
     Token(TokenType type);
     Token(TokenType type, std::string content);
+    Token(TokenType type, std::string content, Loc loc);
     TokenType type;
     std::string content;
-    struct {
-        unsigned int line, col;
-    } loc;
+    Loc loc;
 };
 
 #endif

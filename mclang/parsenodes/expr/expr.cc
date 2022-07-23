@@ -1,10 +1,11 @@
 
+#include "general/loc.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 
-ExprNode::ExprNode(ParseNodeType type, ParseNodeProps props, ParseNode *left,
-ParseNode *right) : ParseNode(type, props), left(left), right(right) {
+ExprNode::ExprNode(ParseNodeType type, Loc loc, ParseNode *left,
+ParseNode *right) : ParseNode(type, loc), left(left), right(right) {
 
 }
 

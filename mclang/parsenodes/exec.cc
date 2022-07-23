@@ -1,6 +1,7 @@
 
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
+#include "general/loc.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
 #include "parsenodes/parsenode.h"
@@ -8,7 +9,7 @@
 #include <vector>
 
 ExecNode::ExecNode(std::string type, std::string args, CodeBlockNode *codeblock,
-ParseNodeProps props) : ParseNode(PNODE_EXEC_STMT, props), execType(type),
+Loc loc) : ParseNode(PNODE_EXEC_STMT, loc), execType(type),
 execArgs(args), codeblock(codeblock) {
 
 }

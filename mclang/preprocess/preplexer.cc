@@ -138,10 +138,7 @@ void PrepLexer::readCmd() {
     while (!atEnd() && cur() != '\n')
         content.push_back(cur()), next();
     if (content.size() == 0)
-        MCLError(1, "Empty command.", loc.line, loc.col);
-    if (content.substr(0, 9) == "function ")
-        MCLError(0, "Inserted functions can create undefined behaviour!",
-        loc.line, loc.col);
+        MCLError(1, "Empty command.", loc);
     // Ignore single-line comments
     if (content[0] != '/')
         out.push_back(PrepToken(PTOK_CMD, content, loc));
@@ -213,7 +210,7 @@ void PrepLexer::readInclLib() {
     while (!atEnd() && isAlphaNumUS())
         content.push_back(cur()), next();
     if (cur() != '>')
-        MCLError(1, "Invalid include", loc.line, loc.col);
+        MCLError(1, "Invalid include", loc);
     // Skip the '>'
     next();
     out.push_back(PrepToken(PTOK_INCL_LIB, content, loc));

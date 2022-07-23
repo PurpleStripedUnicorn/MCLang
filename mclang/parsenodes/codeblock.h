@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_CODEBLOCK_H__
 #define __PARSENODE_CODEBLOCK_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 
@@ -14,8 +15,9 @@ public:
     /**
      * Constructor
      * @param childNodes The lines of code inside the code block
+     * @param loc The location of the parse node
      */
-    CodeBlockNode(std::vector<ParseNode *> childNodes, ParseNodeProps props);
+    CodeBlockNode(std::vector<ParseNode *> childNodes, Loc loc);
 
     /**
      * Destructor

@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_NUM_H__
 #define __PARSENODE_NUM_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
@@ -15,9 +16,9 @@ public:
     /**
      * Constructor
      * @param content The number content
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      */
-    NumNode(std::string content, ParseNodeProps props);
+    NumNode(std::string content, Loc loc);
 
     /**
      * Destructor

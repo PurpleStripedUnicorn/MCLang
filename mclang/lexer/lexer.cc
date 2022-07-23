@@ -22,14 +22,12 @@ void Lexer::readIn() {
         Loc lastLoc = cur().loc;
         if (readInToken(tok)) {
             if (tok.type != TOK_EMPTY) {
-                tok.loc.col = lastLoc.col;
-                tok.loc.line = lastLoc.line;
+                tok.loc = lastLoc;
                 readTokens.push_back(tok);
             }
         // Token not recognized
         } else {
-            MCLError(1, "Could not recognize token.", lastLoc.line, lastLoc.col
-            );
+            MCLError(1, "Could not recognize token.", lastLoc);
         }
     }
 }
@@ -47,8 +45,12 @@ inline bool Lexer::atEnd() const {
 }
 
 PrepToken Lexer::cur() const {
-    if (atEnd())
-        return PrepToken(PTOK_EOF, Loc::unknown);
+    if (atEnd()) {
+        Loc lastLoc = Loc::unknown;
+        if (input.size() > 0)
+            lastLoc = input.back().loc;
+        return PrepToken(PTOK_EOF, lastLoc);
+    }
     return input[curIndex];
 }
 
@@ -107,6 +109,6 @@ Token Lexer::convertIdent(std::string ident) {
 
 Token Lexer::convertPunct(std::string punct) {
     if (punctTable.count(punct) == 0)
-        MCLError(1, "Unexpected error reading punctuation");
+        MCLError(1, "Unexpected error reading punctuation", cur().loc);
     return Token(punctTable.find(punct)->second);
 }

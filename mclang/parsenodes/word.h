@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_WORD_H__
 #define __PARSENODE_WORD_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
@@ -15,9 +16,9 @@ public:
     /**
      * Constructor
      * @param content The word content
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      */
-    WordNode(std::string content, ParseNodeProps props);
+    WordNode(std::string content, Loc loc);
 
     /**
      * Destructor
