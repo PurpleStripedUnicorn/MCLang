@@ -2,7 +2,7 @@
 int x;
 
 void myFunc() {
-    x++;
+    x = x + 1;
     int y = x;
     // This should Output the value of x, which increases by 1 every time this
     // function is called
