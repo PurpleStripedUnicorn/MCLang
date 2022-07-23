@@ -3,18 +3,83 @@
 	"name": "MCLang",
 	"patterns": [
 		{
+			"include": "#comments"
+		},
+		{
+			"include": "#commands"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
 			"include": "#strings"
+		},
+		{
+			"include": "#storage"
+		},
+		{
+			"include": "#numbers"
 		}
 	],
 	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-slash.mclang",
+					"begin": "\\/\\/",
+					"end": "(?=\\n)"
+				},
+				{
+					"name": "comment.block.mclang",
+					"begin": "\\/\\*",
+					"end": "\\*\\/"
+				}
+			]
+		},
+		"commands": {
+			"patterns":[
+				{
+					"name": "constant.other.mclang",
+					"begin": "^\\s*\\/[a-zA-Z_]",
+					"end": "(?=\\n)"
+				}
+			]
+		},
 		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.mclang",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
+			"patterns": [
+				{
+					"name": "keyword.control.mclang",
+					"match": "\\b(align|anchored|as|at|facing|in|positioned|rotated|unless|if|else|while|for|return)\\b"
+				},
+				{
+					"name": "keyword.operator.increment.mclang",
+					"match": "\\+\\+"
+				},
+				{
+					"name": "keyword.operator.decrement.mclang",
+					"match": "--"
+				},
+				{
+					"name": "keyword.operator.comparison.mclang",
+					"match": "<=|>=|==|!=|>|<"
+				},
+				{
+					"name": "keyword.operator.assignment.mclang",
+					"match": "="
+				},
+				{
+					"name": "keyword.operator.mclang",
+					"match": "\\+|-|\\*|\\/|\\%"
+				}
+			]
+		},
+		"storage": {
+			"patterns": [
+				{
+					"name": "storage.type.mclang",
+					"match": "\\b(int|bool|void)\\b"
+				}
+			]
 		},
 		"strings": {
 			"name": "string.quoted.double.mclang",
@@ -24,6 +89,14 @@
 				{
 					"name": "constant.character.escape.mclang",
 					"match": "\\\\."
+				}
+			]
+		},
+		"numbers": {
+			"patterns": [
+				{
+					"name": "constant.numeric.mclang",
+					"match": "\\b[0-9]+\\b"
 				}
 			]
 		}
