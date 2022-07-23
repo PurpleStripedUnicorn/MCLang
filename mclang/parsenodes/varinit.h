@@ -18,10 +18,9 @@ public:
      * @param varType The variable type to make the variable
      * @param childExpr Child node of the initialization, which should be an
      * assignment, or just the name of the variable
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      */
-    VarInitNode(std::string varType, ParseNode *childExpr,
-    ParseNodeProps props);
+    VarInitNode(std::string varType, ParseNode *childExpr, Loc loc);
 
     /**
      * Destructor

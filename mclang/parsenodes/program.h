@@ -13,8 +13,11 @@ public:
 
     /**
      * Constructor
+     * @param childNodes The main components of the program (functions, global
+     * vars, etc.)
+     * @param loc The location of the parse node
      */
-    ProgramNode(std::vector<ParseNode *> childNodes, ParseNodeProps props);
+    ProgramNode(std::vector<ParseNode *> childNodes, Loc loc);
 
     /**
      * Destructor

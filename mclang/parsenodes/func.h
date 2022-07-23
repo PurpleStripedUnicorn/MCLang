@@ -17,8 +17,9 @@ public:
      * Constructor
      * @param name Name of the function
      * @param codeblock Code inside the function
+     * @param loc The location of the parse node
      */
-    FuncNode(std::string name, CodeBlockNode *codeblock, ParseNodeProps props);
+    FuncNode(std::string name, CodeBlockNode *codeblock, Loc loc);
 
     /**
      * Destructor

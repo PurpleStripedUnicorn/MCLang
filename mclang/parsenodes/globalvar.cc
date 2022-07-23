@@ -6,8 +6,8 @@
 #include "parsenodes/word.h"
 #include <string>
 
-GlobalVarNode::GlobalVarNode(std::string varType, std::string varName,
-ParseNodeProps props) : ParseNode(PNODE_GLOBALVAR, props), varType(varType),
+GlobalVarNode::GlobalVarNode(std::string varType, std::string varName, Loc loc)
+: ParseNode(PNODE_GLOBALVAR, loc), varType(varType),
 varName(varName) {
 
 }
@@ -24,7 +24,6 @@ void GlobalVarNode::bytecode(BCManager &man) const {
     // TODO: Implement different variable types
     // Check if the global variable name isn't already in use
     if (man.varManager.hasVar(varName))
-        MCLError(1, "Global variable \"" + varName + "\" already defined",
-        props.loc.line, props.loc.col);
+        MCLError(1, "Global variable \"" + varName + "\" already defined", loc);
     man.varManager.addGlobalVar(varName);
 }

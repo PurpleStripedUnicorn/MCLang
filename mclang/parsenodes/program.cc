@@ -7,8 +7,8 @@
 #include "parsenodes/program.h"
 #include <vector>
 
-ProgramNode::ProgramNode(std::vector<ParseNode *> childNodes,
-ParseNodeProps props) : ParseNode(PNODE_PROGRAM, props), childNodes(childNodes)
+ProgramNode::ProgramNode(std::vector<ParseNode *> childNodes, Loc loc) :
+ParseNode(PNODE_PROGRAM, loc), childNodes(childNodes)
 {
 
 }
@@ -35,8 +35,7 @@ void ProgramNode::applyGlobalSettings(BCManager &man) const {
         if (childNodes[i]->getType() == PNODE_NAMESPACE) {
             if (foundNamespace)
                 MCLError(0, "Namespace set multiple times, only last setting "
-                "is used", childNodes[i]->props.loc.line,
-                childNodes[i]->props.loc.col);
+                "is used", childNodes[i]->getLoc());
             man.comp->ns = ((NSNode *)childNodes[i])->getName();
             foundNamespace = true;
         }

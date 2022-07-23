@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-NSNode::NSNode(std::string nsName, ParseNodeProps props) :
-ParseNode(PNODE_NAMESPACE, props), nsName(nsName) {
+NSNode::NSNode(std::string nsName, Loc loc) :
+ParseNode(PNODE_NAMESPACE, loc), nsName(nsName) {
 
 }
 

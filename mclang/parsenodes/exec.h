@@ -18,10 +18,10 @@ public:
      * @param type The subcommand type
      * @param args The subcommand arguments
      * @param codeblock Code inside the statement block
-     * @param props General properties of the parse node
+     * @param loc The location of the parse node
      */
     ExecNode(std::string type, std::string args, CodeBlockNode *codeblock,
-    ParseNodeProps props);
+    Loc loc);
 
     /**
      * Destructor

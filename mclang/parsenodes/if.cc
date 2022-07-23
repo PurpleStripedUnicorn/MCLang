@@ -9,7 +9,7 @@
 #include <vector>
 
 IfNode::IfNode(std::vector<std::string> args, std::vector<CodeBlockNode *>
-codeblocks, ParseNodeProps props) : ParseNode(PNODE_IF, props), ifArgs(args),
+codeblocks, Loc loc) : ParseNode(PNODE_IF, loc), ifArgs(args),
 codeblocks(codeblocks) {
 
 }

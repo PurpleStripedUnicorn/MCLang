@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-CmdNode::CmdNode(std::string cmd, ParseNodeProps props) :
-ParseNode(PNODE_CMD, props), cmd(cmd) {
+CmdNode::CmdNode(std::string cmd, Loc loc) : ParseNode(PNODE_CMD, loc), cmd(cmd)
+{
 
 }
 

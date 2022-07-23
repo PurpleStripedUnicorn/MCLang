@@ -15,9 +15,9 @@ public:
     /**
      * Constructor
      * @param fname The name of the function to call
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      */
-    CallNode(std::string fname, ParseNodeProps props);
+    CallNode(std::string fname, Loc loc);
 
     /**
      * Destructor

@@ -14,8 +14,9 @@ public:
     /**
      * Constructor
      * @param childNodes The lines of code inside the code block
+     * @param loc The location of the parse node
      */
-    CodeBlockNode(std::vector<ParseNode *> childNodes, ParseNodeProps props);
+    CodeBlockNode(std::vector<ParseNode *> childNodes, Loc loc);
 
     /**
      * Destructor

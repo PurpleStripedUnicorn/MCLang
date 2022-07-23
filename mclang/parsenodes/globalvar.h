@@ -16,12 +16,11 @@ public:
      * Constructor
      * @param varType The variable type to make the variable
      * @param varName The name of the global variable
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      * @note Global variables cannot be initialized with a value, instead they
      * will start at value zero
      */
-    GlobalVarNode(std::string varType, std::string varName,
-    ParseNodeProps props);
+    GlobalVarNode(std::string varType, std::string varName, Loc loc);
 
     /**
      * Destructor
