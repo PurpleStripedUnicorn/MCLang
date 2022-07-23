@@ -13,6 +13,7 @@
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/expr/num.h"
 #include "parsenodes/func.h"
+#include "parsenodes/globalvar.h"
 #include "parsenodes/if.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
@@ -88,19 +89,26 @@ ParseNode *Parser::readInFunc() {
     unsigned int line, col;
     curLoc(line, col);
     expect(TOK_TYPENAME);
-    if (cur().content != "void")
-        // TODO: Implement non-void functions
-        MCLError(1, "Invalid return type '" + cur().content
-        + "', needs to be 'void'.", cur().loc.line, cur().loc.col);
+    std::string type = cur().content;
     next();
     expect(TOK_WORD);
     std::string name = cur().content;
     next();
-    expect(TOK_LBRACE), next();
-    expect(TOK_RBRACE), next();
-    expect(TOK_LCBRACE);
-    CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-    return new FuncNode(name, codeblock, {.loc = {line, col}});
+    // Function definition
+    if (accept(TOK_LBRACE)) {
+        if (type != "void")
+            // TODO: Implement non-void functions
+            MCLError(1, "Invalid return type '" + cur().content
+            + "', needs to be 'void'.", cur().loc.line, cur().loc.col);
+        expect(TOK_LBRACE), next();
+        expect(TOK_RBRACE), next();
+        expect(TOK_LCBRACE);
+        CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
+        return new FuncNode(name, codeblock, {.loc = {line, col}});
+    }
+    // Global variable
+    expect(TOK_SEMICOL), next();
+    return new GlobalVarNode(type, name, {.loc = {line, col}});
 }
 
 ParseNode *Parser::readInCodeBlock() {
