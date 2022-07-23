@@ -139,8 +139,6 @@ void PrepLexer::readCmd() {
         content.push_back(cur()), next();
     if (content.size() == 0)
         MCLError(1, "Empty command.", loc);
-    if (content.substr(0, 9) == "function ")
-        MCLError(0, "Inserted functions can create undefined behaviour!", loc);
     // Ignore single-line comments
     if (content[0] != '/')
         out.push_back(PrepToken(PTOK_CMD, content, loc));
