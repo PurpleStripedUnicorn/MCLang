@@ -47,9 +47,16 @@ void VarManager::addVar(std::string name) {
     contextStack.back().addVar(name);
 }
 
+void VarManager::addGlobalVar(std::string name) {
+    globalVars.push_back(name);
+}
+
 bool VarManager::hasVar(std::string name) const {
     for (unsigned int i = 0; i < contextStack.size(); i++)
         if (contextStack[i].hasVar(name))
+            return true;
+    for (unsigned int i = 0; i < globalVars.size(); i++)
+        if (globalVars[i] == name)
             return true;
     return false;
 }

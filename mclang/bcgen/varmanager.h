@@ -91,8 +91,17 @@ public:
     void addVar(std::string name);
 
     /**
+     * Add a global variable
+     * @param name The variable name
+     * @note Names starting with "__" should not be used by the programmer and
+     * are for internal use only
+     * @warning "__res" should never be reserved!
+     */
+    void addGlobalVar(std::string name);
+
+    /**
      * Check if a variable is defined in the current context, meaning any
-     * context above this one as well
+     * context above this one as well, and also global variables
      * @param name The variable name to search for
      * @return Boolean indicating if the variable is found
      */
@@ -109,6 +118,7 @@ public:
     /**
      * Generate a list of all of the variables that are in the context stack
      * @param list The variable to put the list of the names of variables in
+     * @note Thois does not include global variables
      */
     void getVarNames(std::vector<std::string> &list) const;
 
@@ -116,6 +126,9 @@ private:
 
     // Context stack
     std::vector<VarContext> contextStack;
+
+    // Global variable names
+    std::vector<std::string> globalVars;
 
 };
 
