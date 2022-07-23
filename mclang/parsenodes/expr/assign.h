@@ -16,9 +16,9 @@ public:
      * Constructor
      * @param varName The variable name at the left of the expression
      * @param expr The expression to assign to the variable
-     * @param props General parse node properties
+     * @param loc The location of the parse node
      */
-    AssignNode(std::string varName, ParseNode *expr, ParseNodeProps props);
+    AssignNode(std::string varName, ParseNode *expr, Loc loc);
 
     /**
      * Destructor

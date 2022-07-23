@@ -6,8 +6,8 @@
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"
 
-ArithNode::ArithNode(ParseNodeType type, ParseNode *left, ParseNode *right, ParseNodeProps props) :
-ExprNode(type, props, left, right) {
+ArithNode::ArithNode(ParseNodeType type, ParseNode *left, ParseNode *right,
+Loc loc) : ExprNode(type, loc, left, right) {
 
 }
 

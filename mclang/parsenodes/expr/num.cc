@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-NumNode::NumNode(std::string content, ParseNodeProps props) :
-ParseNode(PNODE_NUM, props), content(content) {
+NumNode::NumNode(std::string content, Loc loc) : ParseNode(PNODE_NUM, loc),
+content(content) {
 
 }
 
