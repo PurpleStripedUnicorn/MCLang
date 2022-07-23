@@ -1,6 +1,7 @@
 
 #include "bcgen/bcgen.h"
 #include "errorhandle/handle.h"
+#include "general/loc.h"
 #include "parsenodes/expr/assign.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/varinit.h"

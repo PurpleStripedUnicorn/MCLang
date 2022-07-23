@@ -1,4 +1,5 @@
 
+#include "general/loc.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"
 #include <vector>

@@ -1,6 +1,7 @@
 
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
+#include "general/loc.h"
 #include "parsenodes/cmd.h"
 #include "parsenodes/parsenode.h"
 #include <string>

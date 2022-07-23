@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
 #include "errorhandle/handle.h"
+#include "general/loc.h"
 #include "parsenodes/expr/arith.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"

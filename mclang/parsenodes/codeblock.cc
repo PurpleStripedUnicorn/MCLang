@@ -1,5 +1,6 @@
 
 #include "bcgen/bcgen.h"
+#include "general/loc.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/parsenode.h"
 #include <vector>

@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
 #include "compiler/compiler.h"
+#include "general/loc.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/if.h"
 #include "parsenodes/parsenode.h"

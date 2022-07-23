@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "compiler/compiler.h"
 #include "errorhandle/handle.h"
+#include "general/loc.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"

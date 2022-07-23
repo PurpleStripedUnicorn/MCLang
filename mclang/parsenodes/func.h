@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_FUNC_H__
 #define __PARSENODE_FUNC_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>

@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_VARINIT_H__
 #define __PARSENODE_VARINIT_H__
 
+#include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 #include <string>
