@@ -31,6 +31,8 @@ enum ParseNodeType {
     PNODE_ASSIGN,
     // Variable initialization
     PNODE_VARINIT,
+    // Global variable
+    PNODE_GLOBALVAR,
     // Variable name/word
     PNODE_WORD, PNODE_NUM
 };
