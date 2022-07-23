@@ -1,0 +1,26 @@
+{
+    "comments": {
+        // This many need to be changed later to account for command insertions
+        "lineComment": "//",
+        "blockComment": [ "/*", "*/" ]
+    },
+    // Symbols used as brackets
+    "brackets": [
+        ["{", "}"],
+        ["(", ")"]
+    ],
+    // Symbols that are auto closed when typing
+    "autoClosingPairs": [
+        ["{", "}"],
+        ["(", ")"],
+        ["\"", "\""],
+        ["'", "'"]
+    ],
+    // Symbols that can be used to surround a selection
+    "surroundingPairs": [
+        ["{", "}"],
+        ["(", ")"],
+        ["\"", "\""],
+        ["'", "'"]
+    ]
+}
