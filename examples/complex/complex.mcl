@@ -1,0 +1,34 @@
+
+// Amount of lives of the player
+int lives;
+
+/**
+ * Should be executed on death
+ */
+void death() {
+    /tellraw @a {"color":"purple","text":"Oops! You died!"}
+    death--;
+}
+
+/**
+ * This function should be executed every tick
+ */
+void tick() {
+    // Anti-cheat
+    if ("entity @a[gamemode=creative]")
+        /tellraw @a {"color":"red","text":"Cheater detected!"}
+    // Pigs will haunt you :)
+    as ("@a") {
+        at ("@s") {
+            unless ("@e[distance=..6]")
+                /summon pig ~ ~ ~
+            /tellraw @s {"color":"green","Pigs will haunt you..."}
+        }
+        int x = 0;
+        as ("@e[distance=..6]") {
+            /effect give @s levitation 2 0
+            x++;
+        }
+        /tellraw @s [{"color":"orange","text":"There are "},{"color":"orange","score":{"name":"x","objective":"mclang"}},{"color":"orange","text":"pigs around you."},]
+    }
+}
