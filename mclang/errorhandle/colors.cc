@@ -3,6 +3,9 @@
 #include <map>
 #include <string>
 
+// Colors are only supported on Linux
+#ifdef OS_LINUX
+
 void colorText(std::ostream &os, const std::string &txt, std::string color) {
     std::string curColor = "";
     color.push_back(' ');
@@ -17,3 +20,11 @@ void colorText(std::ostream &os, const std::string &txt, std::string color) {
     }
     os << txt << std::string("\033[0m");
 }
+
+#else
+
+void colorText(std::ostream &os, const std::string &txt, std::string color) {
+    os << txt;
+}
+
+#endif
