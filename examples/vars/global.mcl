@@ -1,0 +1,17 @@
+
+int x;
+
+void myFunc() {
+    x = x + 1;
+    int y = x;
+    // This should Output the value of x, which increases by 1 every time this
+    // function is called
+    /tellraw @a {"score":{"name":"y","objective":"mclang"}}
+}
+
+void main() {
+    // Should print 3 numbers in ascending order (starts with 0, 1, 2)
+    myFunc();
+    myFunc();
+    myFunc();
+}

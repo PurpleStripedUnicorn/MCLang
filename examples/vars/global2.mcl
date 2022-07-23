@@ -1,0 +1,10 @@
+
+int x;
+int y;
+
+void main () {
+    x = x + 1;
+    y = y + 2;
+    int z = y % x;
+    /tellraw @a {"score":{"name":"z","objective":"mclang"}}
+}

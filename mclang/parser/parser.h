@@ -74,8 +74,10 @@ private:
     ParseNode *readInProgram();
 
     /**
-     * Read in a function definition
+     * Read in a function definition or a global variable definition
      * @return A pointer to the generated parse node
+     * @note Global variable definitions may not take an initializing value,
+     * instead a not-defined global variable will be intialized at 0
      */
     ParseNode *readInFunc();
 
