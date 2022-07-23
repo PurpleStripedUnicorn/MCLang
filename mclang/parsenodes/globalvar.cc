@@ -26,5 +26,5 @@ void GlobalVarNode::bytecode(BCManager &man) const {
     if (man.varManager.hasVar(varName))
         MCLError(1, "Global variable \"" + varName + "\" already defined",
         props.loc.line, props.loc.col);
-    man.varManager.addVar(varName);
+    man.varManager.addGlobalVar(varName);
 }
