@@ -1,6 +1,7 @@
 
 #include "compiler/compiler.h"
 #include "errorhandle/handle.h"
+#include "general/loc.h"
 #include "lexer/debug.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
@@ -40,8 +41,7 @@ void Parser::genTree() {
     delete out;
     ParseNode *tmp = readInProgram();
     if (curIndex != toks->size())
-        MCLError(1, "Stopped reading before EOF.", cur().loc.line,
-        cur().loc.col);
+        MCLError(1, "Stopped reading before EOF.", cur().loc);
     out = tmp;
 }
 
@@ -67,12 +67,11 @@ void Parser::expect(TokenType type) {
     if (!accept(type))
         MCLError(1, "Expected token '" + tokenTypeNames[(unsigned int)type]
         + "', instead got '" + tokenTypeNames[(unsigned int)cur().type] + "'.",
-        cur().loc.line, cur().loc.col);
+        cur().loc);
 }
 
 ParseNode *Parser::readInProgram() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     std::vector<ParseNode *> childNodes;
     while (true) {
         if (accept(TOK_TYPENAME))
@@ -82,12 +81,11 @@ ParseNode *Parser::readInProgram() {
         else
             break;
     }
-    return new ProgramNode(childNodes, {.loc = {line, col}});
+    return new ProgramNode(childNodes, lastLoc);
 }
 
 ParseNode *Parser::readInFunc() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     expect(TOK_TYPENAME);
     std::string type = cur().content;
     next();
@@ -99,21 +97,20 @@ ParseNode *Parser::readInFunc() {
         if (type != "void")
             // TODO: Implement non-void functions
             MCLError(1, "Invalid return type '" + cur().content
-            + "', needs to be 'void'.", cur().loc.line, cur().loc.col);
+            + "', needs to be 'void'.", cur().loc);
         expect(TOK_LBRACE), next();
         expect(TOK_RBRACE), next();
         expect(TOK_LCBRACE);
         CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-        return new FuncNode(name, codeblock, {.loc = {line, col}});
+        return new FuncNode(name, codeblock, lastLoc);
     }
     // Global variable
     expect(TOK_SEMICOL), next();
-    return new GlobalVarNode(type, name, {.loc = {line, col}});
+    return new GlobalVarNode(type, name, lastLoc);
 }
 
 ParseNode *Parser::readInCodeBlock() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     std::vector<ParseNode *> childNodes;
     if (accept(TOK_LCBRACE)) {
         // Skip the '{'
@@ -125,14 +122,13 @@ ParseNode *Parser::readInCodeBlock() {
     } else {
         childNodes.push_back(readInLine());
     }
-    return new CodeBlockNode(childNodes, {.loc = {line, col}});
+    return new CodeBlockNode(childNodes, lastLoc);
 }
 
 ParseNode *Parser::readInCmd() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     expect(TOK_CMD);
-    ParseNode *out = new CmdNode(cur().content, {.loc = {line, col}});
+    ParseNode *out = new CmdNode(cur().content, lastLoc);
     next();
     return out;
 }
@@ -154,8 +150,7 @@ ParseNode *Parser::readInLine() {
 }
 
 ParseNode *Parser::readInExec() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     expect(TOK_EXEC_STMT);
     std::string execType = cur().content;
     next();
@@ -165,12 +160,11 @@ ParseNode *Parser::readInExec() {
     next();
     expect(TOK_RBRACE), next();
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-    return new ExecNode(execType, args, codeblock, {.loc = {line, col}});
+    return new ExecNode(execType, args, codeblock, lastLoc);
 }
 
 ParseNode *Parser::readInIf() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     std::vector<std::string> ifArgs;
     std::vector<CodeBlockNode *> codeblocks;
     bool foundElse = false;
@@ -193,11 +187,11 @@ ParseNode *Parser::readInIf() {
             foundElse = true;
         } else {
             MCLError(1, "Unexpected error unccured, invalid token found",
-            cur().loc.line, cur().loc.col);
+            cur().loc);
         }
         codeblocks.push_back((CodeBlockNode *)readInCodeBlock());
     } while ((accept(TOK_ELSEIF) || accept(TOK_ELSE)) && !foundElse);
-    return new IfNode(ifArgs, codeblocks, {.loc = {line, col}});
+    return new IfNode(ifArgs, codeblocks, lastLoc);
 }
 
 ParseNode *Parser::readInExpr() {
@@ -206,25 +200,22 @@ ParseNode *Parser::readInExpr() {
 
 ParseNode *Parser::readInAssign() {
     // Assignment is right associative
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     ParseNode *left = readInSum();
     if (accept(TOK_ASSIGN)) {
         next();
         ParseNode *right = readInAssign();
         if (left->getType() != PNODE_WORD)
-            MCLError(1, "Left side of assignment is not a variable name", line,
-            col);
-        return new AssignNode(((WordNode *)left)->getContent(), right, {.loc =
-        {line, col}});
+            MCLError(1, "Left side of assignment is not a variable name",
+            lastLoc);
+        return new AssignNode(((WordNode *)left)->getContent(), right, lastLoc);
     }
     return left;
 }
 
 ParseNode *Parser::readInSum() {
     // Sums are left associative
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     ParseNode *cur = readInProd();
     while (accept(TOK_ADD) || accept(TOK_SUB)) {
         ParseNodeType ptype = PNODE_ADD;
@@ -232,15 +223,14 @@ ParseNode *Parser::readInSum() {
             ptype = PNODE_SUB;
         next();
         ParseNode *right = readInProd();
-        cur = new ArithNode(ptype, cur, right, {.loc = {line, col}});
+        cur = new ArithNode(ptype, cur, right, lastLoc);
     }
     return cur;
 }
 
 ParseNode *Parser::readInProd() {
     // Sums are left associative
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     ParseNode *cur = readInCall();
     while (accept(TOK_MUL) || accept(TOK_DIV) || accept(TOK_MOD)) {
         ParseNodeType ptype = PNODE_MUL;
@@ -250,19 +240,18 @@ ParseNode *Parser::readInProd() {
             ptype = PNODE_MOD;
         next();
         ParseNode *right = readInCall();
-        cur = new ArithNode(ptype, cur, right, {.loc = {line, col}});
+        cur = new ArithNode(ptype, cur, right, lastLoc);
     }
     return cur;
 }
 
 ParseNode *Parser::readInCall() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     // NOTE: This should be changed later to ensure proper order of operations
     if (accept(TOK_NUM)) {
         std::string content = cur().content;
         next();
-        return new NumNode(content, {.loc = {line, col}});
+        return new NumNode(content, lastLoc);
     }
     expect(TOK_WORD);
     std::string fname = cur().content;
@@ -270,33 +259,27 @@ ParseNode *Parser::readInCall() {
     if (accept(TOK_LBRACE)) {
         next();
         expect(TOK_RBRACE), next();
-        return new CallNode(fname, {.loc = {line, col}});
+        return new CallNode(fname, lastLoc);
     }
-    return new WordNode(fname, {.loc = {line, col}});
+    return new WordNode(fname, lastLoc);
 }
 
 ParseNode *Parser::readInNamespace() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     expect(TOK_NAMESPACE), next();
     expect(TOK_WORD);
     std::string nsName = cur().content;
     next();
     expect(TOK_SEMICOL), next();
-    return new NSNode(nsName, {.loc = {line, col}});
+    return new NSNode(nsName, lastLoc);
 }
 
 ParseNode *Parser::readInVarInit() {
-    unsigned int line, col;
-    curLoc(line, col);
+    Loc lastLoc = cur().loc;
     expect(TOK_TYPENAME);
     std::string varType = cur().content;
     next();
     ParseNode *childExpr = readInExpr();
     expect(TOK_SEMICOL), next();
-    return new VarInitNode(varType, childExpr, {.loc = {line, col}});
-}
-
-void Parser::curLoc(unsigned int &line, unsigned int &col) const {
-    line = cur().loc.line, col = cur().loc.col;
+    return new VarInitNode(varType, childExpr, lastLoc);
 }

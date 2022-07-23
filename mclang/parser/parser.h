@@ -159,12 +159,6 @@ private:
      */
     ParseNode *readInVarInit();
 
-    /**
-     * Get the line and column of the token currently being read
-     * @post The `line` and `col` are modified to reflect the correct position
-     */
-    void curLoc(unsigned int &line, unsigned int &col) const;
-
     // Compiler component
     Compiler *comp;
 
