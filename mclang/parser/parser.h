@@ -2,6 +2,7 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include "general/var.h"
 #include "lexer/token.h"
 #include <vector>
 
@@ -74,12 +75,40 @@ private:
     ParseNode *readInProgram();
 
     /**
-     * Read in a function definition or a global variable definition
+     * Read in a function definition or the definition of a global variable
+     * Both start the same, which is why this function exists
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInDef();
+
+    /**
+     * Read in the end of a global variable definition, after the variable type
+     * and the variable name
+     * @param type The typename that was already read
+     * @param varName The variable name that was already read
+     * @param lastLoc The location of the typename token
      * @return A pointer to the generated parse node
      * @note Global variable definitions may not take an initializing value,
      * instead a not-defined global variable will be intialized at 0
      */
-    ParseNode *readInFunc();
+    ParseNode *readInGlobalVar(std::string type, std::string varName,
+    Loc lastLoc);
+
+    /**
+     * Read in the end of a function definition, after the return type and the
+     * function name
+     * @param type The return type that was already read
+     * @param funcName The function name that was already read
+     * @param lastLoc The location of the typename token
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInFunc(std::string type, std::string funcName, Loc lastLoc);
+
+    /**
+     * Read in a function parameter, a type followed by a parameter name
+     * @return A variable object for the parameter
+     */
+    Var readInFuncParam();
 
     /**
      * Read in a code block
@@ -137,6 +166,13 @@ private:
      * @note Can also just return an operation lower in the order of operators
      */
     ParseNode *readInProd();
+
+    /**
+     * Read in a term in a product, which can be a number, word, function call,
+     * etc.
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInTerm();
 
     /**
      * Read in a function call, part of an expression

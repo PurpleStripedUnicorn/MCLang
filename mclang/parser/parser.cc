@@ -75,7 +75,7 @@ ParseNode *Parser::readInProgram() {
     std::vector<ParseNode *> childNodes;
     while (true) {
         if (accept(TOK_TYPENAME))
-            childNodes.push_back(readInFunc());
+            childNodes.push_back(readInDef());
         else if (accept(TOK_NAMESPACE))
             childNodes.push_back(readInNamespace());
         else
@@ -84,7 +84,7 @@ ParseNode *Parser::readInProgram() {
     return new ProgramNode(childNodes, lastLoc);
 }
 
-ParseNode *Parser::readInFunc() {
+ParseNode *Parser::readInDef() {
     Loc lastLoc = cur().loc;
     expect(TOK_TYPENAME);
     std::string type = cur().content;
@@ -92,21 +92,46 @@ ParseNode *Parser::readInFunc() {
     expect(TOK_WORD);
     std::string name = cur().content;
     next();
-    // Function definition
-    if (accept(TOK_LBRACE)) {
-        if (type != "void")
-            // TODO: Implement non-void functions
-            MCLError(1, "Invalid return type '" + cur().content
-            + "', needs to be 'void'.", cur().loc);
-        expect(TOK_LBRACE), next();
-        expect(TOK_RBRACE), next();
-        expect(TOK_LCBRACE);
-        CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-        return new FuncNode(name, codeblock, lastLoc);
-    }
-    // Global variable
+    if (accept(TOK_LBRACE))
+        return readInFunc(type, name, lastLoc);
+    return readInGlobalVar(type, name, lastLoc);
+}
+
+ParseNode *Parser::readInGlobalVar(std::string type, std::string varName,
+Loc lastLoc) {
     expect(TOK_SEMICOL), next();
-    return new GlobalVarNode(type, name, lastLoc);
+    return new GlobalVarNode(type, varName, lastLoc);
+}
+
+ParseNode *Parser::readInFunc(std::string type, std::string funcName,
+Loc lastLoc) {
+    if (type != "void")
+        // TODO: Implement non-void functions
+        MCLError(1, "Invalid return type '" + cur().content + "', needs to be "
+        "'void'.", cur().loc);
+    expect(TOK_LBRACE), next();
+    std::vector<Var> params;
+    if (accept(TOK_TYPENAME)) {
+        params.push_back(readInFuncParam());
+        while (accept(TOK_COMMA)) {
+            next();
+            params.push_back(readInFuncParam());
+        }
+    }
+    expect(TOK_RBRACE), next();
+    expect(TOK_LCBRACE);
+    CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
+    return new FuncNode(funcName, {}, codeblock, lastLoc);
+}
+
+Var Parser::readInFuncParam() {
+    expect(TOK_TYPENAME);
+    std::string type = cur().content;
+    next();
+    expect(TOK_WORD);
+    std::string name = cur().content;
+    next();
+    return Var(type, name);
 }
 
 ParseNode *Parser::readInCodeBlock() {
@@ -231,7 +256,7 @@ ParseNode *Parser::readInSum() {
 ParseNode *Parser::readInProd() {
     // Sums are left associative
     Loc lastLoc = cur().loc;
-    ParseNode *cur = readInCall();
+    ParseNode *cur = readInTerm();
     while (accept(TOK_MUL) || accept(TOK_DIV) || accept(TOK_MOD)) {
         ParseNodeType ptype = PNODE_MUL;
         if (accept(TOK_DIV))
@@ -239,27 +264,38 @@ ParseNode *Parser::readInProd() {
         if (accept(TOK_MOD))
             ptype = PNODE_MOD;
         next();
-        ParseNode *right = readInCall();
+        ParseNode *right = readInTerm();
         cur = new ArithNode(ptype, cur, right, lastLoc);
     }
     return cur;
 }
 
-ParseNode *Parser::readInCall() {
-    Loc lastLoc = cur().loc;
-    // NOTE: This should be changed later to ensure proper order of operations
+ParseNode *Parser::readInTerm() {
     if (accept(TOK_NUM)) {
+        Loc lastLoc = cur().loc;
         std::string content = cur().content;
         next();
         return new NumNode(content, lastLoc);
     }
+    return readInCall();
+}
+
+ParseNode *Parser::readInCall() {
+    Loc lastLoc = cur().loc;
     expect(TOK_WORD);
     std::string fname = cur().content;
     next();
     if (accept(TOK_LBRACE)) {
         next();
+        std::vector<ParseNode *> params;
+        if (!accept(TOK_RBRACE))
+            params.push_back(readInExpr());
+        while (!accept(TOK_RBRACE)) {
+            expect(TOK_COMMA), next();
+            params.push_back(readInExpr());
+        }
         expect(TOK_RBRACE), next();
-        return new CallNode(fname, lastLoc);
+        return new CallNode(fname, params, lastLoc);
     }
     return new WordNode(fname, lastLoc);
 }
