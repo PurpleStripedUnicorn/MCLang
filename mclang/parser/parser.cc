@@ -121,7 +121,7 @@ Loc lastLoc) {
     expect(TOK_RBRACE), next();
     expect(TOK_LCBRACE);
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-    return new FuncNode(funcName, {}, codeblock, lastLoc);
+    return new FuncNode(funcName, params, codeblock, lastLoc);
 }
 
 Var Parser::readInFuncParam() {
