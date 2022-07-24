@@ -14,7 +14,7 @@ struct PrepToken;
 // NOTE: For any symbols containing two or more characters, EVERY suffix of this
 // symbol should also be a symbol!
 const std::set<std::string> punctSymbols = {
-    ";",
+    ";", ",",
     "(", ")",
     "{", "}",
     "+", "+=",
