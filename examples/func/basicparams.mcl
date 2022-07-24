@@ -1,0 +1,10 @@
+
+void myFunc(int x) {
+    /tellraw @a {"score":{"name":"x","objective":"mclang"}}
+}
+
+void main() {
+    myFunc(56);
+    int y = 5;
+    myFunc(y);
+}

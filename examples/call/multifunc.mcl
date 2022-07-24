@@ -1,9 +1,9 @@
 
+void joke() {
+    /say World: Hello PurpleStriped!
+}
+
 void main() {
     /say PurpleStriped: Hello World!
     joke();
-}
-
-void joke() {
-    /say World: Hello PurpleStriped!
 }

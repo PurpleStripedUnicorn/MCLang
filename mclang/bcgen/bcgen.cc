@@ -56,3 +56,21 @@ void BCManager::popFunc() {
 BCFunc *BCManager::topFunc() const {
     return funcStack.back();
 }
+
+void BCManager::addFuncDef(FuncDef func) {
+    funcs.push_back(func);
+}
+
+bool BCManager::hasFuncDef(std::string name) const {
+    for (unsigned int i = 0; i < funcs.size(); i++)
+        if (funcs[i].name == name)
+            return true;
+    return false;
+}
+
+FuncDef BCManager::getFuncDef(std::string name) const {
+    for (unsigned int i = 0; i < funcs.size(); i++)
+        if (funcs[i].name == name)
+            return funcs[i];
+    return funcs[0];
+}

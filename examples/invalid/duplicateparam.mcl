@@ -1,0 +1,5 @@
+
+// This should show an error for using variable name twice
+void myFunc(int x, int x) {
+    /say Hello World!
+}

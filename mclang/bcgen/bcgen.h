@@ -4,6 +4,7 @@
 
 #include "bcgen/instr.h"
 #include "bcgen/varmanager.h"
+#include "general/funcdef.h"
 #include <string>
 #include <vector>
 
@@ -87,6 +88,27 @@ public:
      */
     BCFunc *topFunc() const;
 
+    /**
+     * Define a new function
+     * @param func The function to add to `funcs`
+     */
+    void addFuncDef(FuncDef func);
+
+    /**
+     * Check if a certain function is defined
+     * @return A boolean indicating if a function with the given name is in
+     * `funcs`
+     */
+    bool hasFuncDef(std::string name) const;
+
+    /**
+     * Get the function definition from a function name
+     * @param name The function name
+     * @return The function with the given name
+     * @note Assumes that `hasFunc` returns true
+     */
+    FuncDef getFuncDef(std::string name) const;
+
     // Variable manager: to keep track of variable names used
     VarManager varManager;
 
@@ -104,6 +126,9 @@ private:
 
     // Counter to keep track of unique IDs/names assigned to functions
     unsigned int uniqueFuncId;
+
+    // Defined functions
+    std::vector<FuncDef> funcs;
 
 };
 

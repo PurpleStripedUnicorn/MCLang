@@ -16,6 +16,7 @@ const std::map<std::string, TokenType> punctTable = {
     {"{", TOK_LCBRACE},
     {"}", TOK_RCBRACE},
     {";", TOK_SEMICOL},
+    {",", TOK_COMMA},
     {"+", TOK_ADD}, {"+=", TOK_ASSIGN_ADD},
     {"-", TOK_SUB}, {"-=", TOK_ASSIGN_SUB},
     {"*", TOK_MUL}, {"*=", TOK_ASSIGN_MUL},

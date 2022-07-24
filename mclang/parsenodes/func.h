@@ -3,6 +3,7 @@
 #define __PARSENODE_FUNC_H__
 
 #include "general/loc.h"
+#include "general/var.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
@@ -17,10 +18,12 @@ public:
     /**
      * Constructor
      * @param name Name of the function
+     * @param params The parameters of the function
      * @param codeblock Code inside the function
      * @param loc The location of the parse node
      */
-    FuncNode(std::string name, CodeBlockNode *codeblock, Loc loc);
+    FuncNode(std::string name, std::vector<Var> params,
+    CodeBlockNode *codeblock, Loc loc);
 
     /**
      * Destructor
@@ -43,6 +46,9 @@ private:
 
     // Name of the function
     std::string name;
+
+    // Function parameters
+    std::vector<Var> params;
 
     // Content of the function
     CodeBlockNode *codeblock;
