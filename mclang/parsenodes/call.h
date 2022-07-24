@@ -16,9 +16,10 @@ public:
     /**
      * Constructor
      * @param fname The name of the function to call
+     * @param params The parameters given to the function call
      * @param loc The location of the parse node
      */
-    CallNode(std::string fname, Loc loc);
+    CallNode(std::string fname, std::vector<ParseNode *> params, Loc loc);
 
     /**
      * Destructor
@@ -41,6 +42,9 @@ private:
 
     // The name of the function to call
     std::string fname;
+
+    // Passed function parameters
+    std::vector<ParseNode *> params;
 
 };
 
