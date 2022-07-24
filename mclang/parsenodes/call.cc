@@ -10,7 +10,7 @@
 #include <vector>
 
 CallNode::CallNode(std::string fname, std::vector<ParseNode *> params, Loc loc)
-: ParseNode(PNODE_CALL, loc), params(params), fname(fname) {
+: ParseNode(PNODE_CALL, loc), fname(fname), params(params) {
 
 }
 
