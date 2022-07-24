@@ -26,6 +26,11 @@ FuncNode::~FuncNode() {
 
 void FuncNode::bytecode(BCManager &man) const {
     man.addFunc(name);
+    // TODO: Change this later to allow functions with the same name
+    if (man.hasFuncDef(name))
+        MCLError(1, "Function with name \"" + name + "\" was already defined",
+        loc);
+    man.addFuncDef(FuncDef(name, params));
     // Initilize global variables at zero if they weren't already (by adding 0)
     man.write(BCInstr(INSTR_SET, "__zero", "0"));
     std::vector<std::string> globalVars;
