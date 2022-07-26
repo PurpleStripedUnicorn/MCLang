@@ -22,6 +22,15 @@ struct BCFunc {
 };
 
 /**
+ * Return object, contains type and value, which can be a variable name or
+ * constant value
+ */
+struct Return {
+    Type type;
+    std::string value;
+};
+
+/**
  * Manager object to keep track of stuff while generating bytecode, which is
  * done by the parse node objects. This object also stores the generated
  * bytecode
@@ -95,11 +104,8 @@ public:
     // The compiler component
     Compiler *comp;
 
-    // Current return type and value (can be variable name or constant value)
-    struct {
-        Type type;
-        std::string value;
-    } ret;
+    // Current return type and value
+    Return ret;
 
 private:
 
