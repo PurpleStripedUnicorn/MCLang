@@ -13,6 +13,8 @@ enum BaseType {
  * Extended type, which also contains info about being const
  */
 struct Type {
+    bool operator==(const Type &other) const;
+    bool operator!=(const Type &other) const;
     BaseType base;
     bool isConst;
     // Easy-to-access types
