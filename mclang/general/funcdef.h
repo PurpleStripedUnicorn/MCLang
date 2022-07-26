@@ -2,6 +2,7 @@
 #ifndef __FUNCDEF_H__
 #define __FUNCDEF_H__
 
+#include "general/types.h"
 #include <string>
 #include <vector>
 
@@ -9,8 +10,9 @@
  * Function parameter with type and parameter name
  */
 struct Param {
-    Param(std::string type, std::string name);
-    std::string type, name;
+    Param(Type type, std::string name);
+    Type type;
+    std::string name;
 };
 
 /**
@@ -20,6 +22,7 @@ struct Param {
 struct FuncDef {
     FuncDef(std::string name, std::vector<Param> params, std::vector<Param>
     constParams);
+    Type returnType;
     std::string name;
     std::vector<Param> params, constParams;
 };

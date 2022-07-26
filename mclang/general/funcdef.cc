@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-Param::Param(std::string type, std::string name) : type(type), name(name) {
+Param::Param(Type type, std::string name) : type(type), name(name) {
 
 }
 
