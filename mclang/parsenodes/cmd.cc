@@ -3,6 +3,7 @@
 #include "bcgen/instr.h"
 #include "errorhandle/handle.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/cmd.h"
 #include "parsenodes/parsenode.h"
 #include <string>
@@ -26,4 +27,6 @@ void CmdNode::bytecode(BCManager &man) const {
         MCLError(0, "Raw function call insertion has undefined behaviour, use "
         "normal function call instead!", loc);
     man.write(BCInstr(INSTR_CMD, cmd));
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }

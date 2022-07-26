@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/exec.h"
 #include "parsenodes/parsenode.h"
@@ -28,4 +29,6 @@ void ExecNode::bytecode(BCManager &man) const {
     codeblock->bytecode(man);
     man.popFunc();
     man.write(BCInstr(INSTR_EXEC_CALL, execType + " " + execArgs, fname));
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }

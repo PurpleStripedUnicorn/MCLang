@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "errorhandle/handle.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/expr/assign.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/varinit.h"
@@ -32,11 +33,14 @@ void VarInitNode::bytecode(BCManager &man) const {
     else
         MCLError(1, "Invalid expression after initialization.", loc);
     // Check if the name of the variable is already in use
-    if (man.varManager.hasVar(varName))
+    Type tmp;
+    if (man.ctx.findVarAll(varName, tmp))
         MCLError(1, "Initialization of already defined variable \"" + varName
         + "\"", loc);
-    // TODO: Implement variable types...
-    man.varManager.addVar(varName);
+    // Register variable with type
+    man.ctx.addVar(Var(varType, varName));
     if (childExpr->getType() == PNODE_ASSIGN)
         childExpr->bytecode(man);
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }

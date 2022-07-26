@@ -23,31 +23,41 @@ std::vector<ParseNode *> CallNode::children() const {
 }
 
 void CallNode::bytecode(BCManager &man) const {
-    // Check if function exists
-    if (!man.hasFuncDef(fname))
-        MCLError(1, "Called function not defined", loc);
-    FuncDef fdef = man.getFuncDef(fname);
     // Put local variables on stack
-    std::vector<std::string> varList;
-    man.varManager.getVarNames(varList);
+    std::vector<Var> varList = man.ctx.getLocalVars();
     for (unsigned int i = 0; i < varList.size(); i++)
-        man.write(BCInstr(INSTR_PUSH, varList[i]));
-    // TODO: Check parameter types, implement return types, etc...
-    // Check if number of parameters matches (should later be replaced)
-    if (fdef.params.size() != params.size())
-        MCLError(1, "Called function with incorrect number of arguments", loc);
-    // Evaluate child nodes and put values in parameter variables
+        man.write(BCInstr(INSTR_PUSH, varList[i].name));
+    // Evaluate child nodes and put values in parameter variables, also keep
+    // track of output types of parameters
+    std::vector<Type> inpTypes;
     for (unsigned int i = 0; i < params.size(); i++) {
         params[i]->bytecode(man);
-        man.write(BCInstr(INSTR_COPY, "__param" + std::to_string(i), "__res"));
+        man.write(BCInstr(INSTR_COPY, "__param" + std::to_string(i),
+        man.ret.value));
+        inpTypes.push_back(man.ret.type);
     }
+    FuncDef funcDef;
+    // Check if function exists
+    if (!man.ctx.findFuncAll(fname, inpTypes, funcDef)) {
+        std::string errTxt = "Function \"" + fname + "\" with argument types (";
+        for (unsigned int i = 0; i < inpTypes.size(); i++) {
+            if (i != 0)
+                errTxt.append(", ");
+            errTxt.append(inpTypes[i].str());
+        }
+        errTxt.append(") not defined");
+        MCLError(1, errTxt, loc);
+    }
+    // TODO: Implement return types other than void
     // Actual function call
     man.write(BCInstr(INSTR_CALL, fname));
     // Take local variables off the stack
     if (varList.size() > 0) {
         for (unsigned int i = 0; i < varList.size(); i++) {
-            man.write(BCInstr(INSTR_TOP, varList[varList.size() - i - 1]));
+            man.write(BCInstr(INSTR_TOP, varList[varList.size() - i - 1].name));
             man.write(BCInstr(INSTR_POP));
         }
     }
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }

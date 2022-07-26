@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "errorhandle/handle.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/globalvar.h"
 #include "parsenodes/word.h"
@@ -22,9 +23,11 @@ std::vector<ParseNode *> GlobalVarNode::children() const {
 }
 
 void GlobalVarNode::bytecode(BCManager &man) const {
-    // TODO: Implement different variable types
     // Check if the global variable name isn't already in use
-    if (man.varManager.hasVar(varName))
+    Type tmp;
+    if (man.ctx.findVarAll(varName, tmp))
         MCLError(1, "Global variable \"" + varName + "\" already defined", loc);
-    man.varManager.addGlobalVar(varName);
+    man.ctx.addVar(Var(Type(varType), varName));
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }

@@ -1,6 +1,7 @@
 
 #include "bcgen/bcgen.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
@@ -22,4 +23,6 @@ std::vector<ParseNode *> CodeBlockNode::children() const {
 void CodeBlockNode::bytecode(BCManager &man) const {
     for (unsigned int i = 0; i < childNodes.size(); i++)
         childNodes[i]->bytecode(man);
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }

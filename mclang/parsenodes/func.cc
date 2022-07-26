@@ -3,6 +3,7 @@
 #include "errorhandle/handle.h"
 #include "general/funcdef.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "general/var.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/func.h"
@@ -10,7 +11,7 @@
 #include <string>
 #include <vector>
 
-FuncNode::FuncNode(std::string name, std::vector<Var> params,
+FuncNode::FuncNode(std::string name, std::vector<Param> params,
 CodeBlockNode *codeblock, Loc loc) : ParseNode(PNODE_FUNC, loc), name(name),
 params(params), codeblock(codeblock) {
 
@@ -26,28 +27,32 @@ FuncNode::~FuncNode() {
 
 void FuncNode::bytecode(BCManager &man) const {
     man.addFunc(name);
-    // TODO: Change this later to allow functions with the same name
-    if (man.hasFuncDef(name))
-        MCLError(1, "Function with name \"" + name + "\" was already defined",
-        loc);
-    man.addFuncDef(FuncDef(name, params));
+    // Get the input types
+    std::vector<Type> paramTypes;
+    for (const Param &param : params)
+        paramTypes.push_back(param.type);
+    FuncDef tmp;
+    if (man.ctx.findFuncAll(name, paramTypes, tmp))
+        MCLError(1, "Function with same name and parameter types was already "
+        "defined", loc);
+    man.ctx.addFunc(FuncDef(name, params));
     // Initilize global variables at zero if they weren't already (by adding 0)
     man.write(BCInstr(INSTR_SET, "__zero", "0"));
-    std::vector<std::string> globalVars;
-    man.varManager.getVarNames(globalVars);
+    std::vector<Var> globalVars = man.ctx.getGlobalVars();
     for (unsigned int i = 0; i < globalVars.size(); i++)
-        man.write(BCInstr(INSTR_ADD, globalVars[i], "__zero"));
-    man.varManager.addContext();
+        man.write(BCInstr(INSTR_ADD, globalVars[i].name, "__zero"));
+    man.ctx.pushContext(CTX_FUNC);
     // Add parameters to context and copy them to the correct variables
     for (unsigned int i = 0; i < params.size(); i++) {
         man.write(BCInstr(INSTR_COPY, params[i].name, "__param"
         + std::to_string(i)));
-        if (man.varManager.hasVar(params[i].name))
+        Type tmp;
+        if (man.ctx.findVar(params[i].name, tmp))
             MCLError(1, "Parameter name is already defined somewhere else.",
             loc);
-        man.varManager.addVar(params[i].name);
+        man.ctx.addVar(Var(params[i].type, params[i].name));
     }
     codeblock->bytecode(man);
-    man.varManager.popContext();
+    man.ctx.popContext();
     man.popFunc();
 }

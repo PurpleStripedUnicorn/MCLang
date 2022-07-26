@@ -3,6 +3,7 @@
 #include "compiler/compiler.h"
 #include "errorhandle/handle.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
@@ -27,6 +28,8 @@ void ProgramNode::bytecode(BCManager &man) const {
     applyGlobalSettings(man);
     for (unsigned int i = 0; i < childNodes.size(); i++)
         childNodes[i]->bytecode(man);
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }
 
 void ProgramNode::applyGlobalSettings(BCManager &man) const {
