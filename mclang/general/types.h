@@ -13,7 +13,7 @@ enum BaseType {
 };
 
 // Base type conversion to string
-std::map<BaseType, std::string> baseTable = {
+const std::map<BaseType, std::string> baseTable = {
     {TYPE_VOID, "void"},
     {TYPE_INT, "int"},
     {TYPE_BOOL, "bool"},

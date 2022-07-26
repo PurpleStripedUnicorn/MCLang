@@ -20,18 +20,18 @@ ArithNode::~ArithNode() {
 void ArithNode::bytecode(BCManager &man) const {
     Return retLeft, retRight;
     right->bytecode(man);
-    if (man.ret.type != Type::tInt)
+    if (man.ret.type != Type("int"))
         MCLError(1, "Arithmatic not allowed on non-int type", loc);
     man.ctx.pushContext(CTX_BASIC);
-    Var tmpVar = man.ctx.makeUniqueVar(Type::tInt);
+    Var tmpVar = man.ctx.makeUniqueVar(Type("int"));
     man.write(BCInstr(INSTR_COPY, tmpVar.name, man.ret.value));
     left->bytecode(man);
-    if (man.ret.type != Type::tInt)
+    if (man.ret.type != Type("int"))
         MCLError(1, "Arithmatic not allowed on non-int type", loc);
     if (instrTypeTable.count(getType()) == 0)
         MCLError(1, "Unexpected error while converting arithmatic");
     BCInstrType instrType = instrTypeTable.find(getType())->second;
     man.write(BCInstr(instrType, man.ret.value, tmpVar.name));
     man.ctx.popContext();
-    man.ret.type = Type::tInt;
+    man.ret.type = Type("int");
 }
