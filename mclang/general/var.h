@@ -14,12 +14,4 @@ struct Var {
     std::string name;
 };
 
-/**
- * A constant variable, with value attached
- */
-struct ConstVar : public Var {
-    ConstVar(Type type, std::string name, std::string value);
-    std::string value;
-};
-
 #endif
