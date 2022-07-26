@@ -1,6 +1,7 @@
 
 #include "compiler/compiler.h"
 #include "errorhandle/handle.h"
+#include "general/funcdef.h"
 #include "general/loc.h"
 #include "lexer/debug.h"
 #include "lexer/lexer.h"
@@ -110,7 +111,7 @@ Loc lastLoc) {
         MCLError(1, "Invalid return type '" + cur().content + "', needs to be "
         "'void'.", cur().loc);
     expect(TOK_LBRACE), next();
-    std::vector<Var> params;
+    std::vector<Param> params;
     if (accept(TOK_TYPENAME)) {
         params.push_back(readInFuncParam());
         while (accept(TOK_COMMA)) {
@@ -124,14 +125,14 @@ Loc lastLoc) {
     return new FuncNode(funcName, params, codeblock, lastLoc);
 }
 
-Var Parser::readInFuncParam() {
+Param Parser::readInFuncParam() {
     expect(TOK_TYPENAME);
     std::string type = cur().content;
     next();
     expect(TOK_WORD);
     std::string name = cur().content;
     next();
-    return Var(type, name);
+    return Param(Type(type), name);
 }
 
 ParseNode *Parser::readInCodeBlock() {

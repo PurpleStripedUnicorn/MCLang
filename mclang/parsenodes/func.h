@@ -22,7 +22,7 @@ public:
      * @param codeblock Code inside the function
      * @param loc The location of the parse node
      */
-    FuncNode(std::string name, std::vector<Var> params,
+    FuncNode(std::string name, std::vector<Param> params,
     CodeBlockNode *codeblock, Loc loc);
 
     /**
@@ -48,7 +48,7 @@ private:
     std::string name;
 
     // Function parameters
-    std::vector<Var> params;
+    std::vector<Param> params;
 
     // Content of the function
     CodeBlockNode *codeblock;

@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "errorhandle/handle.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/expr/num.h"
 #include "parsenodes/parsenode.h"
 #include <string>
@@ -23,6 +24,8 @@ std::vector<ParseNode *> NumNode::children() const {
 void NumNode::bytecode(BCManager &man) const {
     // Put the value in "__res"
     man.write(BCInstr(INSTR_SET, "__res", content));
+    man.ret.type = Type("int");
+    man.ret.value = "__res";
 }
 
 std::string NumNode::getContent() const {

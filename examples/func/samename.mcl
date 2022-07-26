@@ -1,0 +1,13 @@
+
+void f() {
+    /say Hello!
+}
+
+void f(int x) {
+    /tellraw @a {"score":{"name":"x","objective":"mclang"}}
+}
+
+void main() {
+    f();
+    f(5);
+}

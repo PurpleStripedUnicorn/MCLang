@@ -3,6 +3,7 @@
 #include "bcgen/instr.h"
 #include "compiler/compiler.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/codeblock.h"
 #include "parsenodes/if.h"
 #include "parsenodes/parsenode.h"
@@ -28,7 +29,7 @@ IfNode::~IfNode() {
 }
 
 void IfNode::bytecode(BCManager &man) const {
-    std::string tmpId = man.varManager.getUniqueVar();
+    std::string tmpId = man.ctx.makeUniqueVar(Type("bool")).name;
     man.write(BCInstr(INSTR_SET, tmpId, "0"));
     for (unsigned int i = 0; i < codeblocks.size(); i++) {
         man.addFunc();
@@ -43,6 +44,8 @@ void IfNode::bytecode(BCManager &man) const {
         + " matches 0");
         man.write(BCInstr(INSTR_EXEC_CALL, cond, fname));
     }
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }
 
 bool IfNode::hasElse() const {

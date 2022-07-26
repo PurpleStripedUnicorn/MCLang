@@ -2,6 +2,7 @@
 #include "bcgen/bcgen.h"
 #include "bcgen/instr.h"
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include <string>
@@ -23,8 +24,8 @@ std::vector<ParseNode *> NSNode::children() const {
 void NSNode::bytecode(BCManager &man) const {
     // No bytecode is generated, because this node serves as a global setting,
     // which is handled by the "program" parse node instead
-    // Prevent unused parameter warning:
-    (void)man;
+    man.ret.type = Type("void");
+    man.ret.value = "";
 }
 
 std::string NSNode::getName() const {

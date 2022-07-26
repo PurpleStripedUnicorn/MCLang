@@ -18,13 +18,14 @@ AssignNode::~AssignNode() {
 }
 
 void AssignNode::bytecode(BCManager &man) const {
-    // Puts the result in "__res" (which is already done by evaluating the
-    // expression at the rhs)
-    // Check if the variable is initialized
-    if (!man.varManager.hasVar(varName))
-        MCLError(1, "Use of uninitialized variable \"" + varName + "\"", loc);
     left->bytecode(man);
-    man.write(BCInstr(INSTR_COPY, varName, "__res"));
+    Type varType;
+    if (!man.ctx.findVarAll(varName, varType))
+        MCLError(1, "Use of uninitialized variable \"" + varName + "\".", loc);
+    if (man.ret.type != varType)
+        MCLError(1, "Cannot assign value of type \"" + man.ret.type.str()
+        + "\" to variable of type \"" + varType.str() + "\".", loc);
+    man.write(BCInstr(INSTR_COPY, varName, man.ret.value));
 }
 
 std::string AssignNode::getVarName() const {

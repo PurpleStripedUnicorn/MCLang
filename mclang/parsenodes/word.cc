@@ -21,12 +21,18 @@ std::vector<ParseNode *> WordNode::children() const {
 }
 
 void WordNode::bytecode(BCManager &man) const {
-    // Check if the variable is actually defined
-    if (!man.varManager.hasVar(content))
+    Type varType;
+    if (!man.ctx.findVarAll(content, varType))
         MCLError(1, "Accessing uninitialized variable \"" + content + "\"",
         loc);
+    // TODO: implement const vars, etc.
+    if (varType != Type("int") && varType != Type("bool"))
+        MCLError(1, "Accessing inaccessible variable type \"" + varType.str()
+        + "\".", loc);
     // Return the variable value to "__res"
     man.write(BCInstr(INSTR_COPY, "__res", content));
+    man.ret.type = varType;
+    man.ret.value = "__res";
 }
 
 std::string WordNode::getContent() const {
