@@ -17,14 +17,12 @@ struct Param {
 
 /**
  * Function definition, with name and parameter types/names
- * Constant parameters are separate from normal parameters
  */
 struct FuncDef {
-    FuncDef(std::string name, std::vector<Param> params, std::vector<Param>
-    constParams);
+    FuncDef(std::string name, std::vector<Param> params);
     Type returnType;
     std::string name;
-    std::vector<Param> params, constParams;
+    std::vector<Param> params;
 };
 
 #endif
