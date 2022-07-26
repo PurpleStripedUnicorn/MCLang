@@ -11,3 +11,5 @@ FuncDef::FuncDef(std::string name, std::vector<Param> params) : name(name),
 params(params) {
 
 }
+
+const FuncDef FuncDef::unknown = FuncDef("??", {});

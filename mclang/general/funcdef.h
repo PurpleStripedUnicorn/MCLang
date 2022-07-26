@@ -21,6 +21,7 @@ struct Param {
 struct FuncDef {
     FuncDef(std::string name, std::vector<Param> params);
     Type returnType;
+    const static FuncDef unknown;
     std::string name;
     std::vector<Param> params;
 };
