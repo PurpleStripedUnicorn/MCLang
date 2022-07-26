@@ -1,0 +1,13 @@
+
+void f(int x) {
+    /say Hello!
+}
+
+void f(int y) {
+    /say Hi!
+}
+
+void main() {
+    f(5);
+    f(6);
+}
