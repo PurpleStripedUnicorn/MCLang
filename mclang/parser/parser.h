@@ -2,6 +2,7 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include "general/funcdef.h"
 #include "general/var.h"
 #include "lexer/token.h"
 #include <vector>
@@ -108,7 +109,7 @@ private:
      * Read in a function parameter, a type followed by a parameter name
      * @return A variable object for the parameter
      */
-    Var readInFuncParam();
+    Param readInFuncParam();
 
     /**
      * Read in a code block
