@@ -19,6 +19,7 @@ struct Param {
  * Function definition, with name and parameter types/names
  */
 struct FuncDef {
+    FuncDef();
     FuncDef(std::string name, std::vector<Param> params);
     Type returnType;
     const static FuncDef unknown;
