@@ -26,7 +26,12 @@ FuncNode::~FuncNode() {
 }
 
 void FuncNode::bytecode(BCManager &man) const {
-    man.addFunc(name);
+    // Functions without params will receive original name, other will get
+    // some random name
+    if (params.empty())
+        man.addFunc(name);
+    else
+        man.addFunc();
     // Get the input types
     std::vector<Type> paramTypes;
     for (const Param &param : params)
@@ -35,7 +40,9 @@ void FuncNode::bytecode(BCManager &man) const {
     if (man.ctx.findFuncAll(name, paramTypes, tmp))
         MCLError(1, "Function with same name and parameter types was already "
         "defined", loc);
+    // Add function definition to context
     man.ctx.addFunc(FuncDef(name, params));
+    man.ctx.addFuncAlias(name, paramTypes, man.topFunc()->name);
     // Initilize global variables at zero if they weren't already (by adding 0)
     man.write(BCInstr(INSTR_SET, "__zero", "0"));
     std::vector<Var> globalVars = man.ctx.getGlobalVars();

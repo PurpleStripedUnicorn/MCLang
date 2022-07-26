@@ -49,8 +49,12 @@ void CallNode::bytecode(BCManager &man) const {
         MCLError(1, errTxt, loc);
     }
     // TODO: Implement return types other than void
+    // TODO: Implement constant parameters
     // Actual function call
-    man.write(BCInstr(INSTR_CALL, fname));
+    if (funcDef.aliases.size() == 0)
+        MCLError(1, "Unexpected error, could not generate function call "
+        "bytecode.", loc);
+    man.write(BCInstr(INSTR_CALL, funcDef.aliases[0].name));
     // Take local variables off the stack
     if (varList.size() > 0) {
         for (unsigned int i = 0; i < varList.size(); i++) {
