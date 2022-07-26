@@ -10,6 +10,17 @@
 #include <vector>
 
 /**
+ * Type for contexts, with different meanings
+ * BASIC: Basic type without functionality
+ * BLOCK: For code blocks, like in if-statements, etc.
+ * FUNC: For entire functions, also functions inside functions
+ * GLOBAL: Global context should only be used once
+ */
+enum ContextType {
+    CTX_BASIC, CTX_BLOCK, CTX_FUNC, CTX_GLOBAL
+};
+
+/**
  * A context in a context stack
  * A context contains function definitions, variable definitions, constant
  * values, etc.
@@ -20,14 +31,9 @@ public:
 
     /**
      * Constructor
+     * @param funcCtx Indicates if this is a function context
      */
-    Context();
-
-    /**
-     * Constructor
-     * @param prev A pointer to the previous context on the stack
-     */
-    Context(Context *prev);
+    Context(ContextType type, Context *prev = nullptr);
 
     /**
      * Destructor
@@ -109,7 +115,31 @@ public:
      */
     void addFunc(FuncDef func);
 
+    /**
+     * Get all variables defined in this context
+     * @return A reference to the vector containing the variables
+     */
+    const std::vector<Var> &getVars() const;
+
+    /**
+     * Get all non-constant variables in the current function context
+     * What this means is that the stack will be traversed until a function
+     * context is hit, and all non-constant variables will be collected on the
+     * way
+     * @return A vector containing the variables
+     */
+    std::vector<Var> getLocalVars() const;
+
+    /**
+     * Get the type of this context
+     * @return The type of the context
+     */
+    ContextType getType() const;
+
 private:
+
+    // Context type
+    ContextType type;
 
     // Previous context
     Context *prev;
@@ -144,10 +174,11 @@ public:
     ~ContextStack();
 
     /**
-     * Add a context at the top of the context stack
+     * Add an empty context at the top of the context stack
+     * @param type The context type
      * @post `topContext` is changed to the new context on the stack
      */
-    void pushContext();
+    void pushContext(ContextType type);
 
     /**
      * Remove the top context from the context stack

@@ -3,12 +3,10 @@
 #include "general/funcdef.h"
 #include "general/types.h"
 #include "general/var.h"
+#include <string>
+#include <vector>
 
-Context::Context() : prev(nullptr) {
-
-}
-
-Context::Context(Context *prev) : prev(prev) {
+Context::Context(ContextType type, Context *prev) : type(type), prev(prev) {
 
 }
 
@@ -81,7 +79,29 @@ void Context::addFunc(FuncDef func) {
     funcs.push_back(func);
 }
 
-ContextStack::ContextStack() : topContext(new Context()) {
+const std::vector<Var> &Context::getVars() const {
+    return vars;
+}
+
+std::vector<Var> Context::getLocalVars() const {
+    std::vector<Var> out;
+    Context *cur = (Context *)this;
+    while (cur != nullptr) {
+        for (const Var &var : cur->getVars())
+            if (!var.type.isConst)
+                out.push_back(var);
+        if (cur->getType() == CTX_FUNC)
+            break;
+        cur = cur->getPrev();
+    }
+    return out;
+}
+
+ContextType Context::getType() const {
+    return type;
+}
+
+ContextStack::ContextStack() : topContext(new Context(CTX_GLOBAL)) {
 
 }
 
@@ -94,8 +114,8 @@ ContextStack::~ContextStack() {
     }
 }
 
-void ContextStack::pushContext() {
-    Context *newTop = new Context(topContext);
+void ContextStack::pushContext(ContextType type) {
+    Context *newTop = new Context(type, topContext);
     topContext = newTop;
 }
 
