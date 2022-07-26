@@ -7,6 +7,19 @@ Param::Param(Type type, std::string name) : type(type), name(name) {
 
 }
 
+FuncAlias::FuncAlias() : name("??"), constValues({}) {
+
+}
+
+FuncAlias::FuncAlias(std::string name) : name(name), constValues({}) {
+
+}
+
+FuncAlias::FuncAlias(std::string name, std::vector<std::string> constValues) :
+name(name), constValues(constValues) {
+
+}
+
 FuncDef::FuncDef() : name("??"), params({}) {
     
 }

@@ -137,6 +137,16 @@ public:
      */
     ContextType getType() const;
 
+    /**
+     * Add an alias to the function with the given name and typenames
+     * @param name The name of the function
+     * @param types A vector of argument types
+     * @param alias The alias to add to the function
+     * @note Assumes that the given function with argument types exists
+     */
+    void addFuncAlias(std::string name, std::vector<Type> types, FuncAlias alias
+    );
+
 private:
 
     // Context type
@@ -276,6 +286,16 @@ public:
      * @return The created variable
      */
     Var makeUniqueVar(Type type);
+
+    /**
+     * Add an alias to the function with the given name and typenames
+     * @param name The name of the function
+     * @param types A vector of argument types
+     * @param alias The alias to add to the function
+     * @note Assumes that the given function with argument types exists
+     */
+    void addFuncAlias(std::string name, std::vector<Type> types, FuncAlias alias
+    );
 
 private:
 

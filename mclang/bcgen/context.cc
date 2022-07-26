@@ -99,6 +99,26 @@ ContextType Context::getType() const {
     return type;
 }
 
+void Context::addFuncAlias(std::string name, std::vector<Type> types,
+FuncAlias alias) {
+    for (FuncDef &func : funcs) {
+        if (func.name == name && types.size() == func.params.size()) {
+            bool found = true;
+            for (unsigned int i = 0; i < types.size(); i++) {
+                if (types[i] != func.params[i].type) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                func.aliases.push_back(alias);
+                return;
+            }
+        }
+    }
+    prev->addFuncAlias(name, types, alias);
+}
+
 ContextStack::ContextStack() : topContext(new Context(CTX_GLOBAL)) {
 
 }
@@ -177,4 +197,9 @@ Var ContextStack::makeUniqueVar(Type type) {
         i++;
     addVar(Var(type, "__tmp" + std::to_string(i)));
     return Var(type, "__tmp" + std::to_string(i));
+}
+
+void ContextStack::addFuncAlias(std::string name, std::vector<Type> types,
+FuncAlias alias) {
+    topContext->addFuncAlias(name, types, alias);
 }

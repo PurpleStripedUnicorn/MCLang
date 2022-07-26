@@ -16,6 +16,17 @@ struct Param {
 };
 
 /**
+ * Defined aliases with inserted constant values
+ */
+struct FuncAlias {  
+    FuncAlias();
+    FuncAlias(std::string name);
+    FuncAlias(std::string name, std::vector<std::string> constValues);
+    std::string name;
+    std::vector<std::string> constValues;
+};
+
+/**
  * Function definition, with name and parameter types/names
  */
 struct FuncDef {
@@ -25,6 +36,7 @@ struct FuncDef {
     const static FuncDef unknown;
     std::string name;
     std::vector<Param> params;
+    std::vector<FuncAlias> aliases;
 };
 
 #endif
