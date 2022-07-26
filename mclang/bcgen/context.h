@@ -213,6 +213,54 @@ public:
      */
     std::vector<Var> getLocalVars() const;
 
+    /**
+     * Check if there is a variable (const or not) in the top context with the
+     * given name, if so get this variable's type
+     * @param name The name of the variable
+     * @param result The variable type will be put here
+     * @return Boolean indicating if the variable is in this context
+     */
+    bool findVar(std::string name, Type &result) const;
+
+    /**
+     * Check if there is a variable (const or not) in the top context or any
+     * context below that one with the given name, if so get this variable's
+     * type
+     * @param name The name of the variable
+     * @param result The variable type will be put here
+     * @return Boolean indicating if the variable is in this context
+     * @note Puts the first variable it finds in `result`, searching downwards
+     * through the stack
+     */
+    bool findVarAll(std::string name, Type &result) const;
+
+    /**
+     * Check if there is a function definition with the given name and the given
+     * parameter types in the top context, if so get this function definition
+     * @param name The function name
+     * @param types A vector of argument types
+     * @param result The found function definition will be put in this variable,
+     * if any is found
+     * @return A boolean indicating if there was a function found
+     */
+    bool findFunc(std::string name, std::vector<Type> types, FuncDef &result)
+    const;
+
+    /**
+     * Check if there is a function definition with the given name and the given
+     * parameter types in the top context or any context below that one, if
+     * so get this function definition
+     * @param name The function name
+     * @param types A vector of argument types
+     * @param result The found function definition will be put in this variable,
+     * if any is found
+     * @return A boolean indicating if there was a function found
+     * @note Puts the first function it finds in `result`, searching downwards
+     * through the stack
+     */
+    bool findFuncAll(std::string name, std::vector<Type> types, FuncDef &result)
+    const;
+
 private:
 
     Context *topContext;

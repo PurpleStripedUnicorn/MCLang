@@ -140,3 +140,21 @@ void ContextStack::addFunc(FuncDef func) {
 std::vector<Var> ContextStack::getLocalVars() const {
     return topContext->getLocalVars();
 }
+
+bool ContextStack::findVar(std::string name, Type &result) const {
+    return topContext->findVar(name, result);
+}
+
+bool ContextStack::findVarAll(std::string name, Type &result) const {
+    return topContext->findVarAll(name, result);
+}
+
+bool ContextStack::findFunc(std::string name, std::vector<Type> types,
+FuncDef &result) const {
+    return topContext->findFunc(name, types, result);
+}
+
+bool ContextStack::findFuncAll(std::string name, std::vector<Type> types,
+FuncDef &result) const {
+    return topContext->findFuncAll(name, types, result);
+}
