@@ -136,3 +136,7 @@ void ContextStack::setConst(std::string name, std::string value) {
 void ContextStack::addFunc(FuncDef func) {
     topContext->addFunc(func);
 }
+
+std::vector<Var> ContextStack::getLocalVars() const {
+    return topContext->getLocalVars();
+}

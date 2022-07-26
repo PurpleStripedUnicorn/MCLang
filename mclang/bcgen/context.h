@@ -13,7 +13,7 @@
  * Type for contexts, with different meanings
  * BASIC: Basic type without functionality
  * BLOCK: For code blocks, like in if-statements, etc.
- * FUNC: For entire functions, also functions inside functions
+ * FUNC: For entire functions
  * GLOBAL: Global context should only be used once
  */
 enum ContextType {
@@ -205,6 +205,13 @@ public:
      * @param func The function to add
      */
     void addFunc(FuncDef func);
+
+    /**
+     * Get all local variables in this function, this can be used for stack
+     * operations when calling functions
+     * @return A vector containing the variables
+     */
+    std::vector<Var> getLocalVars() const;
 
 private:
 
