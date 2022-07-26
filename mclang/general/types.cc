@@ -8,9 +8,13 @@ Type::Type() {
 }
 
 Type::Type(std::string type) {
-    if (type.substr(0, 6) == "const ")
+    if (type.substr(0, 6) == "const ") {
         isConst = true;
-    type = type.substr(6);
+        if (type.size() >= 6)
+            type = type.substr(6);
+    } else {
+        isConst = false;
+    }
     if (type == "void")
         base = TYPE_VOID;
     if (type == "int")
