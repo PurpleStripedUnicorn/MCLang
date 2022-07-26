@@ -27,6 +27,12 @@ bool Context::findVar(std::string name, Type &result) {
             return true;
         }
     }
+    for (ConstVar &constVar : constVars) {
+        if (constVar.name == name) {
+            result = constVar.type;
+            return true;
+        }
+    }
     return false;
 }
 
