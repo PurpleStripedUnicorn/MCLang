@@ -55,6 +55,8 @@ public:
      * @param name The name of the variable
      * @param result The variable type will be put here
      * @return Boolean indicating if the variable is in this context
+     * @note Puts the first variable it finds in `result`, searching downwards
+     * through the stack
      */
     bool findVarAll(std::string name, Type &result);
 
@@ -80,6 +82,8 @@ public:
      * @param result The found function definition will be put in this variable,
      * if any is found
      * @return A boolean indicating if there was a function found
+     * @note Puts the first function it finds in `result`, searching downwards
+     * through the stack
      */
     bool findFuncAll(std::string name, std::vector<Type> types, FuncDef &result)
     const;
