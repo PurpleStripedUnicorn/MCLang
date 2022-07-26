@@ -158,3 +158,12 @@ bool ContextStack::findFuncAll(std::string name, std::vector<Type> types,
 FuncDef &result) const {
     return topContext->findFuncAll(name, types, result);
 }
+
+Var ContextStack::makeUniqueVar(Type type) {
+    unsigned int i = 0;
+    Type tmp;
+    while (findVar("__tmp" + std::to_string(i), tmp))
+        i++;
+    addVar(Var(type, "__tmp" + std::to_string(i)));
+    return Var(type, "__tmp" + std::to_string(i));
+}

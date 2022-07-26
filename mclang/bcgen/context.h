@@ -261,6 +261,14 @@ public:
     bool findFuncAll(std::string name, std::vector<Type> types, FuncDef &result)
     const;
 
+    /**
+     * Create a unique variable starting with "__tmp" that has not been
+     * registered in any context in the context stack
+     * @param type The variable type to create
+     * @return The created variable
+     */
+    Var makeUniqueVar(Type type);
+
 private:
 
     Context *topContext;
