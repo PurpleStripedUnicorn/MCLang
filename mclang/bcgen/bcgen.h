@@ -2,9 +2,10 @@
 #ifndef __BCGEN_H__
 #define __BCGEN_H__
 
+#include "bcgen/context.h"
 #include "bcgen/instr.h"
-#include "bcgen/varmanager.h"
 #include "general/funcdef.h"
+#include "general/types.h"
 #include <string>
 #include <vector>
 
@@ -88,32 +89,17 @@ public:
      */
     BCFunc *topFunc() const;
 
-    /**
-     * Define a new function
-     * @param func The function to add to `funcs`
-     */
-    void addFuncDef(FuncDef func);
-
-    /**
-     * Check if a certain function is defined
-     * @return A boolean indicating if a function with the given name is in
-     * `funcs`
-     */
-    bool hasFuncDef(std::string name) const;
-
-    /**
-     * Get the function definition from a function name
-     * @param name The function name
-     * @return The function with the given name
-     * @note Assumes that `hasFunc` returns true
-     */
-    FuncDef getFuncDef(std::string name) const;
-
-    // Variable manager: to keep track of variable names used
-    VarManager varManager;
+    // Context stack
+    ContextStack ctx;
 
     // The compiler component
     Compiler *comp;
+
+    // Current return type and value (can be variable name or constant value)
+    struct {
+        Type type;
+        std::string value;
+    } ret;
 
 private:
 
@@ -126,9 +112,6 @@ private:
 
     // Counter to keep track of unique IDs/names assigned to functions
     unsigned int uniqueFuncId;
-
-    // Defined functions
-    std::vector<FuncDef> funcs;
 
 };
 
