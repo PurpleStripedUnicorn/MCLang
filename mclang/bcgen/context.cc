@@ -83,16 +83,14 @@ const std::vector<Var> &Context::getVars() const {
     return vars;
 }
 
-std::vector<Var> Context::getLocalVars() const {
+std::vector<Var> Context::getLocalVars(bool traverse) const {
     std::vector<Var> out;
-    Context *cur = (Context *)this;
-    while (cur != nullptr) {
-        for (const Var &var : cur->getVars())
-            if (!var.type.isConst)
-                out.push_back(var);
-        if (cur->getType() == CTX_FUNC)
-            break;
-        cur = cur->getPrev();
+    for (const Var &var : getVars())
+        if (!var.type.isConst)
+            out.push_back(var);
+    if (traverse && getType() != CTX_FUNC) {
+        std::vector<Var> res = getPrev()->getLocalVars(true);
+        out.insert(out.end(), res.begin(), res.end());
     }
     return out;
 }
@@ -139,6 +137,19 @@ void ContextStack::addFunc(FuncDef func) {
 
 std::vector<Var> ContextStack::getLocalVars() const {
     return topContext->getLocalVars();
+}
+
+std::vector<Var> ContextStack::getGlobalVars() const {
+    std::vector<Var> out;
+    Context *cur = topContext;
+    while (cur != nullptr) {
+        if (cur->getType() == CTX_GLOBAL) {
+            std::vector<Var> tmp = cur->getLocalVars(false);
+            out.insert(out.end(), tmp.begin(), tmp.end());
+        }
+        cur = cur->getPrev();
+    }
+    return out;
 }
 
 bool ContextStack::findVar(std::string name, Type &result) const {

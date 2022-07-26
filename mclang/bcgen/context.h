@@ -126,9 +126,10 @@ public:
      * What this means is that the stack will be traversed until a function
      * context is hit, and all non-constant variables will be collected on the
      * way
+     * @param traverse Turn travering the stack on or off
      * @return A vector containing the variables
      */
-    std::vector<Var> getLocalVars() const;
+    std::vector<Var> getLocalVars(bool traverse = true) const;
 
     /**
      * Get the type of this context
@@ -212,6 +213,13 @@ public:
      * @return A vector containing the variables
      */
     std::vector<Var> getLocalVars() const;
+
+    /**
+     * Get all global variables in the context stack. Searches for contexts with
+     * the GLOBAL type
+     * @return A vector containing the variables
+     */
+    std::vector<Var> getGlobalVars() const;
 
     /**
      * Check if there is a variable (const or not) in the top context with the
