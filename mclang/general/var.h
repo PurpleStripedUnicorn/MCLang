@@ -9,10 +9,15 @@
  */
 struct Var {
     Var(std::string type, std::string name);
-    Var(std::string type, std::string name, std::string constValue);
     std::string type, name;
-    bool isConst;
-    std::string constValue;
+};
+
+/**
+ * A constant variable, with value attached
+ */
+struct ConstVar : public Var {
+    ConstVar(std::string type, std::string name, std::string value);
+    std::string value;
 };
 
 #endif
