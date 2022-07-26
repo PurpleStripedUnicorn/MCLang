@@ -5,6 +5,7 @@
 #include "general/funcdef.h"
 #include "general/types.h"
 #include "general/var.h"
+#include <map>
 #include <string>
 #include <vector>
 
@@ -46,7 +47,7 @@ public:
      * @param result The variable type will be put here
      * @return Boolean indicating if the variable is in this context
      */
-    bool findVar(std::string name, Type &result);
+    bool findVar(std::string name, Type &result) const;
 
     /**
      * Check if there is a variable (const or not) in this context or any
@@ -58,7 +59,7 @@ public:
      * @note Puts the first variable it finds in `result`, searching downwards
      * through the stack
      */
-    bool findVarAll(std::string name, Type &result);
+    bool findVarAll(std::string name, Type &result) const;
 
     /**
      * Check if there is a function definition with the given name and the given
@@ -88,6 +89,26 @@ public:
     bool findFuncAll(std::string name, std::vector<Type> types, FuncDef &result)
     const;
 
+    /**
+     * Add a variable to this context
+     * @param var The variable to add
+     * @note There is no extra check to see if this variable already exists
+     */
+    void addVar(Var var);
+
+    /**
+     * Set the value of a constant, in the current context
+     * @param name Constant variable name
+     * @param value The value to assign to the constant
+     */
+    void setConst(std::string name, std::string value);
+
+    /**
+     * Add a function to the current context
+     * @param func The function to add
+     */
+    void addFunc(FuncDef func);
+
 private:
 
     // Previous context
@@ -96,8 +117,8 @@ private:
     // Variables in the current context
     std::vector<Var> vars;
 
-    // Global variables in the current context
-    std::vector<ConstVar> constVars;
+    // Values of constants
+    std::map<std::string, std::string> constValues;
 
     // Function definitions in the current context
     std::vector<FuncDef> funcs;
@@ -133,6 +154,26 @@ public:
      * @post `topContext` is changed to the previous context on the stack
      */
     void popContext();
+
+    /**
+     * Add a variable to the top context
+     * @param var The variable to add
+     * @note There is no extra check to see if this variable already exists
+     */
+    void addVar(Var var);
+
+    /**
+     * Set the value of a constant, in the top context
+     * @param name Constant variable name
+     * @param value The value to assign to the constant
+     */
+    void setConst(std::string name, std::string value);
+
+    /**
+     * Add a function to the top context
+     * @param func The function to add
+     */
+    void addFunc(FuncDef func);
 
 private:
 

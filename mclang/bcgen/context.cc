@@ -20,23 +20,17 @@ Context *Context::getPrev() const {
     return prev;
 }
 
-bool Context::findVar(std::string name, Type &result) {
-    for (Var &var : vars) {
+bool Context::findVar(std::string name, Type &result) const {
+    for (const Var &var : vars) {
         if (var.name == name) {
             result = var.type;
-            return true;
-        }
-    }
-    for (ConstVar &constVar : constVars) {
-        if (constVar.name == name) {
-            result = constVar.type;
             return true;
         }
     }
     return false;
 }
 
-bool Context::findVarAll(std::string name, Type &result) {
+bool Context::findVarAll(std::string name, Type &result) const {
     bool cur = findVar(name, result);
     if (cur)
         return true;
@@ -75,6 +69,18 @@ FuncDef &result) const {
     return false;
 }
 
+void Context::addVar(Var var) {
+    vars.push_back(var);
+}
+
+void Context::setConst(std::string name, std::string value) {
+    constValues[name] = value;
+}
+
+void Context::addFunc(FuncDef func) {
+    funcs.push_back(func);
+}
+
 ContextStack::ContextStack() : topContext(new Context()) {
 
 }
@@ -97,4 +103,16 @@ void ContextStack::popContext() {
     Context *newTop = topContext->getPrev();
     delete topContext;
     topContext = newTop;
+}
+
+void ContextStack::addVar(Var var) {
+    topContext->addVar(var);
+}
+
+void ContextStack::setConst(std::string name, std::string value) {
+    topContext->setConst(name, value);
+}
+
+void ContextStack::addFunc(FuncDef func) {
+    topContext->addFunc(func);
 }
