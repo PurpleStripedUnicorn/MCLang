@@ -50,6 +50,22 @@ protected:
     // expression
     ParseNode *childExpr;
 
+private:
+
+    /**
+     * Generate bytecode for this parse node, given it is a constant
+     * initialization
+     * @param man The main bytecode manager
+     */
+    void constBytecode(BCManager &man) const;
+
+    /**
+     * Generate bytecode for this parse node, given it is a non-constant
+     * initialization
+     * @param man The main bytecode manager
+     */
+    void nonConstBytecode(BCManager &man) const;
+
 };
 
 #endif
