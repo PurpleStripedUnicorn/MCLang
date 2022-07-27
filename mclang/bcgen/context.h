@@ -166,6 +166,13 @@ public:
     void addFuncAlias(std::string name, std::vector<Type> types, FuncAlias alias
     );
 
+    /**
+     * Get all constant definitions in all currently registered contexts
+     * @return A map containing all of the constant definitions
+     * @note Assumes that there are no duplicate constant names
+     */
+    std::map<std::string, std::string> getConstValues() const;
+
 private:
 
     /**

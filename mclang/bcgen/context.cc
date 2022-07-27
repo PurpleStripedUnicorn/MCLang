@@ -3,6 +3,7 @@
 #include "general/funcdef.h"
 #include "general/types.h"
 #include "general/var.h"
+#include <map>
 #include <string>
 #include <vector>
 
@@ -154,4 +155,14 @@ FuncDef *&result, Context *ctx) const {
         }
     }
     return false;
+}
+
+std::map<std::string, std::string> ContextStack::getConstValues() const {
+    std::map<std::string, std::string> out;
+    Context *cur = topContext;
+    while (cur != nullptr) {
+        out.insert(cur->constValues.begin(), cur->constValues.end());
+        cur = cur->prev;
+    }
+    return out;
 }
