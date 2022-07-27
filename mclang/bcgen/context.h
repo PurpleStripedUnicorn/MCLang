@@ -182,6 +182,11 @@ public:
      */
     std::map<std::string, std::string> getConstValues() const;
 
+    /**
+     * Print out the context stack in debug form
+     */
+    void print() const;
+
 private:
 
     /**

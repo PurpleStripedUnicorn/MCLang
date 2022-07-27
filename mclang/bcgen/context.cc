@@ -3,6 +3,7 @@
 #include "general/funcdef.h"
 #include "general/types.h"
 #include "general/var.h"
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -139,6 +140,47 @@ FuncAlias alias) {
     }
 }
 
+std::map<std::string, std::string> ContextStack::getConstValues() const {
+    std::map<std::string, std::string> out;
+    Context *cur = topContext;
+    while (cur != nullptr) {
+        out.insert(cur->constValues.begin(), cur->constValues.end());
+        cur = cur->prev;
+    }
+    return out;
+}
+
+void ContextStack::print() const {
+    Context *cur = topContext;
+    while (cur != nullptr) {
+        std::cout << std::endl << "--- ";
+        if (cur->type == CTX_BASIC)
+            std::cout << "BASIC";
+        if (cur->type == CTX_BLOCK)
+            std::cout << "BLOCK";
+        if (cur->type == CTX_FUNC)
+            std::cout << "FUNC";
+        if (cur->type == CTX_GLOBAL)
+            std::cout << "GLOBAL";
+        std::cout << " ---" << std::endl << "Variables: ";
+        for (const Var &var : cur->vars)
+            std::cout << var.name << " ";
+        std::cout << std::endl << "Constant values: ";
+        for (const std::pair<std::string, std::string> &val : cur->constValues)
+            std::cout << "(" << val.first << ", " << val.second << ") ";
+        std::cout << std::endl << "Functions: ";
+        for (const FuncDef &func : cur->funcs) {
+            std::cout << func.name << " (";
+            for (const FuncAlias &alias : func.aliases)
+                std::cout << (&alias == &*func.aliases.begin() ? "" : ", ")
+                << alias.name;
+            std::cout << ") ";
+        }
+        cur = cur->prev;
+    }
+    std::cout << std::endl;
+}
+
 bool ContextStack::findVarCtx(std::string name, Type &result, Context *ctx)
 const {
     if (ctx == nullptr)
@@ -169,14 +211,4 @@ FuncDef *&result, Context *ctx) const {
         }
     }
     return false;
-}
-
-std::map<std::string, std::string> ContextStack::getConstValues() const {
-    std::map<std::string, std::string> out;
-    Context *cur = topContext;
-    while (cur != nullptr) {
-        out.insert(cur->constValues.begin(), cur->constValues.end());
-        cur = cur->prev;
-    }
-    return out;
 }
