@@ -11,9 +11,9 @@
 #include <string>
 #include <vector>
 
-FuncNode::FuncNode(std::string name, std::vector<Param> params,
-CodeBlockNode *codeblock, Loc loc) : ParseNode(PNODE_FUNC, loc), name(name),
-params(params), codeblock(codeblock) {
+FuncNode::FuncNode(Type retType, std::string name, std::vector<Param> params,
+CodeBlockNode *codeblock, Loc loc) : ParseNode(PNODE_FUNC, loc),
+retType(retType), name(name), params(params), codeblock(codeblock) {
 
 }
 
@@ -26,6 +26,9 @@ FuncNode::~FuncNode() {
 }
 
 void FuncNode::bytecode(BCManager &man) const {
+    // TODO: Implement non-void functions
+    if (retType != Type("void"))
+        MCLError(1, "Non-void functions are not supported", loc);
     // Functions without params will receive original name, other will get
     // some random name
     if (params.empty())
