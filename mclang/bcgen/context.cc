@@ -146,11 +146,13 @@ FuncDef *&result, Context *ctx) const {
         return false;
     for (const FuncDef &func : ctx->funcs) {
         if (func.name == name && func.params.size() == types.size()) {
-            for (unsigned int i = 0; i < types.size(); i++) {
-                if (types[i] == func.params[i].type) {
-                    result = (FuncDef *)&func;
-                    return true;
-                }
+            bool success = true;
+            for (unsigned int i = 0; i < types.size(); i++)
+                if (types[i] != func.params[i].type)
+                    success = false;
+            if (success) {
+                result = (FuncDef *)&func;
+                return true;
             }
         }
     }
