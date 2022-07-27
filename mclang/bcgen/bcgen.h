@@ -4,6 +4,7 @@
 
 #include "bcgen/context.h"
 #include "bcgen/instr.h"
+#include "bcgen/return.h"
 #include "general/funcdef.h"
 #include "general/types.h"
 #include <string>
@@ -19,15 +20,6 @@ struct BCFunc {
     BCFunc(std::string name);
     std::string name;
     std::vector<BCInstr> instrList;
-};
-
-/**
- * Return object, contains type and value, which can be a variable name or
- * constant value
- */
-struct Return {
-    Type type;
-    std::string value;
 };
 
 /**

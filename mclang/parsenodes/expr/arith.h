@@ -3,6 +3,7 @@
 #define __PARSENODE_ARITH_H__
 
 #include "bcgen/instr.h"
+#include "bcgen/return.h"
 #include "general/loc.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"
