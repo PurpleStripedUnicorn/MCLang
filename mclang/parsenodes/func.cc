@@ -30,6 +30,10 @@ void FuncNode::bytecode(BCManager &man) {
     // TODO: Implement non-void functions
     if (retType != Type("void"))
         MCLError(1, "Non-void functions are not supported", loc);
+    // TODO: Implement functions that accept constant values
+    for (const Param &param : params)
+        if (param.type.isConst)
+            MCLError(1, "Function cannot take constant parameters.", loc);
     // Functions without params will receive original name, other will get
     // some random name
     if (params.empty())

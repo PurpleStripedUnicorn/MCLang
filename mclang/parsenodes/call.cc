@@ -32,8 +32,12 @@ void CallNode::bytecode(BCManager &man) {
     std::vector<Type> inpTypes;
     for (unsigned int i = 0; i < params.size(); i++) {
         params[i]->bytecode(man);
-        man.write(BCInstr(INSTR_COPY, "__param" + std::to_string(i),
-        man.ret.value));
+        if (man.ret.type.isConst)
+            man.write(BCInstr(INSTR_SET, "__param" + std::to_string(i),
+            man.ret.value));
+        else
+            man.write(BCInstr(INSTR_COPY, "__param" + std::to_string(i),
+            man.ret.value));
         inpTypes.push_back(man.ret.type);
     }
     FuncDef funcDef;
