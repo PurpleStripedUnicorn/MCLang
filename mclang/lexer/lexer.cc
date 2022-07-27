@@ -89,8 +89,10 @@ inline Token &Lexer::lastRead() const {
 
 Token Lexer::convertIdent(std::string ident) {
     TokenType tt = TOK_WORD;
-    if (ident == "int" || ident == "void")
+    if (ident == "int" || ident == "void" || ident == "bool")
         tt = TOK_TYPENAME;
+    if (ident == "const")
+        tt = TOK_CONST;
     if (ident == "namespace")
         tt = TOK_NAMESPACE;
     if (ident == "if")
