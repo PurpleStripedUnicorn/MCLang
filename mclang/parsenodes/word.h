@@ -45,6 +45,14 @@ public:
 
 protected:
 
+    /**
+     * Find a the value of the constant with the current variable's name
+     * @param man The main bytecode manager
+     * @return A string containing the value, or an empty string if nothing was
+     * found
+     */
+    std::string findConstValue(BCManager &man) const;
+
     // The word content
     std::string content;
 
