@@ -19,7 +19,10 @@ const std::string instrNames[] = {
     "COPY",
     "M_ARITH_START",
     "ADD", "SUB", "MUL", "DIV", "MOD",
-    "M_ARITH_END"
+    "M_ARITH_END",
+    "M_ARITHI_START",
+    "ADDI", "SUBI", "MULI", "DIVI", "MODI",
+    "M_ARITHI_END"
 };
 
 /**
