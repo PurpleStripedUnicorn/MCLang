@@ -17,12 +17,12 @@ public:
     /**
      * Constructor
      * @param varType The variable type to make the variable
-     * @param varName The name of the global variable
+     * @param childExpr The expression after the type definition
      * @param loc The location of the parse node
      * @note Global variables cannot be initialized with a value, instead they
      * will start at value zero
      */
-    GlobalVarNode(Type varType, std::string varName, Loc loc);
+    GlobalVarNode(Type varType, ParseNode *childExpr, Loc loc);
 
     /**
      * Destructor
@@ -46,8 +46,8 @@ protected:
     // The type of the global variable
     Type varType;
 
-    // THe name of the global variable
-    std::string varName;
+    // The expression after the type
+    ParseNode *childExpr;
 
 };
 
