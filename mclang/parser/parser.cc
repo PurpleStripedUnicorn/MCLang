@@ -82,7 +82,7 @@ ParseNode *Parser::readInProgram() {
     Loc lastLoc = cur().loc;
     std::vector<ParseNode *> childNodes;
     while (true) {
-        if (accept(TOK_TYPENAME))
+        if (accept(TOK_TYPENAME) || accept(TOK_CONST))
             childNodes.push_back(readInDef());
         else if (accept(TOK_NAMESPACE))
             childNodes.push_back(readInNamespace());
@@ -115,7 +115,7 @@ ParseNode *Parser::readInGlobalVar(Type type, Loc lastLoc)
 ParseNode *Parser::readInFunc(Type type, std::string funcName, Loc lastLoc) {
     expect(TOK_LBRACE), next();
     std::vector<Param> params;
-    if (accept(TOK_TYPENAME)) {
+    if (accept(TOK_TYPENAME) || accept(TOK_CONST)) {
         params.push_back(readInFuncParam());
         while (accept(TOK_COMMA)) {
             next();
@@ -167,7 +167,7 @@ ParseNode *Parser::readInLine() {
         return readInExec();
     if (accept(TOK_IF))
         return readInIf();
-    if (accept(TOK_TYPENAME))
+    if (accept(TOK_TYPENAME) || accept(TOK_CONST))
         return readInVarInit();
     // If there are no special tokens found, try to read an expression, and then
     // a semicolon
