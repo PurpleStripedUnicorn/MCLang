@@ -57,6 +57,13 @@ private:
     void next();
 
     /**
+     * Move to the previous token
+     * @post `curIndex` is decremented
+     * @warning Does nothing if `curIndex` is equal to 0!
+     */
+    void prev();
+
+    /**
      * Check if the current token is of the given type
      * @param type The token type
      * @return Boolean indicating if the types match
@@ -87,14 +94,10 @@ private:
      * Read in the end of a global variable definition, after the variable type
      * and the variable name
      * @param type The typename that was already read
-     * @param varName The variable name that was already read
      * @param lastLoc The location of the typename token
      * @return A pointer to the generated parse node
-     * @note Global variable definitions may not take an initializing value,
-     * instead a not-defined global variable will be intialized at 0
      */
-    ParseNode *readInGlobalVar(Type type, std::string varName,
-    Loc lastLoc);
+    ParseNode *readInGlobalVar(Type type, Loc lastLoc);
 
     /**
      * Read in the end of a function definition, after the return type and the

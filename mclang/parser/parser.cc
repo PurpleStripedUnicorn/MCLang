@@ -62,6 +62,11 @@ void Parser::next() {
     curIndex++;
 }
 
+void Parser::prev() {
+    if (curIndex > 0)
+        curIndex--;
+}
+
 bool Parser::accept(TokenType type) const {
     return cur().type == type;
 }
@@ -95,13 +100,16 @@ ParseNode *Parser::readInDef() {
     next();
     if (accept(TOK_LBRACE))
         return readInFunc(type, name, lastLoc);
-    return readInGlobalVar(type, name, lastLoc);
+    return readInGlobalVar(type, lastLoc);
 }
 
-ParseNode *Parser::readInGlobalVar(Type type, std::string varName, Loc lastLoc)
+ParseNode *Parser::readInGlobalVar(Type type, Loc lastLoc)
 {
+    // To also read the name of the variable, we need to move one token back
+    prev();
+    ParseNode *childExpr = readInExpr();
     expect(TOK_SEMICOL), next();
-    return new GlobalVarNode(type, varName, lastLoc);
+    return new GlobalVarNode(type, childExpr, lastLoc);
 }
 
 ParseNode *Parser::readInFunc(Type type, std::string funcName, Loc lastLoc) {
