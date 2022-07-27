@@ -8,6 +8,7 @@
 #include "parsenodes/codeblock.h"
 #include "parsenodes/func.h"
 #include "parsenodes/parsenode.h"
+#include <map>
 #include <string>
 #include <vector>
 
@@ -35,6 +36,10 @@ void FuncNode::bytecode(BCManager &man) const {
         man.addFunc(name);
     else
         man.addFunc();
+    // Add instructions to set constant variable values
+    for (std::pair<std::string, std::string> constVal :
+    man.ctx.getConstValues())
+        man.write(BCInstr(INSTR_SET, constVal.first, constVal.second));
     // Get the input types
     std::vector<Type> paramTypes;
     for (const Param &param : params)
