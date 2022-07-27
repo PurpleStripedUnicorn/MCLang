@@ -82,7 +82,8 @@ public:
     void addBlockVar(Var var);
 
     /**
-     * Set the value of a constant, in the top context
+     * Set the value of a constant, in the uppermost block context, like with
+     * `addBlockVar`
      * @param name Constant variable name
      * @param value The value to assign to the constant
      */
@@ -208,6 +209,13 @@ private:
      */
     bool findFuncCtx(std::string name, std::vector<Type> types,
     FuncDef *&result, Context *ctx) const;
+
+    /**
+     * Retrieve the uppermost block context
+     * @return A pointer to the uppermost context that is not of the BASIC type,
+     * null if none can be found
+     */
+    Context *topBlockCtx() const;
 
     Context *topContext;
 

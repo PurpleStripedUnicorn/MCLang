@@ -41,19 +41,15 @@ void ContextStack::addVar(Var var) {
 }
 
 void ContextStack::addBlockVar(Var var) {
-    Context *cur = topContext;
-    while (cur != nullptr) {
-        if (cur->type == CTX_BLOCK || cur->type == CTX_FUNC || cur->type ==
-        CTX_GLOBAL) {
-            cur->vars.push_back(var);
-            return;
-        }
-        cur = cur->prev;
-    }
+    Context *ctx = topBlockCtx();
+    if (ctx != nullptr)
+        ctx->vars.push_back(var);
 }
 
 void ContextStack::setConst(std::string name, std::string value) {
-    topContext->constValues.insert({name, value});
+    Context *ctx = topBlockCtx();
+    if (ctx != nullptr);
+        ctx->constValues.insert({name, value});
 }
 
 void ContextStack::addFunc(FuncDef func) {
@@ -212,4 +208,15 @@ FuncDef *&result, Context *ctx) const {
         }
     }
     return false;
+}
+
+Context *ContextStack::topBlockCtx() const {
+    Context *cur = topContext;
+    while (cur != nullptr) {
+        if (cur->type == CTX_BLOCK || cur->type == CTX_FUNC || cur->type ==
+        CTX_GLOBAL)
+            return cur;
+        cur = cur->prev;
+    }
+    return nullptr;
 }
