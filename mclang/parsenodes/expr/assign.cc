@@ -31,3 +31,7 @@ void AssignNode::bytecode(BCManager &man) const {
 std::string AssignNode::getVarName() const {
     return varName;
 }
+
+ParseNode *AssignNode::getExpr() const {
+    return left;
+}

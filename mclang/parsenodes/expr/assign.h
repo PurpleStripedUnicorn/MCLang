@@ -38,6 +38,12 @@ public:
      */
     std::string getVarName() const;
 
+    /**
+     * Get the assigned expression parse node
+     * @return The pointer stored in `left`
+     */
+    ParseNode *getExpr() const;
+
 private:
 
     // The name of the variable
