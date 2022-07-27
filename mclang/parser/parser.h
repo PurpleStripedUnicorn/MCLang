@@ -3,6 +3,7 @@
 #define __PARSER_H__
 
 #include "general/funcdef.h"
+#include "general/types.h"
 #include "general/var.h"
 #include "lexer/token.h"
 #include <vector>
@@ -92,7 +93,7 @@ private:
      * @note Global variable definitions may not take an initializing value,
      * instead a not-defined global variable will be intialized at 0
      */
-    ParseNode *readInGlobalVar(std::string type, std::string varName,
+    ParseNode *readInGlobalVar(Type type, std::string varName,
     Loc lastLoc);
 
     /**
@@ -103,7 +104,7 @@ private:
      * @param lastLoc The location of the typename token
      * @return A pointer to the generated parse node
      */
-    ParseNode *readInFunc(std::string type, std::string funcName, Loc lastLoc);
+    ParseNode *readInFunc(Type type, std::string funcName, Loc lastLoc);
 
     /**
      * Read in a function parameter, a type followed by a parameter name
@@ -195,6 +196,11 @@ private:
      * @return A pointer to the generated parse node
      */
     ParseNode *readInVarInit();
+
+    /**
+     * Read in a (variable/function) type, which can contain const
+     */
+    Type readInType();
 
     // Compiler component
     Compiler *comp;

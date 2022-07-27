@@ -3,6 +3,8 @@
 #include "errorhandle/handle.h"
 #include "general/funcdef.h"
 #include "general/loc.h"
+#include "general/types.h"
+#include "general/var.h"
 #include "lexer/debug.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
@@ -87,9 +89,7 @@ ParseNode *Parser::readInProgram() {
 
 ParseNode *Parser::readInDef() {
     Loc lastLoc = cur().loc;
-    expect(TOK_TYPENAME);
-    std::string type = cur().content;
-    next();
+    Type type = readInType();
     expect(TOK_WORD);
     std::string name = cur().content;
     next();
@@ -98,18 +98,13 @@ ParseNode *Parser::readInDef() {
     return readInGlobalVar(type, name, lastLoc);
 }
 
-ParseNode *Parser::readInGlobalVar(std::string type, std::string varName,
-Loc lastLoc) {
+ParseNode *Parser::readInGlobalVar(Type type, std::string varName, Loc lastLoc)
+{
     expect(TOK_SEMICOL), next();
     return new GlobalVarNode(type, varName, lastLoc);
 }
 
-ParseNode *Parser::readInFunc(std::string type, std::string funcName,
-Loc lastLoc) {
-    if (type != "void")
-        // TODO: Implement non-void functions
-        MCLError(1, "Invalid return type '" + cur().content + "', needs to be "
-        "'void'.", cur().loc);
+ParseNode *Parser::readInFunc(Type type, std::string funcName, Loc lastLoc) {
     expect(TOK_LBRACE), next();
     std::vector<Param> params;
     if (accept(TOK_TYPENAME)) {
@@ -122,17 +117,15 @@ Loc lastLoc) {
     expect(TOK_RBRACE), next();
     expect(TOK_LCBRACE);
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-    return new FuncNode(funcName, params, codeblock, lastLoc);
+    return new FuncNode(type, funcName, params, codeblock, lastLoc);
 }
 
 Param Parser::readInFuncParam() {
-    expect(TOK_TYPENAME);
-    std::string type = cur().content;
-    next();
+    Type type = readInType();
     expect(TOK_WORD);
     std::string name = cur().content;
     next();
-    return Param(Type(type), name);
+    return Param(type, name);
 }
 
 ParseNode *Parser::readInCodeBlock() {
@@ -313,10 +306,29 @@ ParseNode *Parser::readInNamespace() {
 
 ParseNode *Parser::readInVarInit() {
     Loc lastLoc = cur().loc;
-    expect(TOK_TYPENAME);
-    std::string varType = cur().content;
-    next();
+    Type varType = readInType();
     ParseNode *childExpr = readInExpr();
     expect(TOK_SEMICOL), next();
     return new VarInitNode(varType, childExpr, lastLoc);
+}
+
+Type Parser::readInType() {
+    Type out;
+    if (accept(TOK_CONST)) {
+        out.isConst = true;
+        next();
+    } else {
+        out.isConst = false;
+    }
+    expect(TOK_TYPENAME);
+    if (cur().content == "void")
+        out.base = TYPE_VOID;
+    if (cur().content == "int")
+        out.base = TYPE_INT;
+    if (cur().content == "bool")
+        out.base = TYPE_BOOL;
+    if (cur().content == "str")
+        out.base = TYPE_STR;
+    next();
+    return out;
 }
