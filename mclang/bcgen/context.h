@@ -25,145 +25,13 @@ enum ContextType {
  * A context contains function definitions, variable definitions, constant
  * values, etc.
  */
-class Context {
-
-public:
-
-    /**
-     * Constructor
-     * @param funcCtx Indicates if this is a function context
-     */
+struct Context {
     Context(ContextType type, Context *prev = nullptr);
-
-    /**
-     * Destructor
-     */
-    ~Context();
-
-    /**
-     * Get the previous context on the stack
-     * @return A pointer to the previous context
-     */
-    Context *getPrev() const;
-
-    /**
-     * Check if there is a variable (const or not) in this context with the
-     * given name, if so get this variable's type
-     * @param name The name of the variable
-     * @param result The variable type will be put here
-     * @return Boolean indicating if the variable is in this context
-     */
-    bool findVar(std::string name, Type &result) const;
-
-    /**
-     * Check if there is a variable (const or not) in this context or any
-     * context below this one with the given name, if so get this variable's
-     * type
-     * @param name The name of the variable
-     * @param result The variable type will be put here
-     * @return Boolean indicating if the variable is in this context
-     * @note Puts the first variable it finds in `result`, searching downwards
-     * through the stack
-     */
-    bool findVarAll(std::string name, Type &result) const;
-
-    /**
-     * Check if there is a function definition with the given name and the given
-     * parameter types in the current context, if so get this function
-     * definition
-     * @param name The function name
-     * @param types A vector of argument types
-     * @param result The found function definition will be put in this variable,
-     * if any is found
-     * @return A boolean indicating if there was a function found
-     */
-    bool findFunc(std::string name, std::vector<Type> types, FuncDef &result)
-    const;
-
-    /**
-     * Check if there is a function definition with the given name and the given
-     * parameter types in the current context or any context below this one, if
-     * so get this function definition
-     * @param name The function name
-     * @param types A vector of argument types
-     * @param result The found function definition will be put in this variable,
-     * if any is found
-     * @return A boolean indicating if there was a function found
-     * @note Puts the first function it finds in `result`, searching downwards
-     * through the stack
-     */
-    bool findFuncAll(std::string name, std::vector<Type> types, FuncDef &result)
-    const;
-
-    /**
-     * Add a variable to this context
-     * @param var The variable to add
-     * @note There is no extra check to see if this variable already exists
-     */
-    void addVar(Var var);
-
-    /**
-     * Set the value of a constant, in the current context
-     * @param name Constant variable name
-     * @param value The value to assign to the constant
-     */
-    void setConst(std::string name, std::string value);
-
-    /**
-     * Add a function to the current context
-     * @param func The function to add
-     */
-    void addFunc(FuncDef func);
-
-    /**
-     * Get all variables defined in this context
-     * @return A reference to the vector containing the variables
-     */
-    const std::vector<Var> &getVars() const;
-
-    /**
-     * Get all non-constant variables in the current function context
-     * What this means is that the stack will be traversed until a function
-     * context is hit, and all non-constant variables will be collected on the
-     * way
-     * @param traverse Turn travering the stack on or off
-     * @return A vector containing the variables
-     */
-    std::vector<Var> getLocalVars(bool traverse = true) const;
-
-    /**
-     * Get the type of this context
-     * @return The type of the context
-     */
-    ContextType getType() const;
-
-    /**
-     * Add an alias to the function with the given name and typenames
-     * @param name The name of the function
-     * @param types A vector of argument types
-     * @param alias The alias to add to the function
-     * @note Assumes that the given function with argument types exists
-     */
-    void addFuncAlias(std::string name, std::vector<Type> types, FuncAlias alias
-    );
-
-private:
-
-    // Context type
     ContextType type;
-
-    // Previous context
     Context *prev;
-
-    // Variables in the current context
     std::vector<Var> vars;
-
-    // Values of constants
     std::map<std::string, std::string> constValues;
-
-    // Function definitions in the current context
     std::vector<FuncDef> funcs;
-
 };
 
 /**
@@ -226,8 +94,9 @@ public:
 
     /**
      * Get all global variables in the context stack. Searches for contexts with
-     * the GLOBAL type
+     * the GLOBAL type, stops when one is found
      * @return A vector containing the variables
+     * @note If no global context is found, an empty vector is returned
      */
     std::vector<Var> getGlobalVars() const;
 
@@ -298,6 +167,26 @@ public:
     );
 
 private:
+
+    /**
+     * Find a variable in a given context
+     * @param name The name of the variable to search for
+     * @param result The type of the variable will be put here if found
+     * @param ctx The context to search in
+     * @return A boolean indicating if the variable was found
+     */
+    bool findVarCtx(std::string name, Type &result, Context *ctx) const;
+
+    /**
+     * Find a function with given parameter types in a given context
+     * @param name The name of the variable to search for
+     * @param types The parameter types of the function
+     * @param result The function definition will be put here if found
+     * @param ctx The context to search in
+     * @return A boolean indicating if the variable was found
+     */
+    bool findFuncCtx(std::string name, std::vector<Type> types,
+    FuncDef *&result, Context *ctx) const;
 
     Context *topContext;
 
