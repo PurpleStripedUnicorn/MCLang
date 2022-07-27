@@ -73,6 +73,15 @@ public:
     void addVar(Var var);
 
     /**
+     * Add a variable to the uppermost block/function/global context, skipping
+     * basic contexts
+     * @param var The variable to add
+     * @note There is no extra check to see if this variable already exists
+     * @note If there are only basic contexts, nothing happens
+     */
+    void addBlockVar(Var var);
+
+    /**
      * Set the value of a constant, in the top context
      * @param name Constant variable name
      * @param value The value to assign to the constant

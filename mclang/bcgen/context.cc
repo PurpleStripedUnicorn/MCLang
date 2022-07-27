@@ -39,6 +39,18 @@ void ContextStack::addVar(Var var) {
     topContext->vars.push_back(var);
 }
 
+void ContextStack::addBlockVar(Var var) {
+    Context *cur = topContext;
+    while (cur != nullptr) {
+        if (cur->type == CTX_BLOCK || cur->type == CTX_FUNC || cur->type ==
+        CTX_GLOBAL) {
+            cur->vars.push_back(var);
+            return;
+        }
+        cur = cur->prev;
+    }
+}
+
 void ContextStack::setConst(std::string name, std::string value) {
     topContext->constValues.insert({name, value});
 }
