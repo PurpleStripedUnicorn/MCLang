@@ -56,10 +56,9 @@ void FuncNode::bytecode(BCManager &man) {
     man.ctx.addFunc(FuncDef(name, params));
     man.ctx.addFuncAlias(name, paramTypes, man.topFunc()->name);
     // Initilize global variables at zero if they weren't already (by adding 0)
-    man.write(BCInstr(INSTR_SET, "__zero", "0"));
     std::vector<Var> globalVars = man.ctx.getGlobalVars();
     for (unsigned int i = 0; i < globalVars.size(); i++)
-        man.write(BCInstr(INSTR_ADD, globalVars[i].name, "__zero"));
+        man.write(BCInstr(INSTR_ADDI, globalVars[i].name, "0"));
     man.ctx.pushContext(CTX_FUNC);
     // Add parameters to context and copy them to the correct variables
     for (unsigned int i = 0; i < params.size(); i++) {
