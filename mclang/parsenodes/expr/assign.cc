@@ -22,6 +22,8 @@ void AssignNode::bytecode(BCManager &man) {
     Type varType;
     if (!man.ctx.findVarAll(varName, varType))
         MCLError(1, "Use of uninitialized variable \"" + varName + "\".", loc);
+    if (varType.isConst)
+        MCLError(1, "Cannot modify a constant variable.", loc);
     if (man.ret.type != varType)
         MCLError(1, "Cannot assign value of type \"" + man.ret.type.str()
         + "\" to variable of type \"" + varType.str() + "\".", loc);
