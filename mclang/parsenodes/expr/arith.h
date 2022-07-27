@@ -85,6 +85,14 @@ private:
      */
     void bytecodeConstInt(BCManager &man);
 
+    /**
+     * Generate bytecode for this parse node, given the left expression returns
+     * a "const str"
+     * @param man The main bytecode manager
+     * @note Uses the `man.ret` member variable
+     */
+    void bytecodeConstStr(BCManager &man);
+
 };
 
 #endif
