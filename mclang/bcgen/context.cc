@@ -48,7 +48,7 @@ void ContextStack::addBlockVar(Var var) {
 
 void ContextStack::setConst(std::string name, std::string value) {
     Context *ctx = topBlockCtx();
-    if (ctx != nullptr);
+    if (ctx != nullptr)
         ctx->constValues.insert({name, value});
 }
 
