@@ -49,7 +49,17 @@ private:
     // The name of the variable
     std::string varName;
 
+    // The type of the variable, found when generating bytecode
+    Type varType;
+
     // NOTE: Expression can be accessed with `left` pointer
+
+    /**
+     * Throw an error for unsupported return types
+     * @param man The main bytecode manager
+     * @note Uses `man.ret` to determine expression type
+     */
+    void invalidTypeError(BCManager &man) const;
 
 };
 
