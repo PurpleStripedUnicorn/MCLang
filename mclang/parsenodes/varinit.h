@@ -3,6 +3,7 @@
 #define __PARSENODE_VARINIT_H__
 
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 #include <string>
@@ -21,7 +22,7 @@ public:
      * assignment, or just the name of the variable
      * @param loc The location of the parse node
      */
-    VarInitNode(std::string varType, ParseNode *childExpr, Loc loc);
+    VarInitNode(Type varType, ParseNode *childExpr, Loc loc);
 
     /**
      * Destructor
@@ -43,7 +44,7 @@ public:
 protected:
 
     // The type of the initialized variable
-    std::string varType;
+    Type varType;
 
     // The child expression of this node, which should be an assignment
     // expression

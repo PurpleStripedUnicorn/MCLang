@@ -9,7 +9,7 @@
 #include "parsenodes/word.h"
 #include <string>
 
-VarInitNode::VarInitNode(std::string varType, ParseNode *childExpr, Loc loc) :
+VarInitNode::VarInitNode(Type varType, ParseNode *childExpr, Loc loc) :
 ParseNode(PNODE_VARINIT, loc), varType(varType), childExpr(childExpr) {
 
 }

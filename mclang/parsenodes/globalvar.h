@@ -3,6 +3,7 @@
 #define __PARSENODE_GLOBALVAR_H__
 
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 #include <string>
@@ -21,7 +22,7 @@ public:
      * @note Global variables cannot be initialized with a value, instead they
      * will start at value zero
      */
-    GlobalVarNode(std::string varType, std::string varName, Loc loc);
+    GlobalVarNode(Type varType, std::string varName, Loc loc);
 
     /**
      * Destructor
@@ -43,7 +44,7 @@ public:
 protected:
 
     // The type of the global variable
-    std::string varType;
+    Type varType;
 
     // THe name of the global variable
     std::string varName;
