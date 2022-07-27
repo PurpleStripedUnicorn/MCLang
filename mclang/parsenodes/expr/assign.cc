@@ -17,7 +17,7 @@ AssignNode::~AssignNode() {
     
 }
 
-void AssignNode::bytecode(BCManager &man) const {
+void AssignNode::bytecode(BCManager &man) {
     left->bytecode(man);
     Type varType;
     if (!man.ctx.findVarAll(varName, varType))

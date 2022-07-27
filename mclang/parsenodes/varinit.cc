@@ -22,14 +22,14 @@ std::vector<ParseNode *> VarInitNode::children() const {
     return {childExpr};
 }
 
-void VarInitNode::bytecode(BCManager &man) const {
+void VarInitNode::bytecode(BCManager &man) {
     if (varType.isConst)
         constBytecode(man);
     else
         nonConstBytecode(man);
 }
 
-void VarInitNode::constBytecode(BCManager &man) const {
+void VarInitNode::constBytecode(BCManager &man) {
     // Get the name of the constant and evaluate the assignment expression
     if (childExpr->getType() != PNODE_ASSIGN)
         MCLError(1, "Expected constant variable assignment.", loc);
@@ -45,7 +45,7 @@ void VarInitNode::constBytecode(BCManager &man) const {
     man.ret.value = "";
 }
 
-void VarInitNode::nonConstBytecode(BCManager &man) const {
+void VarInitNode::nonConstBytecode(BCManager &man) {
     // Check if the type of the child expression is correct and get the variable
     // name
     std::string varName;

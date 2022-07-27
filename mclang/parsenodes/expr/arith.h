@@ -7,17 +7,26 @@
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/parsenode.h"
 #include <map>
+#include <string>
 #include <vector>
 
 class BCManager;
 
+/**
+ * Entry in the table defined below
+ */
+struct ArithTableEntry {
+    BCInstrType instrType, instrTypeI;
+    std::string shortName;
+};
+
 // Table to find which instruction should be used per type of arithmatic node
-const std::map<ParseNodeType, BCInstrType> instrTypeTable = {
-    {PNODE_ADD, INSTR_ADD},
-    {PNODE_SUB, INSTR_SUB},
-    {PNODE_MUL, INSTR_MUL},
-    {PNODE_DIV, INSTR_DIV},
-    {PNODE_MOD, INSTR_MOD}
+const std::map<ParseNodeType, ArithTableEntry> arithTable = {
+    {PNODE_ADD, {INSTR_ADD, INSTR_ADDI, "+"}},
+    {PNODE_SUB, {INSTR_SUB, INSTR_SUBI, "-"}},
+    {PNODE_MUL, {INSTR_MUL, INSTR_MULI, "*"}},
+    {PNODE_DIV, {INSTR_DIV, INSTR_DIVI, "/"}},
+    {PNODE_MOD, {INSTR_MOD, INSTR_MODI, "%"}}
 };
 
 /**
@@ -47,7 +56,34 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const override;
+    virtual void bytecode(BCManager &man) override;
+
+private:
+
+    // Store the returns for showing error messages
+    Return retLeft, retRight;
+
+    /**
+     * Throw an error for unsupported return types
+     * @note Assumes `retLeft` and `retRight` are correct
+     */
+    void invalidTypeError() const;
+
+    /**
+     * Generate bytecode for this parse node, given the left expression returns
+     * an "int"
+     * @param man The main bytecode manager
+     * @note Uses the `man.ret` member variable
+     */
+    void bytecodeInt(BCManager &man);
+
+    /**
+     * Generate bytecode for this parse node, given the left expression returns
+     * a "const int"
+     * @param man The main bytecode manager
+     * @note Uses the `man.ret` member variable
+     */
+    void bytecodeConstInt(BCManager &man);
 
 };
 

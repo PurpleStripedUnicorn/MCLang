@@ -70,7 +70,7 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const = 0;
+    virtual void bytecode(BCManager &man) = 0;
 
     /**
      * Get the location of the parse node

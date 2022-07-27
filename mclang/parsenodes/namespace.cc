@@ -21,7 +21,7 @@ std::vector<ParseNode *> NSNode::children() const {
     return {};
 }
 
-void NSNode::bytecode(BCManager &man) const {
+void NSNode::bytecode(BCManager &man) {
     // No bytecode is generated, because this node serves as a global setting,
     // which is handled by the "program" parse node instead
     man.ret.type = Type("void");

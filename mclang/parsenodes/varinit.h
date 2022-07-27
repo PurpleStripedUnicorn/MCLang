@@ -39,7 +39,7 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const override;
+    virtual void bytecode(BCManager &man) override;
 
 protected:
 
@@ -57,14 +57,14 @@ private:
      * initialization
      * @param man The main bytecode manager
      */
-    void constBytecode(BCManager &man) const;
+    void constBytecode(BCManager &man);
 
     /**
      * Generate bytecode for this parse node, given it is a non-constant
      * initialization
      * @param man The main bytecode manager
      */
-    void nonConstBytecode(BCManager &man) const;
+    void nonConstBytecode(BCManager &man);
 
 };
 

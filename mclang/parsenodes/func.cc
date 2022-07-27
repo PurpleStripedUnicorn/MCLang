@@ -26,7 +26,7 @@ FuncNode::~FuncNode() {
     delete codeblock;
 }
 
-void FuncNode::bytecode(BCManager &man) const {
+void FuncNode::bytecode(BCManager &man) {
     // TODO: Implement non-void functions
     if (retType != Type("void"))
         MCLError(1, "Non-void functions are not supported", loc);

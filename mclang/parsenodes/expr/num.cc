@@ -21,7 +21,7 @@ std::vector<ParseNode *> NumNode::children() const {
     return {};
 }
 
-void NumNode::bytecode(BCManager &man) const {
+void NumNode::bytecode(BCManager &man) {
     // Put the value in "__res"
     man.write(BCInstr(INSTR_SET, "__res", content));
     man.ret.type = Type("int");

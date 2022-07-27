@@ -17,9 +17,9 @@ ArithNode::~ArithNode() {
     
 }
 
-void ArithNode::bytecode(BCManager &man) const {
-    Return retLeft, retRight;
+void ArithNode::bytecode(BCManager &man) {
     right->bytecode(man);
+    retLeft = man.ret;
     if (man.ret.type != Type("int"))
         MCLError(1, "Arithmatic not allowed on non-int type", loc);
     man.ctx.pushContext(CTX_BASIC);
@@ -28,10 +28,22 @@ void ArithNode::bytecode(BCManager &man) const {
     left->bytecode(man);
     if (man.ret.type != Type("int"))
         MCLError(1, "Arithmatic not allowed on non-int type", loc);
-    if (instrTypeTable.count(getType()) == 0)
+    if (arithTable.count(getType()) == 0)
         MCLError(1, "Unexpected error while converting arithmatic");
-    BCInstrType instrType = instrTypeTable.find(getType())->second;
+    BCInstrType instrType = arithTable.find(getType())->second.instrType;
     man.write(BCInstr(instrType, man.ret.value, tmpVar.name));
     man.ctx.popContext();
     man.ret.type = Type("int");
+}
+
+void ArithNode::invalidTypeError() const {
+    
+}
+
+void ArithNode::bytecodeInt(BCManager &man) {
+
+}
+
+void ArithNode::bytecodeConstInt(BCManager &man) {
+    
 }

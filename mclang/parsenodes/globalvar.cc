@@ -23,7 +23,7 @@ std::vector<ParseNode *> GlobalVarNode::children() const {
     return {};
 }
 
-void GlobalVarNode::bytecode(BCManager &man) const {
+void GlobalVarNode::bytecode(BCManager &man) {
     // Get the global variable name
     std::string varName;
     if (varType.isConst) {

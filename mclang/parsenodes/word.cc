@@ -20,7 +20,7 @@ std::vector<ParseNode *> WordNode::children() const {
     return {};
 }
 
-void WordNode::bytecode(BCManager &man) const {
+void WordNode::bytecode(BCManager &man) {
     Type varType;
     if (!man.ctx.findVarAll(content, varType))
         MCLError(1, "Accessing uninitialized variable \"" + content + "\"",

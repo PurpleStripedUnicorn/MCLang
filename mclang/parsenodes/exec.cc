@@ -23,7 +23,7 @@ ExecNode::~ExecNode() {
     delete codeblock;
 }
 
-void ExecNode::bytecode(BCManager &man) const {
+void ExecNode::bytecode(BCManager &man) {
     man.addFunc();
     std::string fname = man.topFunc()->name;
     codeblock->bytecode(man);

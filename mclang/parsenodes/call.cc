@@ -22,7 +22,7 @@ std::vector<ParseNode *> CallNode::children() const {
     return params;
 }
 
-void CallNode::bytecode(BCManager &man) const {
+void CallNode::bytecode(BCManager &man) {
     // Put local variables on stack
     std::vector<Var> varList = man.ctx.getLocalVars();
     for (unsigned int i = 0; i < varList.size(); i++)

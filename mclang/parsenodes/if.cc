@@ -28,7 +28,7 @@ IfNode::~IfNode() {
         delete codeblocks[i];
 }
 
-void IfNode::bytecode(BCManager &man) const {
+void IfNode::bytecode(BCManager &man) {
     std::string tmpId = man.ctx.makeUniqueVar(Type("bool")).name;
     man.write(BCInstr(INSTR_SET, tmpId, "0"));
     for (unsigned int i = 0; i < codeblocks.size(); i++) {

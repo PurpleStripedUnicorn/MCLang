@@ -20,7 +20,7 @@ std::vector<ParseNode *> CodeBlockNode::children() const {
     return childNodes;
 }
 
-void CodeBlockNode::bytecode(BCManager &man) const {
+void CodeBlockNode::bytecode(BCManager &man) {
     for (unsigned int i = 0; i < childNodes.size(); i++)
         childNodes[i]->bytecode(man);
     man.ret.type = Type("void");
