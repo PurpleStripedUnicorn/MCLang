@@ -69,6 +69,8 @@ std::vector<std::string> BCConverter::convertInstr(const BCInstr &instr) {
         comp->scoreboardName + " = " + instr.arg2 + " " + comp->scoreboardName};
     if (IMARK_ARITH_START < instr.type && instr.type < IMARK_ARITH_END)
         return convertArith(instr);
+    if (IMARK_ARITHI_START < instr.type && instr.type < IMARK_ARITHI_END)
+        return convertArithI(instr);
     MCLError(1, "Unexpected error, reading undefined instruction");
     return {};
 }
@@ -120,4 +122,25 @@ std::vector<std::string> BCConverter::convertArith(BCInstr instr) const {
     return {"scoreboard players operation " + instr.arg1 + " "
     + comp->scoreboardName + " " + op + " " + instr.arg2 + " "
     + comp->scoreboardName};
+}
+
+std::vector<std::string> BCConverter::convertArithI(BCInstr instr) const {
+    // ADDI and SUBI can be done in just one command
+    if (instr.type == INSTR_ADDI)
+        return {"scoreboard players add " + instr.arg1 + " " +
+        comp->scoreboardName + " " + instr.arg2};
+    if (instr.type == INSTR_SUBI)
+        return {"scoreboard players remove " + instr.arg1 + " " +
+        comp->scoreboardName + " " + instr.arg2};
+    // For others the numbers are first put in temporary scoreboard values
+    std::string op = "";
+    if (instr.type == INSTR_MULI)
+        op = "*=";
+    if (instr.type == INSTR_DIVI)
+        op = "/=";
+    if (instr.type == INSTR_MODI)
+        op = "%=";
+    return {"scoreboard players set __itmp " + comp->scoreboardName + " "
+    + instr.arg2, "scoreboard players operation " + instr.arg1 + " "
+    + comp->scoreboardName + " " + op + " __itmp " + comp->scoreboardName};
 }

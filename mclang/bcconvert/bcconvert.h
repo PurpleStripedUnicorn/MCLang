@@ -99,11 +99,20 @@ private:
 
     /**
      * Convert an arithmatic operation instruction
-     * @param iinstr THe instruction to convert, assumed to be an arithmatic
+     * @param instr THe instruction to convert, assumed to be an arithmatic
      * operation instruction
-     * @return A vector of string containing raw commands
+     * @return A vector of strings containing raw commands
      */
     std::vector<std::string> convertArith(BCInstr instr) const;
+
+    /**
+     * Convert an arithmatic operation instruction with as the second argument a
+     * number
+     * @param instr THe instruction to convert, assumed to be an arithmatic
+     * operation instruction with second argument numeric
+     * @return A vector of strings containing raw commands
+     */
+    std::vector<std::string> convertArithI(BCInstr instr) const;
 
     // The compiler component
     Compiler *comp;

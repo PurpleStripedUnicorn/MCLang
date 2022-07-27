@@ -33,7 +33,11 @@ enum BCInstrType {
     // arg1
     IMARK_ARITH_START,
     INSTR_ADD, INSTR_SUB, INSTR_MUL, INSTR_DIV, INSTR_MOD,
-    IMARK_ARITH_END
+    IMARK_ARITH_END,
+    // Arithmatic with the second argument being a number
+    IMARK_ARITHI_START,
+    INSTR_ADDI, INSTR_SUBI, INSTR_MULI, INSTR_DIVI, INSTR_MODI,
+    IMARK_ARITHI_END
 };
 
 struct BCInstr {
