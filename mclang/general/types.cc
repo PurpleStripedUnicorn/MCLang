@@ -33,6 +33,10 @@ bool Type::operator!=(const Type &other) const {
     return !operator==(other);
 }
 
+bool Type::sameBase(const Type &other) const {
+    return base == other.base;
+}
+
 std::string Type::str() const {
     std::string out = "";
     if (isConst)
