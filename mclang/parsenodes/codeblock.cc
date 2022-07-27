@@ -21,8 +21,13 @@ std::vector<ParseNode *> CodeBlockNode::children() const {
 }
 
 void CodeBlockNode::bytecode(BCManager &man) {
-    for (unsigned int i = 0; i < childNodes.size(); i++)
+    man.ctx.pushContext(CTX_BLOCK);
+    for (unsigned int i = 0; i < childNodes.size(); i++) {
+        man.ctx.pushContext(CTX_BASIC);
         childNodes[i]->bytecode(man);
+        man.ctx.popContext();
+    }
+    man.ctx.popContext();
     man.ret.type = Type("void");
     man.ret.value = "";
 }
