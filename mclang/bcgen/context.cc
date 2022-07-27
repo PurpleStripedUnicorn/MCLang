@@ -176,6 +176,7 @@ void ContextStack::print() const {
                 << alias.name;
             std::cout << ") ";
         }
+        std::cout << std::endl;
         cur = cur->prev;
     }
     std::cout << std::endl;
