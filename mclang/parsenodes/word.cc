@@ -27,10 +27,10 @@ void WordNode::bytecode(BCManager &man) {
         MCLError(1, "Accessing uninitialized variable \"" + content + "\"",
         loc);
     if (varType == Type("int") || varType == Type("bool")) {
-        // Return the variable value to "__res"
-        man.write(BCInstr(INSTR_COPY, "__res", content));
+        // Return the variable value to "0res"
+        man.write(BCInstr(INSTR_COPY, "0res", content));
         man.ret.type = varType;
-        man.ret.value = "__res";
+        man.ret.value = "0res";
     } else if (varType == Type("const int") || varType == Type("const bool")
     || varType == Type("const str")) {
         man.ret.type = varType;
