@@ -22,7 +22,6 @@ void ArithNode::bytecode(BCManager &man) {
         MCLError(1, "Unexpected error while converting arithmatic");
     left->bytecode(man);
     retLeft = man.ret;
-    man.ctx.pushContext(CTX_BASIC);
     if (man.ret.type == Type("int"))
         bytecodeInt(man);
     else if (man.ret.type == Type("const int"))
@@ -30,8 +29,7 @@ void ArithNode::bytecode(BCManager &man) {
     else if (man.ret.type == Type("const str"))
         bytecodeConstStr(man);
     else
-        invalidTypeError();
-    man.ctx.popContext();
+        right->bytecode(man), retRight = man.ret, invalidTypeError();
 }
 
 void ArithNode::invalidTypeError() const {
@@ -44,21 +42,22 @@ void ArithNode::invalidTypeError() const {
 }
 
 void ArithNode::bytecodeInt(BCManager &man) {
-    Var tmpVar = man.ctx.makeUniqueVar(Type("int"));
-    man.write(BCInstr(INSTR_COPY, tmpVar.name, man.ret.value));
+    std::string tmpVar = man.tmp.reserve();
+    man.write(BCInstr(INSTR_COPY, tmpVar, man.ret.value));
     right->bytecode(man);
     retRight = man.ret;
     if (man.ret.type == Type("int")) {
         BCInstrType instrType = arithTable.find(getType())->second.instrType;
-        man.write(BCInstr(instrType, man.ret.value, tmpVar.name));
+        man.write(BCInstr(instrType, man.ret.value, tmpVar));
         man.ret = {Type("int"), man.ret.value};
     } else if (man.ret.type == Type("const int")) {
         BCInstrType instrType = arithTable.find(getType())->second.instrTypeI;
-        man.write(BCInstr(instrType, tmpVar.name, man.ret.value));
-        man.ret = {Type("int"), tmpVar.name};
+        man.write(BCInstr(instrType, tmpVar, man.ret.value));
+        man.ret = {Type("int"), tmpVar};
     } else {
         invalidTypeError();
     }
+    man.tmp.free(tmpVar);
 }
 
 void ArithNode::bytecodeConstInt(BCManager &man) {
