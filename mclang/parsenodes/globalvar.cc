@@ -38,7 +38,7 @@ void GlobalVarNode::bytecode(BCManager &man) {
     }
     // Check if the global variable name isn't already in use
     Type tmp;
-    if (man.ctx.findVarAll(varName, tmp))
+    if (hasNameConflict(varName, man))
         MCLError(1, "Global variable \"" + varName + "\" already defined", loc);
     // Set constant variable value
     if (varType.isConst) {
@@ -47,10 +47,18 @@ void GlobalVarNode::bytecode(BCManager &man) {
             MCLError(1, "Assigning value of type \"" + man.ret.type.str()
             + "\" to global constant of type \"" + varType.str() + "\"", loc);
         // Return value contains the constant value here
-        man.ctx.setConst(varName, man.ret.value);
+        man.ctx.back().constValues.insert({varName, man.ret.value});
     }
     // Remember that this variable is now registered
-    man.ctx.addVar(Var(varType, varName));
+    man.ctx.back().vars.push_back(Var(varType, varName));
     man.ret.type = Type("void");
     man.ret.value = "";
+}
+
+bool GlobalVarNode::hasNameConflict(std::string varName, BCManager &man) const {
+    for (const Context &ctx : man.ctx)
+        for (const Var &var : ctx.vars)
+            if (var.name == varName)
+                return true;
+    return false;
 }
