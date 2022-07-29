@@ -79,6 +79,15 @@ std::vector<Type> FuncNode::getParamTypes() const {
     return out;
 }
 
+bool FuncNode::acceptTypes(std::vector<Type> types) const {
+    if (types.size() != params.size())
+        return false;
+    for (unsigned int i = 0; i < types.size(); i++)
+        if (!(types[i] >= params[i].type))
+            return false;
+    return true;
+}
+
 bool FuncNode::findAlias(std::vector<std::string> constValues, std::string
 &result) const {
     for (const FuncAlias &alias : aliases) {

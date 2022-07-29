@@ -83,6 +83,13 @@ public:
      */
     std::vector<Type> getParamTypes() const;
 
+    /**
+     * Check if this function accepts the given parameter types
+     * @param types A vector of types to check for
+     * @return Boolean indicating if the function accepts the given types
+     */
+    bool acceptTypes(std::vector<Type> types) const;
+
 private:
 
     /**
