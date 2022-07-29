@@ -1,10 +1,12 @@
 
 #include "bcgen/bcgen.h"
+#include "bcgen/context.h"
 #include "bcgen/instr.h"
 #include "errorhandle/handle.h"
 #include "general/funcdef.h"
 #include "general/loc.h"
 #include "parsenodes/call.h"
+#include "parsenodes/func.h"
 #include "parsenodes/parsenode.h"
 #include <string>
 #include <vector>
@@ -23,13 +25,42 @@ std::vector<ParseNode *> CallNode::children() const {
 }
 
 void CallNode::bytecode(BCManager &man) {
-    // Put local variables on stack
-    std::vector<Var> varList = man.ctx.getLocalVars();
-    for (unsigned int i = 0; i < varList.size(); i++)
-        man.write(BCInstr(INSTR_PUSH, varList[i].name));
-    // Evaluate child nodes and put values in parameter variables, also keep
-    // track of output types of parameters
-    std::vector<Type> inpTypes;
+    pushLocalVars(man);
+    bytecodeChildren(man);
+    FuncNode *func = findFunc(man);
+    if (func == nullptr)
+        notFoundError();
+    std::string callname = func->bytecode(getConstVals());
+    man.write(BCInstr(INSTR_CALL, callname));
+    popLocalVars(man);
+    // TODO: Implement return types other than void
+    man.ret.type = Type("void");
+    man.ret.value = "";
+}
+
+FuncNode *CallNode::findFunc(BCManager &man) const {
+    for (Context &ctx : man.ctx)
+        for (FuncNode *func : ctx.funcs)
+            if (func->getName() == fname && func->acceptTypes(paramTypes))
+                return func;
+    return nullptr;
+}
+
+void CallNode::pushLocalVars(BCManager &man) const {
+    for (const Var &var : man.ctx.back().vars)
+        man.write(BCInstr(INSTR_PUSH, var.name));
+}
+
+void CallNode::popLocalVars(BCManager &man) const {
+    std::vector<Var> &vars = man.ctx.back().vars;
+    for (unsigned int i = 0; i < vars.size(); i++) {
+        man.write(BCInstr(INSTR_TOP, vars[vars.size() - i - 1].name));
+        man.write(BCInstr(INSTR_POP));
+    }
+}
+
+void CallNode::bytecodeChildren(BCManager &man) {
+    paramTypes.clear();
     for (unsigned int i = 0; i < params.size(); i++) {
         params[i]->bytecode(man);
         if (man.ret.type.isConst)
@@ -38,34 +69,24 @@ void CallNode::bytecode(BCManager &man) {
         else
             man.write(BCInstr(INSTR_COPY, "__param" + std::to_string(i),
             man.ret.value));
-        inpTypes.push_back(man.ret.type);
+        paramTypes.push_back(man.ret.type);
+        paramValues.push_back(man.ret.value);
     }
-    FuncDef funcDef;
-    // Check if function exists
-    if (!man.ctx.findFuncAll(fname, inpTypes, funcDef)) {
-        std::string errTxt = "Function \"" + fname + "\" with argument types (";
-        for (unsigned int i = 0; i < inpTypes.size(); i++) {
-            if (i != 0)
-                errTxt.append(", ");
-            errTxt.append(inpTypes[i].str());
-        }
-        errTxt.append(") not defined");
-        MCLError(1, errTxt, loc);
-    }
-    // TODO: Implement return types other than void
-    // TODO: Implement constant parameters
-    // Actual function call
-    if (funcDef.aliases.size() == 0)
-        MCLError(1, "Unexpected error, could not generate function call "
-        "bytecode.", loc);
-    man.write(BCInstr(INSTR_CALL, funcDef.aliases[0].name));
-    // Take local variables off the stack
-    if (varList.size() > 0) {
-        for (unsigned int i = 0; i < varList.size(); i++) {
-            man.write(BCInstr(INSTR_TOP, varList[varList.size() - i - 1].name));
-            man.write(BCInstr(INSTR_POP));
-        }
-    }
-    man.ret.type = Type("void");
-    man.ret.value = "";
+}
+
+void CallNode::notFoundError() {
+    std::string errTxt = "Function \"" + fname + "\" with argument types (";
+    bool first = true;
+    for (const Type &ptype : paramTypes)
+        errTxt.append((first ? ", " : "") + ptype.str()), first = false;
+    errTxt.append(") not defined");
+    MCLError(1, errTxt, loc);
+}
+
+std::vector<std::string> CallNode::getConstVals() const {
+    std::vector<std::string> out;
+    for (unsigned int i = 0; i < paramTypes.size(); i++)
+        if (paramTypes[i].isConst)
+            out.push_back(paramValues[i]);
+    return out;
 }
