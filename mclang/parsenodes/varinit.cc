@@ -39,8 +39,11 @@ void VarInitNode::constBytecode(BCManager &man) {
     if (man.ret.type != varType)
         MCLError(1, "Cannot assign value of type \"" + man.ret.type.str()
         + "\" to constant variable of type \"" + varType.str() + "\".", loc);
-    man.ctx.setConst(varName, man.ret.value);
-    man.ctx.addBlockVar(Var(varType, varName));
+    if (hasNameConflict(varName, man))
+        MCLError(1, "Initialization of already defined variable \"" + varName
+        + "\"", loc);
+    man.ctx.back().constValues.insert({varName, man.ret.value});
+    man.ctx.back().vars.push_back(Var(varType, varName));
     man.ret.type = Type("void");
     man.ret.value = "";
 }
@@ -55,15 +58,21 @@ void VarInitNode::nonConstBytecode(BCManager &man) {
         varName = ((WordNode *)childExpr)->getContent();
     else
         MCLError(1, "Invalid expression after initialization.", loc);
-    // Check if the name of the variable is already in use
-    Type tmp;
-    if (man.ctx.findVarAll(varName, tmp))
+    if (hasNameConflict(varName, man))
         MCLError(1, "Initialization of already defined variable \"" + varName
         + "\"", loc);
     // Register variable with type
-    man.ctx.addBlockVar(Var(varType, varName));
+    man.ctx.back().vars.push_back(Var(varType, varName));
     if (childExpr->getType() == PNODE_ASSIGN)
         childExpr->bytecode(man);
     man.ret.type = Type("void");
     man.ret.value = "";
+}
+
+bool VarInitNode::hasNameConflict(std::string varName, BCManager &man) const {
+    for (const Context &ctx : man.ctx)
+        for (const Var &var : ctx.vars)
+            if (var.name == varName)
+                return true;
+    return false;
 }

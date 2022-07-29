@@ -66,6 +66,14 @@ private:
      */
     void nonConstBytecode(BCManager &man);
 
+    /**
+     * Check if a variable was already defined
+     * @param varName The variable name
+     * @param man The main bytecode manager
+     * @return A boolean indicating if the variable is in the context stack
+     */
+    bool hasNameConflict(std::string varName, BCManager &man) const;
+
 };
 
 #endif
