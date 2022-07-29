@@ -40,7 +40,7 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const override;
+    virtual void bytecode(BCManager &man) override;
 
     /**
      * Check if this if-statement has an else-statement at the end or not

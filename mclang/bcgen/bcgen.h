@@ -4,6 +4,8 @@
 
 #include "bcgen/context.h"
 #include "bcgen/instr.h"
+#include "bcgen/return.h"
+#include "bcgen/tmpvar.h"
 #include "general/funcdef.h"
 #include "general/types.h"
 #include <string>
@@ -19,15 +21,6 @@ struct BCFunc {
     BCFunc(std::string name);
     std::string name;
     std::vector<BCInstr> instrList;
-};
-
-/**
- * Return object, contains type and value, which can be a variable name or
- * constant value
- */
-struct Return {
-    Type type;
-    std::string value;
 };
 
 /**
@@ -99,7 +92,10 @@ public:
     BCFunc *topFunc() const;
 
     // Context stack
-    ContextStack ctx;
+    std::vector<Context> ctx;
+
+    // Temporary variable manager
+    TmpVarManager tmp;
 
     // The compiler component
     Compiler *comp;

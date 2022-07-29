@@ -3,6 +3,8 @@
 #include "errorhandle/handle.h"
 #include "general/funcdef.h"
 #include "general/loc.h"
+#include "general/types.h"
+#include "general/var.h"
 #include "lexer/debug.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
@@ -60,6 +62,11 @@ void Parser::next() {
     curIndex++;
 }
 
+void Parser::prev() {
+    if (curIndex > 0)
+        curIndex--;
+}
+
 bool Parser::accept(TokenType type) const {
     return cur().type == type;
 }
@@ -75,7 +82,7 @@ ParseNode *Parser::readInProgram() {
     Loc lastLoc = cur().loc;
     std::vector<ParseNode *> childNodes;
     while (true) {
-        if (accept(TOK_TYPENAME))
+        if (accept(TOK_TYPENAME) || accept(TOK_CONST))
             childNodes.push_back(readInDef());
         else if (accept(TOK_NAMESPACE))
             childNodes.push_back(readInNamespace());
@@ -87,32 +94,28 @@ ParseNode *Parser::readInProgram() {
 
 ParseNode *Parser::readInDef() {
     Loc lastLoc = cur().loc;
-    expect(TOK_TYPENAME);
-    std::string type = cur().content;
-    next();
+    Type type = readInType();
     expect(TOK_WORD);
     std::string name = cur().content;
     next();
     if (accept(TOK_LBRACE))
         return readInFunc(type, name, lastLoc);
-    return readInGlobalVar(type, name, lastLoc);
+    return readInGlobalVar(type, lastLoc);
 }
 
-ParseNode *Parser::readInGlobalVar(std::string type, std::string varName,
-Loc lastLoc) {
+ParseNode *Parser::readInGlobalVar(Type type, Loc lastLoc)
+{
+    // To also read the name of the variable, we need to move one token back
+    prev();
+    ParseNode *childExpr = readInExpr();
     expect(TOK_SEMICOL), next();
-    return new GlobalVarNode(type, varName, lastLoc);
+    return new GlobalVarNode(type, childExpr, lastLoc);
 }
 
-ParseNode *Parser::readInFunc(std::string type, std::string funcName,
-Loc lastLoc) {
-    if (type != "void")
-        // TODO: Implement non-void functions
-        MCLError(1, "Invalid return type '" + cur().content + "', needs to be "
-        "'void'.", cur().loc);
+ParseNode *Parser::readInFunc(Type type, std::string funcName, Loc lastLoc) {
     expect(TOK_LBRACE), next();
     std::vector<Param> params;
-    if (accept(TOK_TYPENAME)) {
+    if (accept(TOK_TYPENAME) || accept(TOK_CONST)) {
         params.push_back(readInFuncParam());
         while (accept(TOK_COMMA)) {
             next();
@@ -122,17 +125,15 @@ Loc lastLoc) {
     expect(TOK_RBRACE), next();
     expect(TOK_LCBRACE);
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
-    return new FuncNode(funcName, params, codeblock, lastLoc);
+    return new FuncNode(type, funcName, params, codeblock, lastLoc);
 }
 
 Param Parser::readInFuncParam() {
-    expect(TOK_TYPENAME);
-    std::string type = cur().content;
-    next();
+    Type type = readInType();
     expect(TOK_WORD);
     std::string name = cur().content;
     next();
-    return Param(Type(type), name);
+    return Param(type, name);
 }
 
 ParseNode *Parser::readInCodeBlock() {
@@ -166,7 +167,7 @@ ParseNode *Parser::readInLine() {
         return readInExec();
     if (accept(TOK_IF))
         return readInIf();
-    if (accept(TOK_TYPENAME))
+    if (accept(TOK_TYPENAME) || accept(TOK_CONST))
         return readInVarInit();
     // If there are no special tokens found, try to read an expression, and then
     // a semicolon
@@ -313,10 +314,29 @@ ParseNode *Parser::readInNamespace() {
 
 ParseNode *Parser::readInVarInit() {
     Loc lastLoc = cur().loc;
-    expect(TOK_TYPENAME);
-    std::string varType = cur().content;
-    next();
+    Type varType = readInType();
     ParseNode *childExpr = readInExpr();
     expect(TOK_SEMICOL), next();
     return new VarInitNode(varType, childExpr, lastLoc);
+}
+
+Type Parser::readInType() {
+    Type out;
+    if (accept(TOK_CONST)) {
+        out.isConst = true;
+        next();
+    } else {
+        out.isConst = false;
+    }
+    expect(TOK_TYPENAME);
+    if (cur().content == "void")
+        out.base = TYPE_VOID;
+    if (cur().content == "int")
+        out.base = TYPE_INT;
+    if (cur().content == "bool")
+        out.base = TYPE_BOOL;
+    if (cur().content == "str")
+        out.base = TYPE_STR;
+    next();
+    return out;
 }

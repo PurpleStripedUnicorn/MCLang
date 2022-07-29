@@ -28,6 +28,9 @@ struct Type {
     Type(std::string type);
     bool operator==(const Type &other) const;
     bool operator!=(const Type &other) const;
+    bool sameBase(const Type &other) const;
+    bool operator<=(const Type &other) const;
+    bool operator>=(const Type &other) const;
     std::string str() const;
     BaseType base;
     bool isConst;

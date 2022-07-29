@@ -4,6 +4,7 @@
 #include "general/loc.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/word.h"
+#include <map>
 #include <string>
 #include <vector>
 
@@ -20,21 +21,45 @@ std::vector<ParseNode *> WordNode::children() const {
     return {};
 }
 
-void WordNode::bytecode(BCManager &man) const {
+void WordNode::bytecode(BCManager &man) {
     Type varType;
-    if (!man.ctx.findVarAll(content, varType))
+    if (!wasInitialized(man, varType))
         MCLError(1, "Accessing uninitialized variable \"" + content + "\"",
         loc);
-    // TODO: implement const vars, etc.
-    if (varType != Type("int") && varType != Type("bool"))
+    if (varType == Type("int") || varType == Type("bool")) {
+        // Return the variable value to "0res"
+        man.write(BCInstr(INSTR_COPY, "0res", content));
+        man.ret.type = varType;
+        man.ret.value = "0res";
+    } else if (varType == Type("const int") || varType == Type("const bool")
+    || varType == Type("const str")) {
+        man.ret.type = varType;
+        man.ret.value = findConstValue(man);
+    } else {
         MCLError(1, "Accessing inaccessible variable type \"" + varType.str()
         + "\".", loc);
-    // Return the variable value to "__res"
-    man.write(BCInstr(INSTR_COPY, "__res", content));
-    man.ret.type = varType;
-    man.ret.value = "__res";
+    }
 }
 
 std::string WordNode::getContent() const {
     return content;
+}
+
+std::string WordNode::findConstValue(BCManager &man) const {
+    for (const Context &ctx : man.ctx)
+        if (ctx.constValues.count(content) > 0)
+            return ctx.constValues.find(content)->second;
+    return "";
+}
+
+bool WordNode::wasInitialized(BCManager &man, Type &varType) const {
+    for (const Context &ctx : man.ctx) {
+        for (const Var &var : ctx.vars) {
+            if (var.name == content) {
+                varType = var.type;
+                return true;
+            }
+        }
+    }
+    return false;
 }

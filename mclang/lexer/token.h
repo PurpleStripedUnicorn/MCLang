@@ -17,7 +17,7 @@ enum TokenType {
     // Normal word
     TOK_WORD,
     // Typenames and other special words
-    TOK_TYPENAME, TOK_NAMESPACE,
+    TOK_TYPENAME, TOK_CONST, TOK_NAMESPACE,
     // Braces and stuff
     TOK_LBRACE, TOK_RBRACE, TOK_LCBRACE, TOK_RCBRACE,
     // Mathematics and operators

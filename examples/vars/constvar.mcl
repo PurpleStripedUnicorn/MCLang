@@ -1,0 +1,10 @@
+
+void f() {
+    const int x = 3;
+    int y = x + x;
+}
+
+void g() {
+    const int x = 4;
+    int y = x * x;
+}

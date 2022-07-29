@@ -22,7 +22,7 @@ std::vector<ParseNode *> CmdNode::children() const {
     return {};
 }
 
-void CmdNode::bytecode(BCManager &man) const {
+void CmdNode::bytecode(BCManager &man) {
     if (cmd.substr(0, 9) == "function ")
         MCLError(0, "Raw function call insertion has undefined behaviour, use "
         "normal function call instead!", loc);

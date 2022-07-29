@@ -30,7 +30,7 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const override;
+    virtual void bytecode(BCManager &man) override;
 
     /**
      * Get the name of the variable being assigned
@@ -38,12 +38,36 @@ public:
      */
     std::string getVarName() const;
 
+    /**
+     * Get the assigned expression parse node
+     * @return The pointer stored in `left`
+     */
+    ParseNode *getExpr() const;
+
 private:
 
     // The name of the variable
     std::string varName;
 
+    // The type of the variable, found when generating bytecode
+    Type varType;
+
     // NOTE: Expression can be accessed with `left` pointer
+
+    /**
+     * Throw an error for unsupported return types
+     * @param man The main bytecode manager
+     * @note Uses `man.ret` to determine expression type
+     */
+    void invalidTypeError(BCManager &man) const;
+
+    /**
+     * Check if the variable to be assigned is initialized
+     * @param man The main bytecode manager
+     * @param varType The variable type will be put in this variable
+     * @return Boolean indicating if the variable was found
+     */
+    bool isInitialized(BCManager &man, Type &varType) const;
 
 };
 

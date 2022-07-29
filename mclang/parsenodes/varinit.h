@@ -3,6 +3,7 @@
 #define __PARSENODE_VARINIT_H__
 
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 #include <string>
@@ -21,7 +22,7 @@ public:
      * assignment, or just the name of the variable
      * @param loc The location of the parse node
      */
-    VarInitNode(std::string varType, ParseNode *childExpr, Loc loc);
+    VarInitNode(Type varType, ParseNode *childExpr, Loc loc);
 
     /**
      * Destructor
@@ -38,16 +39,40 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const override;
+    virtual void bytecode(BCManager &man) override;
 
 protected:
 
     // The type of the initialized variable
-    std::string varType;
+    Type varType;
 
     // The child expression of this node, which should be an assignment
     // expression
     ParseNode *childExpr;
+
+private:
+
+    /**
+     * Generate bytecode for this parse node, given it is a constant
+     * initialization
+     * @param man The main bytecode manager
+     */
+    void constBytecode(BCManager &man);
+
+    /**
+     * Generate bytecode for this parse node, given it is a non-constant
+     * initialization
+     * @param man The main bytecode manager
+     */
+    void nonConstBytecode(BCManager &man);
+
+    /**
+     * Check if a variable was already defined
+     * @param varName The variable name
+     * @param man The main bytecode manager
+     * @return A boolean indicating if the variable is in the context stack
+     */
+    bool hasNameConflict(std::string varName, BCManager &man) const;
 
 };
 

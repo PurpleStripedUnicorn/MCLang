@@ -3,6 +3,7 @@
 #define __PARSENODE_GLOBALVAR_H__
 
 #include "general/loc.h"
+#include "general/types.h"
 #include "parsenodes/parsenode.h"
 #include <vector>
 #include <string>
@@ -16,12 +17,12 @@ public:
     /**
      * Constructor
      * @param varType The variable type to make the variable
-     * @param varName The name of the global variable
+     * @param childExpr The expression after the type definition
      * @param loc The location of the parse node
      * @note Global variables cannot be initialized with a value, instead they
      * will start at value zero
      */
-    GlobalVarNode(std::string varType, std::string varName, Loc loc);
+    GlobalVarNode(Type varType, ParseNode *childExpr, Loc loc);
 
     /**
      * Destructor
@@ -38,15 +39,25 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const override;
+    virtual void bytecode(BCManager &man) override;
 
 protected:
 
     // The type of the global variable
-    std::string varType;
+    Type varType;
 
-    // THe name of the global variable
-    std::string varName;
+    // The expression after the type
+    ParseNode *childExpr;
+
+private:
+
+    /**
+     * Check if a variable was already defined
+     * @param varName The variable name
+     * @param man The main bytecode manager
+     * @return A boolean indicating if the variable is in the context stack
+     */
+    bool hasNameConflict(std::string varName, BCManager &man) const;
 
 };
 

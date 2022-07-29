@@ -77,7 +77,7 @@
 			"patterns": [
 				{
 					"name": "storage.type.mclang",
-					"match": "\\b(int|bool|void)\\b"
+					"match": "\\b(int|bool|str|void|const)\\b"
 				}
 			]
 		},

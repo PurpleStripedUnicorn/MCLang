@@ -11,7 +11,8 @@ BCFunc::BCFunc(std::string name) : name(name) {
 
 }
 
-BCManager::BCManager(Compiler *comp) : comp(comp), uniqueFuncId(1) {
+BCManager::BCManager(Compiler *comp) : ctx({Context()}), comp(comp),
+uniqueFuncId(1) {
 
 }
 

@@ -9,7 +9,7 @@
 #include "parsenodes/word.h"
 #include <string>
 
-VarInitNode::VarInitNode(std::string varType, ParseNode *childExpr, Loc loc) :
+VarInitNode::VarInitNode(Type varType, ParseNode *childExpr, Loc loc) :
 ParseNode(PNODE_VARINIT, loc), varType(varType), childExpr(childExpr) {
 
 }
@@ -22,7 +22,33 @@ std::vector<ParseNode *> VarInitNode::children() const {
     return {childExpr};
 }
 
-void VarInitNode::bytecode(BCManager &man) const {
+void VarInitNode::bytecode(BCManager &man) {
+    if (varType.isConst)
+        constBytecode(man);
+    else
+        nonConstBytecode(man);
+}
+
+void VarInitNode::constBytecode(BCManager &man) {
+    // Get the name of the constant and evaluate the assignment expression
+    if (childExpr->getType() != PNODE_ASSIGN)
+        MCLError(1, "Expected constant variable assignment.", loc);
+    std::string varName = ((AssignNode *)childExpr)->getVarName();
+    ParseNode *expr = ((AssignNode *)childExpr)->getExpr();
+    expr->bytecode(man);
+    if (man.ret.type != varType)
+        MCLError(1, "Cannot assign value of type \"" + man.ret.type.str()
+        + "\" to constant variable of type \"" + varType.str() + "\".", loc);
+    if (hasNameConflict(varName, man))
+        MCLError(1, "Initialization of already defined variable \"" + varName
+        + "\"", loc);
+    man.ctx.back().constValues.insert({varName, man.ret.value});
+    man.ctx.back().vars.push_back(Var(varType, varName));
+    man.ret.type = Type("void");
+    man.ret.value = "";
+}
+
+void VarInitNode::nonConstBytecode(BCManager &man) {
     // Check if the type of the child expression is correct and get the variable
     // name
     std::string varName;
@@ -32,15 +58,21 @@ void VarInitNode::bytecode(BCManager &man) const {
         varName = ((WordNode *)childExpr)->getContent();
     else
         MCLError(1, "Invalid expression after initialization.", loc);
-    // Check if the name of the variable is already in use
-    Type tmp;
-    if (man.ctx.findVarAll(varName, tmp))
+    if (hasNameConflict(varName, man))
         MCLError(1, "Initialization of already defined variable \"" + varName
         + "\"", loc);
     // Register variable with type
-    man.ctx.addVar(Var(varType, varName));
+    man.ctx.back().vars.push_back(Var(varType, varName));
     if (childExpr->getType() == PNODE_ASSIGN)
         childExpr->bytecode(man);
     man.ret.type = Type("void");
     man.ret.value = "";
+}
+
+bool VarInitNode::hasNameConflict(std::string varName, BCManager &man) const {
+    for (const Context &ctx : man.ctx)
+        for (const Var &var : ctx.vars)
+            if (var.name == varName)
+                return true;
+    return false;
 }

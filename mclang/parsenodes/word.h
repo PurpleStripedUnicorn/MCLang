@@ -35,7 +35,7 @@ public:
      * Generate bytecode for this parse node
      * @param man The main bytecode manager
      */
-    virtual void bytecode(BCManager &man) const override;
+    virtual void bytecode(BCManager &man) override;
 
     /**
      * Get the content of the word
@@ -44,6 +44,22 @@ public:
     std::string getContent() const;
 
 protected:
+
+    /**
+     * Find a the value of the constant with the current variable's name
+     * @param man The main bytecode manager
+     * @return A string containing the value, or an empty string if nothing was
+     * found
+     */
+    std::string findConstValue(BCManager &man) const;
+
+    /**
+     * Check if the variable is initialized
+     * @param man The main bytecode manager
+     * @param varType The variable type will be put here
+     * @return A boolean indicating if the variable was initialized
+     */
+    bool wasInitialized(BCManager &man, Type &varType) const;
 
     // The word content
     std::string content;
