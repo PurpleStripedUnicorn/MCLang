@@ -38,8 +38,22 @@ void FuncNode::bytecode(BCManager &man) {
     // Add function definition to context
     man.ctx.back().funcs.push_back(this);
     // If there are no parameters, the function should be generated beforehand
-    if (params.empty())
+    // with its original name. If it has parameters it should be generated with
+    // default constant values, to check for syntax errors
+    if (params.empty()) {
         bytecode({});
+    } else {
+        std::vector<std::string> constValues;
+        for (const Param &param : params) {
+            if (param.type.isConst) {
+                if (param.type == Type("const str"))
+                    constValues.push_back("");
+                else 
+                    constValues.push_back("0");
+            }
+        }
+        bytecode(constValues);
+    }
 }
 
 std::string FuncNode::bytecode(std::vector<std::string> constValues) {
