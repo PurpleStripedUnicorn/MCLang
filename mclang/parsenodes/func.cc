@@ -54,6 +54,7 @@ std::string FuncNode::bytecode(std::vector<std::string> constValues) {
     // Functions without params will receive original name, other will get
     // some random name
     bcman->addFunc(params.empty() ? name : "");
+    callname = bcman->topFunc()->name;
     // Add alias of function that will be generated right now
     aliases.push_back({bcman->topFunc()->name, constValues});
     bcman->ctx.push_back(Context());
@@ -62,6 +63,7 @@ std::string FuncNode::bytecode(std::vector<std::string> constValues) {
     codeblock->bytecode(*bcman);
     bcman->ctx.pop_back();
     bcman->popFunc();
+    return callname;
 }
 
 Type FuncNode::getReturnType() const {
