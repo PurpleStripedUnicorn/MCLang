@@ -61,6 +61,14 @@ private:
      */
     void invalidTypeError(BCManager &man) const;
 
+    /**
+     * Check if the variable to be assigned is initialized
+     * @param man The main bytecode manager
+     * @param varType The variable type will be put in this variable
+     * @return Boolean indicating if the variable was found
+     */
+    bool isInitialized(BCManager &man, Type &varType) const;
+
 };
 
 #endif
