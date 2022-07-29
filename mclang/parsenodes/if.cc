@@ -29,7 +29,7 @@ IfNode::~IfNode() {
 }
 
 void IfNode::bytecode(BCManager &man) {
-    std::string tmpId = man.ctx.makeUniqueVar(Type("bool")).name;
+    std::string tmpId = man.tmp.reserve();
     man.write(BCInstr(INSTR_SET, tmpId, "0"));
     for (unsigned int i = 0; i < codeblocks.size(); i++) {
         man.addFunc();
@@ -44,6 +44,7 @@ void IfNode::bytecode(BCManager &man) {
         + " matches 0");
         man.write(BCInstr(INSTR_EXEC_CALL, cond, fname));
     }
+    man.tmp.free(tmpId);
     man.ret.type = Type("void");
     man.ret.value = "";
 }
