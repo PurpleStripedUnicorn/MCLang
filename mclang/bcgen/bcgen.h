@@ -5,6 +5,7 @@
 #include "bcgen/context.h"
 #include "bcgen/instr.h"
 #include "bcgen/return.h"
+#include "bcgen/tmpvar.h"
 #include "general/funcdef.h"
 #include "general/types.h"
 #include <string>
@@ -92,6 +93,9 @@ public:
 
     // Context stack
     std::vector<Context> ctx;
+
+    // Temporary variable manager
+    TmpVarManager tmp;
 
     // The compiler component
     Compiler *comp;
