@@ -1,0 +1,12 @@
+
+void f(const int x) {
+    int y = x * x;
+}
+
+void main() {
+    // This should create three functions and call them
+    f(3);
+    f(4);
+    f(5);
+    f(3);
+}
