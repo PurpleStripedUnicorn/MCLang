@@ -134,9 +134,9 @@ void FuncNode::initParams(std::vector<std::string> constValues) {
         if (params[i].type.isConst) {
             bcman->write(BCInstr(INSTR_SET, params[i].name,
             constValues[constCount]));
-            constCount++;
             bcman->ctx.back().constValues[params[i].name] =
             constValues[constCount];
+            constCount++;
         } else {
             bcman->write(BCInstr(INSTR_COPY, params[i].name, "__param"
             + std::to_string(i)));
