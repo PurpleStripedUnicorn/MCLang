@@ -23,7 +23,7 @@ std::vector<ParseNode *> WordNode::children() const {
 
 void WordNode::bytecode(BCManager &man) {
     Type varType;
-    if (!man.ctx.findVarAll(content, varType))
+    if (!wasInitialized(man, varType))
         MCLError(1, "Accessing uninitialized variable \"" + content + "\"",
         loc);
     if (varType == Type("int") || varType == Type("bool")) {
@@ -46,9 +46,20 @@ std::string WordNode::getContent() const {
 }
 
 std::string WordNode::findConstValue(BCManager &man) const {
-    for (const std::pair<std::string, std::string> &val :
-    man.ctx.getConstValues())
-        if (val.first == content)
-            return val.second;
+    for (const Context &ctx : man.ctx)
+        if (ctx.constValues.count(content) > 0)
+            return ctx.constValues.find(content)->second;
     return "";
+}
+
+bool WordNode::wasInitialized(BCManager &man, Type &varType) const {
+    for (const Context &ctx : man.ctx) {
+        for (const Var &var : ctx.vars) {
+            if (var.name == content) {
+                varType = var.type;
+                return true;
+            }
+        }
+    }
+    return false;
 }

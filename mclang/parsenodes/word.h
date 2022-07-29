@@ -53,6 +53,14 @@ protected:
      */
     std::string findConstValue(BCManager &man) const;
 
+    /**
+     * Check if the variable is initialized
+     * @param man The main bytecode manager
+     * @param varType The variable type will be put here
+     * @return A boolean indicating if the variable was initialized
+     */
+    bool wasInitialized(BCManager &man, Type &varType) const;
+
     // The word content
     std::string content;
 
