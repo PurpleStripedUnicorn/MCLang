@@ -91,7 +91,7 @@ public:
     BCFunc *topFunc() const;
 
     // Context stack
-    std::vector<Context> contextStack;
+    std::vector<Context> ctx;
 
     // The compiler component
     Compiler *comp;
