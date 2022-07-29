@@ -1,0 +1,9 @@
+
+void f(const int x) {
+    int y = x;
+}
+
+void main() {
+    int z = 5;
+    f(z);
+}
