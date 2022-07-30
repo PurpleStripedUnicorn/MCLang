@@ -97,6 +97,10 @@ Token Lexer::convertIdent(std::string ident) {
         tt = TOK_NAMESPACE;
     if (ident == "if")
         tt = TOK_IF;
+    if (ident == "true")
+        tt = TOK_TRUE;
+    if (ident == "false")
+        tt = TOK_FALSE;
     if (readTokens.size() > 0 && ident == "if" && lastRead().type == TOK_ELSE) {
         tt = TOK_ELSEIF;
         readTokens.pop_back();
