@@ -60,7 +60,7 @@ void CallNode::popLocalVars(BCManager &man) const {
 }
 
 void CallNode::bytecodeChildren(BCManager &man) {
-    paramTypes.clear();
+    paramTypes.clear(), paramValues.clear();
     for (unsigned int i = 0; i < params.size(); i++) {
         params[i]->bytecode(man);
         if (man.ret.type.isConst)
@@ -83,6 +83,7 @@ void CallNode::notFoundError() {
     MCLError(1, errTxt, loc);
 }
 
+#include <iostream>
 std::vector<std::string> CallNode::getConstVals() const {
     std::vector<std::string> out;
     for (unsigned int i = 0; i < paramTypes.size(); i++)
