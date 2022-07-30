@@ -78,7 +78,7 @@ void CallNode::notFoundError() {
     std::string errTxt = "Function \"" + fname + "\" with argument types (";
     bool first = true;
     for (const Type &ptype : paramTypes)
-        errTxt.append((first ? ", " : "") + ptype.str()), first = false;
+        errTxt.append((first ? "" : ", ") + ptype.str()), first = false;
     errTxt.append(") not defined");
     MCLError(1, errTxt, loc);
 }
