@@ -15,10 +15,10 @@ public:
 
     /**
      * Constructor
-     * @param content The boolean content
+     * @param value The boolean value
      * @param loc The location of the parse node
      */
-    BoolNode(std::string content, Loc loc);
+    BoolNode(bool value, Loc loc);
 
     /**
      * Destructor
@@ -38,15 +38,15 @@ public:
     virtual void bytecode(BCManager &man) override;
 
     /**
-     * Get the content of the boolean
-     * @return The content as a string
+     * Get the boolean value
+     * @return The value, as a C++ boolean
      */
-    std::string getContent() const;
+    bool getValue() const;
 
 protected:
 
-    // The number content
-    std::string content;
+    // The boolean value
+    bool value;
 
 };
 

@@ -274,17 +274,16 @@ ParseNode *Parser::readInProd() {
 }
 
 ParseNode *Parser::readInTerm() {
+    Loc lastLoc = cur().loc;
     if (accept(TOK_NUM)) {
-        Loc lastLoc = cur().loc;
         std::string content = cur().content;
         next();
         return new NumNode(content, lastLoc);
     }
     if (accept(TOK_TRUE) || accept(TOK_FALSE)) {
-        Loc lastLoc = cur().loc;
-        std::string content = accept(TOK_TRUE) ? "true" : "false";
+        bool value = accept(TOK_TRUE);
         next();
-        return new BoolNode(content, lastLoc);
+        return new BoolNode(value, lastLoc);
     }
     return readInCall();
 }

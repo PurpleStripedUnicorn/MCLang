@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 
-BoolNode::BoolNode(std::string content, Loc loc) : ParseNode(PNODE_NUM, loc),
-content(content) {
+BoolNode::BoolNode(bool value, Loc loc) : ParseNode(PNODE_NUM, loc),
+value(value) {
 
 }
 
@@ -21,9 +21,9 @@ std::vector<ParseNode *> BoolNode::children() const {
 }
 
 void BoolNode::bytecode(BCManager &man) {
-    man.ret = {Type("const bool"), content};
+    man.ret = {Type("const bool"), value ? "0" : "1"};
 }
 
-std::string BoolNode::getContent() const {
-    return content;
+bool BoolNode::getValue() const {
+    return value;
 }
