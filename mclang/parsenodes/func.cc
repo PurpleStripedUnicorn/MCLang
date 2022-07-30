@@ -58,6 +58,8 @@ void FuncNode::bytecode(BCManager &man) {
 }
 
 std::string FuncNode::bytecode(std::vector<std::string> constValues) {
+    // TODO: Implement predefined functions, then account for recursive calls of
+    // constant values (put some limit on it)
     // Check if this function was already generated with the given constants
     std::string callname;
     if (findAlias(constValues, callname))
