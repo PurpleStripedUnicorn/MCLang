@@ -2,6 +2,7 @@
 #ifndef __PARSENODE_FUNC_H__
 #define __PARSENODE_FUNC_H__
 
+#include "bcgen/context.h"
 #include "general/loc.h"
 #include "general/types.h"
 #include "general/var.h"
@@ -127,6 +128,13 @@ private:
      */
     void initParams(std::vector<std::string> constValues);
 
+    /**
+     * Copy the context stack into this node, for later use in generating
+     * functions
+     * @post The `ctxStore` variable is filled with the current context stack
+     */
+    void copyContextStack();
+
     // Return type of the function
     Type retType;
 
@@ -145,6 +153,9 @@ private:
     // Pointer to the main bytecode manager, will be assigned once `bytecode` is
     // called
     BCManager *bcman;
+
+    // Context stack save
+    std::vector<Context> ctxStore;
 
 };
 

@@ -35,6 +35,7 @@ void FuncNode::bytecode(BCManager &man) {
     if (hasNameConflict())
         MCLError(1, "Function with same name and parameter types was already "
         "defined", loc);
+    copyContextStack();
     // Add function definition to context
     man.ctx.back().funcs.push_back(this);
     // If there are no parameters, the function should be generated beforehand
@@ -57,26 +58,32 @@ void FuncNode::bytecode(BCManager &man) {
 }
 
 std::string FuncNode::bytecode(std::vector<std::string> constValues) {
+    // TODO: Implement predefined functions, then account for recursive calls of
+    // constant values (put some limit on it)
     // Check if this function was already generated with the given constants
     std::string callname;
     if (findAlias(constValues, callname))
         return callname;
-    // Add instructions to set constant variable values
-    for (const Context &ctx : bcman->ctx)
-        for (const std::pair<std::string, std::string> &val : ctx.constValues)
-            bcman->write(BCInstr(INSTR_SET, val.first, val.second));
     // Functions without params will receive original name, other will get
     // some random name
     bcman->addFunc(params.empty() ? name : "");
     callname = bcman->topFunc()->name;
     // Add alias of function that will be generated right now
-    aliases.push_back({bcman->topFunc()->name, constValues});
+    aliases.push_back({callname, constValues});
+    // Temporary set current context stack aside
+    std::vector<Context> curCtx = bcman->ctx;
+    bcman->ctx = ctxStore;
+    // Add instructions to set constant variable values
+    for (const Context &ctx : bcman->ctx)
+        for (const std::pair<std::string, std::string> &val : ctx.constValues)
+            bcman->write(BCInstr(INSTR_SET, val.first, val.second));
     bcman->ctx.push_back(Context());
     initGlobalVars();
     initParams(constValues);
     codeblock->bytecode(*bcman);
     bcman->ctx.pop_back();
     bcman->popFunc();
+    bcman->ctx = curCtx;
     return callname;
 }
 
@@ -163,4 +170,8 @@ void FuncNode::initParams(std::vector<std::string> constValues) {
                     "else.", loc);
         bcman->ctx.back().vars.push_back(Var(params[i].type, params[i].name));
     }
+}
+
+void FuncNode::copyContextStack() {
+    ctxStore = bcman->ctx;
 }
