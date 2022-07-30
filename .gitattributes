@@ -1,5 +1,2 @@
 *.mcl linguist-language=Text
 *.mcl linguist-detectable
-*.mclang linguist-language=Text
-*.mclang linguist-detectable
-examples/** linguist-detectable
