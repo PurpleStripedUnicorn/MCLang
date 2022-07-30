@@ -68,8 +68,7 @@ void ArithNode::bytecodeConstInt(BCManager &man) {
         man.write(BCInstr(instrType, man.ret.value, retRight.value));
         man.ret = {Type("int"), man.ret.value};
     } else if (man.ret.type == Type("const int")) {
-        std::string val = std::to_string(std::stoi(retLeft.value)
-        + std::stoi(man.ret.value));
+        std::string val = evalConsts(retLeft.value, man.ret.value);
         man.ret = {Type("const int"), val};
     } else {
         invalidTypeError();
@@ -85,4 +84,20 @@ void ArithNode::bytecodeConstStr(BCManager &man) {
     } else {
         invalidTypeError();
     }
+}
+
+std::string ArithNode::evalConsts(std::string numLeft, std::string numRight)
+const {
+    if (type == PNODE_ADD)
+        return std::to_string(std::stoi(numLeft) + std::stoi(numRight));
+    if (type == PNODE_SUB)
+        return std::to_string(std::stoi(numLeft) - std::stoi(numRight));
+    if (type == PNODE_MUL)
+        return std::to_string(std::stoi(numLeft) * std::stoi(numRight));
+    if (type == PNODE_DIV)
+        return std::to_string(std::stoi(numLeft) / std::stoi(numRight));
+    if (type == PNODE_MOD)
+        return std::to_string(std::stoi(numLeft) % std::stoi(numRight));
+    MCLError(1, "Unexpected error when evaluating constant expression.", loc);
+    return "";
 }
