@@ -14,6 +14,7 @@
 #include "parsenodes/exec.h"
 #include "parsenodes/expr/arith.h"
 #include "parsenodes/expr/assign.h"
+#include "parsenodes/expr/bool.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/expr/num.h"
 #include "parsenodes/func.h"
@@ -273,11 +274,16 @@ ParseNode *Parser::readInProd() {
 }
 
 ParseNode *Parser::readInTerm() {
+    Loc lastLoc = cur().loc;
     if (accept(TOK_NUM)) {
-        Loc lastLoc = cur().loc;
         std::string content = cur().content;
         next();
         return new NumNode(content, lastLoc);
+    }
+    if (accept(TOK_TRUE) || accept(TOK_FALSE)) {
+        bool value = accept(TOK_TRUE);
+        next();
+        return new BoolNode(value, lastLoc);
     }
     return readInCall();
 }
