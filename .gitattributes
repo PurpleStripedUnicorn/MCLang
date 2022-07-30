@@ -1,2 +1,2 @@
-*.mcl linguist-language=Text
-*.mcl linguist-detectable
+examples/** linguist-detectable -linguist-vendored -linguist-generated -linguist-documentation
+**/*.mcl linguist-detectable linguist-language=Text
