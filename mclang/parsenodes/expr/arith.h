@@ -94,6 +94,14 @@ private:
      */
     void bytecodeConstStr(BCManager &man);
 
+    /**
+     * Evaluate the result of two constant integer inputs
+     * @param numLeft Left value as a string
+     * @param numRight Right value as a string
+     * @return The resulting value, as a string
+     */
+    std::string evalConsts(std::string numLeft, std::string numRight) const;
+
 };
 
 #endif
