@@ -1,4 +1,5 @@
 
+#include <map>
 #include <vector>
 #include <string>
 #include "bcgen/context.h"
@@ -59,6 +60,19 @@ std::string ContextStack::getConstValue(std::string name) const {
         if (ctx.constValues.count(name) > 0)
             return ctx.constValues.find(name)->second;
     return "";
+}
+
+std::map<std::string, std::string> ContextStack::getConstValues() const {
+    std::map<std::string, std::string> out;
+    for (const Context &ctx : stack)
+        out.insert(ctx.constValues.begin(), ctx.constValues.end());
+    return out;
+}
+
+std::map<std::string, std::string> ContextStack::getLocalConstValues() const {
+    if (stack.empty())
+        return {};
+    return stack.back().constValues;
 }
 
 void ContextStack::pushVar(Var var) {

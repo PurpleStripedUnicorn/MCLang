@@ -94,6 +94,18 @@ public:
     std::string getConstValue(std::string name) const;
 
     /**
+     * Get all constant values in the current contexts
+     * @return A map with all of the constant names and their values
+     */
+    std::map<std::string, std::string> getConstValues() const;
+
+    /**
+     * Get constant values in the top context
+     * @return A map with the constant names and their values
+     */
+    std::map<std::string, std::string> getLocalConstValues() const;
+
+    /**
      * Add a variable to the current top context
      * @param var The variable to add to the context
      * @pre The `stack` is not empty
