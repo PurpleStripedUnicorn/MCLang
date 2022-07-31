@@ -72,6 +72,13 @@ public:
     std::vector<Var> getVars() const;
 
     /**
+     * Get a list of variables in the top context of the context stack
+     * @return The list as a vector of Vars
+     * @note If the context stack if empty, returns an empty vector
+     */
+    std::vector<Var> getLocalVars() const;
+
+    /**
      * Find a specific variable
      * @param name The name of the variable
      * @param result The found variable is put in this parameter

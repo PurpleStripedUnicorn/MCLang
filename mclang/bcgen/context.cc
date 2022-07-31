@@ -36,6 +36,12 @@ std::vector<Var> ContextStack::getVars() const {
     return out;
 }
 
+std::vector<Var> ContextStack::getLocalVars() const {
+    if (stack.empty())
+        return {};
+    return stack.back().vars;
+}
+
 bool ContextStack::findVar(std::string name, Var &result) const {
     for (const Context &ctx : stack) {
         for (const Var &var : ctx.vars) {
