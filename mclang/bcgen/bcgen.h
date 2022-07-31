@@ -92,7 +92,7 @@ public:
     BCFunc *topFunc() const;
 
     // Context stack
-    std::vector<Context> ctx;
+    ContextStack ctx;
 
     // Temporary variable manager
     TmpVarManager tmp;

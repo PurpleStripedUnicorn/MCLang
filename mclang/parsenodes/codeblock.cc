@@ -22,10 +22,10 @@ std::vector<ParseNode *> CodeBlockNode::children() const {
 }
 
 void CodeBlockNode::bytecode(BCManager &man) {
-    man.ctx.push_back(Context());
+    man.ctx.push();
     for (unsigned int i = 0; i < childNodes.size(); i++)
         childNodes[i]->bytecode(man);
-    man.ctx.pop_back();
+    man.ctx.pop();
     man.ret.type = Type("void");
     man.ret.value = "";
 }
