@@ -176,6 +176,12 @@ private:
      */
     bool checkPunctSymbols(std::string prefix = "");
 
+    /**
+     * Get the last token that is not an "empty" token, so of type ENDL or EMPTY
+     * @return A pointer to the last token if it exists, otherwise null
+     */
+    PrepToken *lastNonEmpty() const;
+
     // A pointer to the input string to read
     const std::string &input;
 
