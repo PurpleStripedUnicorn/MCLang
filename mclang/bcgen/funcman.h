@@ -27,6 +27,12 @@ public:
     ~FuncManager();
 
     /**
+     * Get a list of all functions
+     * @return A vector of pointers to function parse nodes
+     */
+    std::vector<FuncNode *> getFuncs() const;
+
+    /**
      * Add a function to the function list
      * @param func A pointer to the function parse node
      * @post Function pointer is added at the end of `funcs`

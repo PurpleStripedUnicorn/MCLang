@@ -13,6 +13,10 @@ FuncManager::~FuncManager() {
 
 }
 
+std::vector<FuncNode *> FuncManager::getFuncs() const {
+    return funcs;
+}
+
 void FuncManager::push(FuncNode *func) {
     funcs.push_back(func);
 }
