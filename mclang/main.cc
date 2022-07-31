@@ -16,6 +16,7 @@ std::string ns;
 std::string outputName;
 std::string scoreboardName;
 std::string mcVersion;
+std::string description;
 
 /**************************
  * Command line arguments
@@ -85,6 +86,14 @@ void argScoreboardName(std::string args) {
  */
 void argVersion(std::string args) {
     mcVersion = args;
+}
+
+/**
+ * Set the datapack description
+ * @param args The description
+ */
+void argDescription(std::string args) {
+    description = args;
 }
 
 // List of all command line arguments, for easier use later in the program
