@@ -26,10 +26,6 @@ bool ContextStack::empty() const {
     return stack.empty();
 }
 
-std::vector<Context> &ContextStack::getStack() {
-    return stack;
-}
-
 std::vector<Var> ContextStack::getVars() const {
     std::vector<Var> out;
     for (const Context &ctx : stack)

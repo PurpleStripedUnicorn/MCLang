@@ -18,7 +18,6 @@ class FuncNode;
 struct Context {
     std::vector<Var> vars;
     std::map<std::string, std::string> constValues;
-    std::vector<FuncNode *> funcs;
 };
 
 /**
@@ -58,12 +57,6 @@ public:
      * @return A boolean indicating if `stack` is empty
      */
     bool empty() const;
-
-    /**
-     * Get the actual context stack
-     * @return A reference to the actual stack stored in this object
-     */
-    std::vector<Context> &getStack();
 
     /**
      * Get a list of all of the variables in the stack currently

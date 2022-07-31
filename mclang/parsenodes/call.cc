@@ -39,11 +39,7 @@ void CallNode::bytecode(BCManager &man) {
 }
 
 FuncNode *CallNode::findFunc(BCManager &man) const {
-    for (Context &ctx : man.ctx.getStack())
-        for (FuncNode *func : ctx.funcs)
-            if (func->getName() == fname && func->acceptTypes(paramTypes))
-                return func;
-    return nullptr;
+    return man.funcs.find(fname, paramTypes);
 }
 
 void CallNode::pushLocalVars(BCManager &man) const {
