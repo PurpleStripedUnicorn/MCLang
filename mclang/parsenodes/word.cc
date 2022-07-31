@@ -46,20 +46,14 @@ std::string WordNode::getContent() const {
 }
 
 std::string WordNode::findConstValue(BCManager &man) const {
-    for (const Context &ctx : man.ctx)
-        if (ctx.constValues.count(content) > 0)
-            return ctx.constValues.find(content)->second;
-    return "";
+    return man.ctx.getConstValue(content);
 }
 
 bool WordNode::wasInitialized(BCManager &man, Type &varType) const {
-    for (const Context &ctx : man.ctx) {
-        for (const Var &var : ctx.vars) {
-            if (var.name == content) {
-                varType = var.type;
-                return true;
-            }
-        }
-    }
-    return false;
+    Var var(Type("int"), "??");
+    bool result = man.ctx.findVar(content, var);
+    if (!result)
+        return false;
+    varType = var.type;
+    return true;
 }

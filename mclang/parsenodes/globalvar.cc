@@ -47,18 +47,15 @@ void GlobalVarNode::bytecode(BCManager &man) {
             MCLError(1, "Assigning value of type \"" + man.ret.type.str()
             + "\" to global constant of type \"" + varType.str() + "\"", loc);
         // Return value contains the constant value here
-        man.ctx.back().constValues.insert({varName, man.ret.value});
+        man.ctx.setConst(varName, man.ret.value);
     }
     // Remember that this variable is now registered
-    man.ctx.back().vars.push_back(Var(varType, varName));
+    man.ctx.pushVar(Var(varType, varName));
     man.ret.type = Type("void");
     man.ret.value = "";
 }
 
 bool GlobalVarNode::hasNameConflict(std::string varName, BCManager &man) const {
-    for (const Context &ctx : man.ctx)
-        for (const Var &var : ctx.vars)
-            if (var.name == varName)
-                return true;
-    return false;
+    Var var(Type("int"), "??");
+    return man.ctx.findVar(varName, var);
 }
