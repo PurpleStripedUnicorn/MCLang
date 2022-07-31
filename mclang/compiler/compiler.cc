@@ -16,8 +16,8 @@
 
 Compiler::Compiler() : filename(""), ns("dp"), outputFolder("out_datapack"),
 debugMode(false), fileOutput(true), scoreboardName("mclang"),
-mcVersion("latest"), prep(NULL), lexer(NULL), parser(NULL), bcMan(NULL),
-bcConvert(NULL), fileMan(NULL) {
+mcVersion("latest"), description(""), prep(NULL), lexer(NULL), parser(NULL),
+bcMan(NULL), bcConvert(NULL), fileMan(NULL) {
     
 }
 
