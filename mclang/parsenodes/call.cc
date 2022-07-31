@@ -39,20 +39,16 @@ void CallNode::bytecode(BCManager &man) {
 }
 
 FuncNode *CallNode::findFunc(BCManager &man) const {
-    for (Context &ctx : man.ctx)
-        for (FuncNode *func : ctx.funcs)
-            if (func->getName() == fname && func->acceptTypes(paramTypes))
-                return func;
-    return nullptr;
+    return man.funcs.find(fname, paramTypes);
 }
 
 void CallNode::pushLocalVars(BCManager &man) const {
-    for (const Var &var : man.ctx.back().vars)
+    for (const Var &var : man.ctx.getLocalVars())
         man.write(BCInstr(INSTR_PUSH, var.name));
 }
 
 void CallNode::popLocalVars(BCManager &man) const {
-    std::vector<Var> &vars = man.ctx.back().vars;
+    std::vector<Var> vars = man.ctx.getLocalVars();
     for (unsigned int i = 0; i < vars.size(); i++) {
         man.write(BCInstr(INSTR_TOP, vars[vars.size() - i - 1].name));
         man.write(BCInstr(INSTR_POP));

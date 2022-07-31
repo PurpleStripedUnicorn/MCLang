@@ -3,6 +3,7 @@
 #define __BCGEN_H__
 
 #include "bcgen/context.h"
+#include "bcgen/funcman.h"
 #include "bcgen/instr.h"
 #include "bcgen/return.h"
 #include "bcgen/tmpvar.h"
@@ -92,7 +93,10 @@ public:
     BCFunc *topFunc() const;
 
     // Context stack
-    std::vector<Context> ctx;
+    ContextStack ctx;
+
+    // Function manager
+    FuncManager funcs;
 
     // Temporary variable manager
     TmpVarManager tmp;

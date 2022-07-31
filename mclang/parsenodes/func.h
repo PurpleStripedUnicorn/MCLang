@@ -155,7 +155,7 @@ private:
     BCManager *bcman;
 
     // Context stack save
-    std::vector<Context> ctxStore;
+    ContextStack ctxStore;
 
 };
 

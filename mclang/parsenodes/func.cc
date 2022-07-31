@@ -37,7 +37,7 @@ void FuncNode::bytecode(BCManager &man) {
         "defined", loc);
     copyContextStack();
     // Add function definition to context
-    man.ctx.back().funcs.push_back(this);
+    man.funcs.push(this);
     // If there are no parameters, the function should be generated beforehand
     // with its original name. If it has parameters it should be generated with
     // default constant values, to check for syntax errors
@@ -71,17 +71,17 @@ std::string FuncNode::bytecode(std::vector<std::string> constValues) {
     // Add alias of function that will be generated right now
     aliases.push_back({callname, constValues});
     // Temporary set current context stack aside
-    std::vector<Context> curCtx = bcman->ctx;
+    ContextStack curCtx = bcman->ctx;
     bcman->ctx = ctxStore;
     // Add instructions to set constant variable values
-    for (const Context &ctx : bcman->ctx)
-        for (const std::pair<std::string, std::string> &val : ctx.constValues)
-            bcman->write(BCInstr(INSTR_SET, val.first, val.second));
-    bcman->ctx.push_back(Context());
+    for (const std::pair<std::string, std::string> &val :
+    bcman->ctx.getConstValues())
+        bcman->write(BCInstr(INSTR_SET, val.first, val.second));
+    bcman->ctx.push();
     initGlobalVars();
     initParams(constValues);
     codeblock->bytecode(*bcman);
-    bcman->ctx.pop_back();
+    bcman->ctx.pop();
     bcman->popFunc();
     bcman->ctx = curCtx;
     return callname;
@@ -123,10 +123,9 @@ bool FuncNode::findAlias(std::vector<std::string> constValues, std::string
 }
 
 bool FuncNode::hasNameConflict() const {
-    for (Context &ctx : bcman->ctx)
-        for (FuncNode *func : ctx.funcs)
-            if (hasNameConflict(func))
-                return true;
+    for (FuncNode *func : bcman->funcs.getFuncs())
+        if (hasNameConflict(func))
+            return true;
     return false;
 }
 
@@ -143,9 +142,8 @@ bool FuncNode::hasNameConflict(FuncNode *other) const {
 }
 
 void FuncNode::initGlobalVars() {
-    for (const Context &ctx : bcman->ctx)
-        for (const Var &var : ctx.vars)
-            bcman->write(BCInstr(INSTR_ADDI, var.name, "0"));
+    for (const Var &var : bcman->ctx.getVars())
+        bcman->write(BCInstr(INSTR_ADDI, var.name, "0"));
 }
 
 void FuncNode::initParams(std::vector<std::string> constValues) {
@@ -155,20 +153,17 @@ void FuncNode::initParams(std::vector<std::string> constValues) {
         if (params[i].type.isConst) {
             bcman->write(BCInstr(INSTR_SET, params[i].name,
             constValues[constCount]));
-            bcman->ctx.back().constValues[params[i].name] =
-            constValues[constCount];
+            bcman->ctx.setConst(params[i].name, constValues[constCount]);
             constCount++;
         } else {
             bcman->write(BCInstr(INSTR_COPY, params[i].name, "__param"
             + std::to_string(i)));
         }
-        Type tmp;
-        for (const Context &ctx : bcman->ctx)
-            for (const Var &var : ctx.vars)
-                if (var.name == params[i].name)
-                    MCLError(1, "Parameter name is already defined somewhere "
-                    "else.", loc);
-        bcman->ctx.back().vars.push_back(Var(params[i].type, params[i].name));
+        Var var(Type(), "??");
+        if (bcman->ctx.findVar(params[i].name, var))
+            MCLError(1, "Parameter name is already defined somewhere else.",
+            loc);
+        bcman->ctx.pushVar(Var(params[i].type, params[i].name));
     }
 }
 

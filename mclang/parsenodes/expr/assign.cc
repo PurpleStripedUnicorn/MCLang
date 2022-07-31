@@ -55,13 +55,10 @@ void AssignNode::invalidTypeError(BCManager &man) const {
 }
 
 bool AssignNode::isInitialized(BCManager &man, Type &varType) const {
-    for (const Context &ctx : man.ctx) {
-        for (const Var &var : ctx.vars) {
-            if (var.name == varName) {
-                varType = var.type;
-                return true;
-            }
-        }
-    }
-    return false;
+    Var var(Type("int"), "??");
+    bool result = man.ctx.findVar(varName, var);
+    if (!result)
+        return false;
+    varType = var.type;
+    return true;
 }
