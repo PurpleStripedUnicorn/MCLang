@@ -192,7 +192,13 @@ void PrepLexer::readString() {
     }
     // Skip the last '"'
     next();
-    out.push_back(PrepToken(PTOK_STR, content, loc));
+    // Append this string to the last one if the previous token was a string
+    // (excluding ENDL and EMPTY)
+    PrepToken *last = lastNonEmpty();
+    if (last != nullptr && last->type == PTOK_STR)
+        last->content.append(content);
+    else
+        out.push_back(PrepToken(PTOK_STR, content, loc));
 }
 
 char PrepLexer::readEscapeChar() {
@@ -224,4 +230,14 @@ bool PrepLexer::checkPunctSymbols(std::string prefix) {
         return false;
     out.push_back(PrepToken(PTOK_PUNCT, content, loc));
     return true;
+}
+
+PrepToken *PrepLexer::lastNonEmpty() const {
+    unsigned int i = 0;
+    while (i < out.size() && (out[out.size() - i - 1].type == PTOK_ENDL ||
+    out[out.size() - i - 1].type == PTOK_EMPTY))
+        i++;
+    if (i >= out.size())
+        return nullptr;
+    return &out[out.size() - i - 1];
 }
