@@ -57,6 +57,9 @@ public:
     // Minecraft version
     std::string mcVersion;
 
+    // Datapack description
+    std::string description;
+
     // NOTE: These component may still may null values when the compilation is
     // not done
     // Preprocessor compoenent

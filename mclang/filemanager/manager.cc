@@ -56,10 +56,14 @@ int FileManager::getPackFormat() const {
 }
 
 void FileManager::genPackFile() const {
+    std::string description = comp->description;
+    if (description == "")
+        description = "Generated with MCLang, see "
+        "https://github.com/PurpleStripedUnicorn/MCLang";
     std::ofstream file(root + DIRSEP + "pack.mcmeta");
     if (file.is_open()) {
         file << "{\"pack\":{\"pack_format\":" << getPackFormat() << ","
-        << "\"description\":\"Generated with MCLang.\"}}";
+        << "\"description\":\"" << description << "\"}}";
     } else {
         MCLError(1, "Could not write to file 'pack.mcmeta'.");
     }

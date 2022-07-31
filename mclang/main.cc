@@ -16,6 +16,7 @@ std::string ns;
 std::string outputName;
 std::string scoreboardName;
 std::string mcVersion;
+std::string description;
 
 /**************************
  * Command line arguments
@@ -87,9 +88,19 @@ void argVersion(std::string args) {
     mcVersion = args;
 }
 
+/**
+ * Set the datapack description
+ * @param args The description
+ */
+void argDescription(std::string args) {
+    description = args;
+}
+
 // List of all command line arguments, for easier use later in the program
 // Use ' ' for no letter or "" for no full name
 const CmdLineArg argList[] = {
+    {'c', "custom-description", 1, argDescription, "Set the output datapack "
+    "description"},
     {'d', "debug", 0, argDebugMode, "Use debugging tools. Debug info will be "
     "dumped in files in the current working directory."},
     {'D', "disable-output", 0, argFileOutput, "Disable result output to the "
@@ -250,6 +261,7 @@ int main(int argc, char *argv[]) {
     comp.fileOutput = fileOutput;
     comp.scoreboardName = scoreboardName;
     comp.mcVersion = mcVersion;
+    comp.description = description;
     comp.compile();
     return 0;
 }
