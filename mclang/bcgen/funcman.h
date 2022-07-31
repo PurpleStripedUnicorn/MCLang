@@ -2,6 +2,8 @@
 #ifndef __BCGEN_FUNCMAN_H__
 #define __BCGEN_FUNCMAN_H__
 
+#include "general/types.h"
+#include <string>
 #include <vector>
 
 class FuncNode;
@@ -30,6 +32,14 @@ public:
      * @post Function pointer is added at the end of `funcs`
      */
     void push(FuncNode *func);
+
+    /**
+     * Find a function with name and parameter types
+     * @param name The name of the function
+     * @param types A list of parameter types
+     * @return A pointer to the function parse node, or null if nothing is found
+     */
+    FuncNode *find(std::string name, std::vector<Type> types);
 
 private:
 
