@@ -3,6 +3,7 @@
 #define __BCGEN_H__
 
 #include "bcgen/context.h"
+#include "bcgen/funcman.h"
 #include "bcgen/instr.h"
 #include "bcgen/return.h"
 #include "bcgen/tmpvar.h"
@@ -93,6 +94,9 @@ public:
 
     // Context stack
     ContextStack ctx;
+
+    // Function manager
+    FuncManager funcs;
 
     // Temporary variable manager
     TmpVarManager tmp;
