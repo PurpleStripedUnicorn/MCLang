@@ -89,7 +89,7 @@ public:
     /**
      * Get the value of a specific constant
      * @param name The name of the constant
-     * @return The value of the constant as a string if stored, otherwise "0"
+     * @return The value of the constant as a string if stored, otherwise ""
      */
     std::string getConstValue(std::string name) const;
 

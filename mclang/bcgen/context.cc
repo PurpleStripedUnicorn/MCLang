@@ -58,7 +58,7 @@ std::string ContextStack::getConstValue(std::string name) const {
     for (const Context &ctx : stack)
         if (ctx.constValues.count(name) > 0)
             return ctx.constValues.find(name)->second;
-    return "0";
+    return "";
 }
 
 void ContextStack::pushVar(Var var) {
