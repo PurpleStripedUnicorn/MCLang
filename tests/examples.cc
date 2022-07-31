@@ -8,12 +8,6 @@
 #include <string>
 #include <vector>
 
-#ifdef _WIN32
-    #define DIRSEP "\\"
-#else
-    #define DIRSEP "/"
-#endif
-
 std::set<std::string> getFileNames(std::string path = "examples") {
     std::set<std::string> out;
     for (auto const &entry : std::filesystem::directory_iterator(path)) {
@@ -27,9 +21,23 @@ std::set<std::string> getFileNames(std::string path = "examples") {
     return out;
 }
 
+#ifdef _WIN32
+std::string colored(std::string txt, std::string color) {
+    return txt;
+}
+#else
+std::string colored(std::string txt, std::string color) {
+    if (color == "red")
+        return "\033[0;31m" + txt + "\033[0m";
+    if (color == "green")
+        return "\033[0;32m" + txt + "\033[0m";
+    return txt;
+}
+#endif
+
 void printFileResult(std::string name, bool hasFailed) {
-    std::cout << (hasFailed ? "\033[0;31mFAILURE:" : "\033[0;32mSUCCESS:")
-    << "    \033[0m" << name << std::endl;
+    std::cout << (hasFailed ? colored("FAILURE:", "red") : colored("SUCCESS:",
+    "green")) << "    " << name << std::endl;
 }
 
 int main () {
@@ -37,9 +45,7 @@ int main () {
     std::vector<std::string> failedList;
     std::cout << std::endl;
     for (const std::string &path : getFileNames()) {
-        bool isInvalid = false;
-        if (path.find("invalid") != std::string::npos)
-            isInvalid = true;
+        bool isInvalid = path.find("invalid") != std::string::npos;
 #ifdef _WIN32
         if (system(("build\\main.exe -D " + path).c_str()) == 0) {
 #else
@@ -58,15 +64,20 @@ int main () {
                 failed++, failedList.push_back(path);
         }
     }
-    std::cout << std::endl << (failed > 0 ? "\033[0;31m" : "\033[0;32m")
-    << "---------------------------------------------" << std::endl << std::endl
-    << failed << " failures, " << success << " successes" << std::endl;
+    std::string color = failed > 0 ? "red" : "green";
+    std::cout << std::endl
+    << colored("---------------------------------------------", color)
+    << std::endl << std::endl
+    << colored(std::to_string(failed) + " failures, " + std::to_string(success)
+    + " successes", color) << std::endl;
     if (failed > 0) {
-        std::cout << std::endl << "List of failures:" << std::endl;
+        std::cout << std::endl << colored("List of failures:", color)
+        << std::endl;
         for (unsigned int i = 0; i < failedList.size(); i++)
-            std::cout << "    " << failedList[i] << std::endl;
+            std::cout << "    " << colored(failedList[i], color) << std::endl;
     }
-    std::cout << std::endl << "---------------------------------------------"
-    << std::endl << std::endl << "\033[0m";
+    std::cout << std::endl
+    << colored("---------------------------------------------", color)
+    << std::endl << std::endl;
     return failed > 0 ? 1 : 0;
 }
