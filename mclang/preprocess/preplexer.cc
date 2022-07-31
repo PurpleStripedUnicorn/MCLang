@@ -192,11 +192,7 @@ void PrepLexer::readString() {
     }
     // Skip the last '"'
     next();
-    // Concatenate content to last token, if this was a string as well
-    if (out.size() > 0 && out.back().type == PTOK_STR)
-        out.back().content.append(content);
-    else
-        out.push_back(PrepToken(PTOK_STR, content, loc));
+    out.push_back(PrepToken(PTOK_STR, content, loc));
 }
 
 char PrepLexer::readEscapeChar() {
