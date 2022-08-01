@@ -15,7 +15,7 @@ class BCManager;
  * NOTE: Does not register version numbers!
  * NOTE: Only lists commands that need permission level 2 or lower
  */
-std::set<std::string> knownCmds = {
+const std::set<std::string> knownCmds = {
     "advancement", "attribute", "bossbar", "clear", "clone", "data", "datapack",
     "defaultgamemode", "difficulty", "effect", "enchant", "execute",
     "experience", "fill", "forceload", "function", "gamemode", "gamerule",
