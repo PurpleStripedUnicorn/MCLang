@@ -8,7 +8,6 @@
 #include <string>
 
 int main(int argc, char *argv[]) {
-    // Compile the code inside the file
     Compiler comp;
     ArgReader argReader(&comp);
     argReader.read(argc, argv);
