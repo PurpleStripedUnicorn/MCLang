@@ -1,8 +1,0 @@
-
-void f(const int x) {
-    f(x - 1);
-}
-
-void main() {
-    f(13);
-}
