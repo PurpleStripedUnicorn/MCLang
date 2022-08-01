@@ -42,9 +42,24 @@ private:
     /**
      * Search for global settings in the parse tree and apply them to the
      * compiler. A global setting for example is the namespace
+     * @param man The main bytecode manager
      * @post Compiler component has settings applied
      */
     void applyGlobalSettings(BCManager &man) const;
+
+    /**
+     * Register all global variables (both constant and non-constant)
+     * @param man The main bytecode manager
+     * @post Global variables are added in the bytecode manager
+     */
+    void registerGlobalVars(BCManager &man) const;
+
+    /**
+     * Register all functions
+     * @param man The main bytecode manager
+     * @post Functions are registered in the bytecode manager
+     */
+    void registerFunctions(BCManager &man) const;
 
     // Child nodes of the main program
     std::vector<ParseNode *> childNodes;

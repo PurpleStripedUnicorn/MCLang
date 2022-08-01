@@ -26,8 +26,9 @@ std::vector<ParseNode *> ProgramNode::children() const {
 
 void ProgramNode::bytecode(BCManager &man) {
     applyGlobalSettings(man);
-    for (unsigned int i = 0; i < childNodes.size(); i++)
-        childNodes[i]->bytecode(man);
+    registerGlobalVars(man);
+    registerFunctions(man);
+    man.ret = {Type("void"), ""};
     man.ret.type = Type("void");
     man.ret.value = "";
 }
@@ -44,4 +45,16 @@ void ProgramNode::applyGlobalSettings(BCManager &man) const {
             foundNamespace = true;
         }
     }
+}
+
+void ProgramNode::registerGlobalVars(BCManager &man) const {
+    for (ParseNode *node : childNodes)
+        if (node->getType() == PNODE_GLOBALVAR)
+            node->bytecode(man);
+}
+
+void ProgramNode::registerFunctions(BCManager &man) const {
+    for (ParseNode *node : childNodes)
+        if (node->getType() == PNODE_FUNC)
+            node->bytecode(man);
 }
