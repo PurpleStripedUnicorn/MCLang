@@ -4,10 +4,19 @@
 
 #include "general/loc.h"
 #include "parsenodes/parsenode.h"
+#include <set>
 #include <string>
 #include <vector>
 
 class BCManager;
+
+/**
+ * List of known minecraft commands
+ * NOTE: Does not register version numbers!
+ */
+std::set<std::string> knownCmds = {
+
+};
 
 class CmdNode : public ParseNode {
 
@@ -38,6 +47,19 @@ public:
     virtual void bytecode(BCManager &man) override;
 
 private:
+
+    /**
+     * Check if the command is a known command
+     * @return A boolean indicating if the commands in listed in `knownCmds`
+     */
+    bool isKnownCmd() const;
+
+    /**
+     * Get the primary command being executed
+     * @return A string containing all of the characters in `cmd` before the
+     * first space
+     */
+    std::string primaryCmd() const;
 
     // The command as a string, without '/'
     std::string cmd;
