@@ -78,18 +78,3 @@ void Compiler::compile() {
         fm.genDatapack(cmds);
     }
 }
-
-void Compiler::setSetting(std::string name, std::string value) {
-    settings[name] = value;
-}
-
-std::string Compiler::getSetting(std::string name) const {
-    if (settings.count(name) == 0)
-        return "";
-    return settings.find(name)->second;
-}
-
-void Compiler::removeSetting(std::string name) {
-    if (settings.count(name) > 0)
-        settings.erase(name);
-}
