@@ -9,6 +9,7 @@ class BCConverter;
 class FileManager;
 class Preprocessor;
 
+#include "bcconvert/bcconvert.h"
 #include <map>
 #include <string>
 
@@ -73,10 +74,46 @@ public:
     BCManager *bcMan;
     // Bytecode converter component
     BCConverter *bcConvert;
-    // File manager component
-    FileManager *fileMan;
 
 private:
+
+    /**
+     * Run the preprocessor
+     * @post `prep` is no longer null
+     */
+    void runPreprocessor();
+
+    /**
+     * Run the lexer
+     * @post `lexer` is no longer null
+     */
+    void runLexer();
+
+    /**
+     * Run the parser
+     * @post `parser` is no longer null
+     */
+    void runParser();
+
+    /**
+     * Generate bytecode
+     * @post `bcMan` is no longer null
+     */
+    void runBCGenerator();
+
+    /**
+     * Convert bytecode to commands
+     * @post `bcConvert` is no longer null
+     */
+    void runBCConverter();
+
+    /**
+     * Run the file manager to output commands to files
+     */
+    void runFileOutput();
+
+    // Commands output from the bytecode converter
+    std::vector<CmdFunc> cmds;
 
 };
 

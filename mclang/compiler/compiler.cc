@@ -17,8 +17,8 @@
 
 Compiler::Compiler() : filename(""), ns("dp"), outputFolder("out_datapack"),
 debugMode(false), fileOutput(true), scoreboardName("mclang"),
-mcVersion("latest"), description(""), prep(NULL), lexer(NULL), parser(NULL),
-bcMan(NULL), bcConvert(NULL), fileMan(NULL) {
+mcVersion("latest"), description(""), prep(nullptr), lexer(nullptr),
+parser(nullptr), bcMan(nullptr), bcConvert(nullptr) {
     
 }
 
@@ -28,11 +28,18 @@ Compiler::~Compiler() {
     delete parser;
     delete bcMan;
     delete bcConvert;
-    delete fileMan;
 }
 
 void Compiler::compile() {
-    // Preprocessor
+    runPreprocessor();
+    runLexer();
+    runParser();
+    runBCGenerator();
+    runBCConverter();
+    runFileOutput();
+}
+
+void Compiler::runPreprocessor() {
     prep = new Preprocessor();
     prep->processFile(filename);
     if (debugMode) {
@@ -40,7 +47,9 @@ void Compiler::compile() {
         out << prepDebugTable(&prep->getOutput());
         out.close();
     }
-    // Lexer
+}
+
+void Compiler::runLexer() {
     lexer = new Lexer(this);
     lexer->readIn();
     if (debugMode) {
@@ -48,7 +57,9 @@ void Compiler::compile() {
         out << lexerDebugTable(lexer->tokens());
         out.close();
     }
-    // Parser
+}
+
+void Compiler::runParser() {
     parser = new Parser(this);
     parser->genTree();
     if (debugMode) {
@@ -56,7 +67,9 @@ void Compiler::compile() {
         out << parserDebugTree(parser->getTree());
         out.close();
     }
-    // Bytecode generator
+}
+
+void Compiler::runBCGenerator() {
     bcMan = new BCManager(this);
     bcMan->generate();
     if (debugMode) {
@@ -64,15 +77,19 @@ void Compiler::compile() {
         out << bcgenInstrList(bcMan->getBytecode());
         out.close();
     }
-    // Bytecode converter
+}
+
+void Compiler::runBCConverter() {
     bcConvert = new BCConverter(this);
-    std::vector<CmdFunc> cmds = bcConvert->getRawCommands();
+    cmds = bcConvert->getRawCommands();
     if (debugMode) {
         std::ofstream out("mcl_cmds.debug");
         out << bcconvertCmdList(cmds);
         out.close();
     }
-    // Create output files and folders
+}
+
+void Compiler::runFileOutput() {
     if (fileOutput) {
         FileManager fm(this);
         fm.genDatapack(cmds);
