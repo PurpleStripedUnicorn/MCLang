@@ -4,10 +4,28 @@
 
 #include "general/loc.h"
 #include "parsenodes/parsenode.h"
+#include <set>
 #include <string>
 #include <vector>
 
 class BCManager;
+
+/**
+ * List of known minecraft commands
+ * NOTE: Does not register version numbers!
+ * NOTE: Only lists commands that need permission level 2 or lower
+ */
+const std::set<std::string> knownCmds = {
+    "advancement", "attribute", "bossbar", "clear", "clone", "data", "datapack",
+    "defaultgamemode", "difficulty", "effect", "enchant", "execute",
+    "experience", "fill", "forceload", "function", "gamemode", "gamerule",
+    "give", "help", "item", "kill", "locate", "locatebiome", "loot", "msg",
+    "particle", "place", "playsound", "recipe", "reload", "replaceitem", "say",
+    "schedule", "scoreboard", "seed", "setblock", "setworldspawn", "spawnpoint",
+    "spectate", "spreadplayers", "stopsound", "summon", "tag", "team",
+    "teleport", "tell", "tellraw", "time", "title", "tm", "tp", "triger", "w",
+    "weather", "worldborder", "xp"
+};
 
 class CmdNode : public ParseNode {
 
@@ -38,6 +56,19 @@ public:
     virtual void bytecode(BCManager &man) override;
 
 private:
+
+    /**
+     * Check if the command is a known command
+     * @return A boolean indicating if the commands in listed in `knownCmds`
+     */
+    bool isKnownCmd() const;
+
+    /**
+     * Get the primary command being executed
+     * @return A string containing all of the characters in `cmd` before the
+     * first space
+     */
+    std::string primaryCmd() const;
 
     // The command as a string, without '/'
     std::string cmd;
