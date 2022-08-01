@@ -13,9 +13,18 @@ class BCManager;
 /**
  * List of known minecraft commands
  * NOTE: Does not register version numbers!
+ * NOTE: Only lists commands that need permission level 2 or lower
  */
 std::set<std::string> knownCmds = {
-
+    "advancement", "attribute", "bossbar", "clear", "clone", "data", "datapack",
+    "defaultgamemode", "difficulty", "effect", "enchant", "execute",
+    "experience", "fill", "forceload", "function", "gamemode", "gamerule",
+    "give", "help", "item", "kill", "locate", "locatebiome", "loot", "msg",
+    "particle", "place", "playsound", "recipe", "reload", "replaceitem", "say",
+    "schedule", "scoreboard", "seed", "setblock", "setworldspawn", "spawnpoint",
+    "spectate", "spreadplayers", "stopsound", "summon", "tag", "team",
+    "teleport", "tell", "tellraw", "time", "title", "tm", "tp", "triger", "w",
+    "weather", "worldborder", "xp"
 };
 
 class CmdNode : public ParseNode {
