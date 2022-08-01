@@ -12,6 +12,7 @@
 #include "preprocess/debug.h"
 #include "preprocess/preprocess.h"
 #include <fstream>
+#include <map>
 #include <string>
 
 Compiler::Compiler() : filename(""), ns("dp"), outputFolder("out_datapack"),
@@ -76,4 +77,19 @@ void Compiler::compile() {
         FileManager fm(this);
         fm.genDatapack(cmds);
     }
+}
+
+void Compiler::setSetting(std::string name, std::string value) {
+    settings[name] = value;
+}
+
+std::string Compiler::getSetting(std::string name) const {
+    if (settings.count(name) == 0)
+        return "";
+    return settings.find(name)->second;
+}
+
+void Compiler::removeSetting(std::string name) {
+    if (settings.count(name) > 0)
+        settings.erase(name);
 }
