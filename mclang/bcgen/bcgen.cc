@@ -56,3 +56,7 @@ void BCManager::popFunc() {
 BCFunc *BCManager::topFunc() const {
     return funcStack.back();
 }
+
+void BCManager::setFuncStack(std::vector<BCFunc *> stack) {
+    funcStack = stack;
+}
