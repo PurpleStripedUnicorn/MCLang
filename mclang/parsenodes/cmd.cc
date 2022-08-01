@@ -23,9 +23,12 @@ std::vector<ParseNode *> CmdNode::children() const {
 }
 
 void CmdNode::bytecode(BCManager &man) {
-    if (cmd.substr(0, 9) == "function ")
+    if (primaryCmd() == "function")
         MCLError(0, "Raw function call insertion has undefined behaviour, use "
         "normal function call instead!", loc);
+    if (primaryCmd() == "execute")
+        MCLError(0, "Raw usage of execute can replaced by execute-statements.",
+        loc);
     if (!isKnownCmd())
         MCLError(0, "The given command \"" + primaryCmd() + "\" is not known "
         "to be a valid command.", loc);
