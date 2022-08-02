@@ -1,0 +1,2 @@
+The standard library is generated when using a makefile here, so it can be
+easily included from other files. These files are ignored by git.

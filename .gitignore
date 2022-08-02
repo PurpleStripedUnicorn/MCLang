@@ -6,6 +6,9 @@ build
 *.debug
 # Placeholder name for output datapacks
 out_datapack
+# Standard library output files
+mclang/stdlib/stdlib.cc
+mclang/stdlib/stdlib.h
 
 # Prerequisites
 *.d
