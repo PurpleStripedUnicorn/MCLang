@@ -16,7 +16,13 @@
 FuncNode::FuncNode(Type retType, std::string name, std::vector<Param> params,
 CodeBlockNode *codeblock, Loc loc) : ParseNode(PNODE_FUNC, loc),
 retType(retType), name(name), params(params), codeblock(codeblock) {
-
+    for (Param &param : params)
+        if (param.type == Type("str"))
+            MCLError(1, "Non-constant strings as parameters are not supported.",
+            loc);
+    if (retType == Type("str"))
+        MCLError(1, "Non-constant strings as parameters are not supported.",
+        loc);
 }
 
 std::vector<ParseNode *> FuncNode::children() const {
