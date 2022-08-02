@@ -41,8 +41,15 @@ void addFileToOutput(std::ofstream &fs, std::string filename) {
     fs << "{\"" << std::filesystem::path(filename).stem().string() << "\", R\""
     << RAW_DELIM << "(";
     std::ifstream inp(filename);
-    while (inp.is_open() && !inp.eof())
-        fs << (char)inp.get();
+    std::string line;
+    if (inp.is_open()) {
+        while (std::getline(inp, line))
+            fs << line << "\n";
+    } else {
+        std::cerr << "Could not build MCLang standard library." << std::endl;
+        exit(1);
+    }
+    inp.close();
     fs << ")" << RAW_DELIM << "\"}," << std::endl;
 }
 
