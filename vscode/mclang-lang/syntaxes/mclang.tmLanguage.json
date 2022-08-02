@@ -3,6 +3,9 @@
 	"name": "MCLang",
 	"patterns": [
 		{
+			"include": "#directives"
+		},
+		{
 			"include": "#comments"
 		},
 		{
@@ -97,6 +100,22 @@
 				{
 					"name": "constant.numeric.mclang",
 					"match": "\\b[0-9]+\\b"
+				}
+			]
+		},
+		"directives": {
+			"patterns": [
+				{
+					"name": "keyword.other",
+					"match": "(?<=^\\s*)\\#(include|define|ifdef|ifndef|undef|error|warning|else)\\b"
+				},
+				{
+					"name": "string.other.stdlib.mclang",
+					"match": "(?<=^\\s*\\#include )\\<[A-Za-z_][A-Za-z0-9_]*(\\/[A-Za-z_][A-Za-z0-9_]*)*\\>"
+				},
+				{
+					"name": "entity.name.function.preprocessor.mclang",
+					"match": "(?<=^\\s*\\#define )[A-Za-z_][A-Za-z0-9_]*\\b"
 				}
 			]
 		}
