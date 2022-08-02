@@ -50,10 +50,6 @@ std::string FuncNode::bytecode(BCManager &man, std::vector<std::string> constVal
     man.setFuncStack({funcEntry->bcfunc});
     // Mark the function as generated
     funcEntry->hasGenerated = true;
-    // Add instructions to set constant variable values
-    for (const std::pair<std::string, std::string> &val :
-    man.ctx.getConstValues())
-        man.write(BCInstr(INSTR_SET, val.first, val.second));
     man.ctx.push();
     initGlobalVars(man);
     initParams(man, constValues);
@@ -162,7 +158,8 @@ bool FuncNode::hasNameConflict(FuncNode *other) const {
 
 void FuncNode::initGlobalVars(BCManager &man) {
     for (const Var &var : man.ctx.getVars())
-        man.write(BCInstr(INSTR_ADDI, var.name, "0"));
+        if (var.type == Type("int") || var.type == Type("bool"))
+            man.write(BCInstr(INSTR_ADDI, var.name, "0"));
 }
 
 void FuncNode::initParams(BCManager &man, std::vector<std::string> constValues)
