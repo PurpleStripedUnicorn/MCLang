@@ -24,6 +24,7 @@ void colorText(std::ostream &os, const std::string &txt, std::string color) {
 #else
 
 void colorText(std::ostream &os, const std::string &txt, std::string color) {
+    (void)color;
     os << txt;
 }
 
