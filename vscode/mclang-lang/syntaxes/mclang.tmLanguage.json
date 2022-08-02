@@ -110,7 +110,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.function.mclang",
-					"match": "((?<=void )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=str )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=bool )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=int )[A-Za-z_][A-Za-z0-9_]*\\b)"
+					"match": "((?<=void )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=str )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=bool )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=int )[A-Za-z_][A-Za-z0-9_]*\\b)(?=\\s*\\()"
 				}
 			]
 		}
