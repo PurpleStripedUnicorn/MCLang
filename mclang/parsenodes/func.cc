@@ -174,8 +174,6 @@ void FuncNode::initParams(BCManager &man, std::vector<std::string> constValues)
     unsigned int constCount = 0;
     for (unsigned int i = 0; i < params.size(); i++) {
         if (params[i].type.isConst) {
-            man.write(BCInstr(INSTR_SET, params[i].name,
-            constValues[constCount]));
             man.ctx.setConst(params[i].name, constValues[constCount]);
             constCount++;
         } else {
