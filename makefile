@@ -47,7 +47,7 @@ build/main: $(ofiles)
 -include $(dfiles)
 
 # Output C++ files
-build/%.o: mclang/%.cc makefile
+build/%.o: mclang/%.cc makefile mclang/stdlib/stdlib.cc mclang/stdlib/stdlib.h
 	$(cc) $(cppargs) -MMD -MP -c $< -o $@
 
 # Testing program
