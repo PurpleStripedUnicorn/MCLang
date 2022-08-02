@@ -11,7 +11,7 @@ CmdFunc::CmdFunc(std::string name) : name(name) {
 
 }
 
-BCConverter::BCConverter(Compiler *comp) : comp(comp), data(NULL) {
+BCConverter::BCConverter(Compiler *comp) : comp(comp), data(nullptr) {
 
 }
 

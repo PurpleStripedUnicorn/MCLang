@@ -30,7 +30,7 @@ const std::vector<BCFunc *> *BCManager::getBytecode() const {
 
 BCFunc *BCManager::curFunc() const {
     if (funcStack.size() == 0)
-        return NULL;
+        return nullptr;
     return funcStack.back();
 }
 

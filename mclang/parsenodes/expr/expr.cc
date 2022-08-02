@@ -15,7 +15,7 @@ ExprNode::~ExprNode() {
 }
 
 std::vector<ParseNode *> ExprNode::children() const {
-    if (right == NULL)
+    if (right == nullptr)
         return {left};
     return {left, right};
 }
