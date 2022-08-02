@@ -6,3 +6,9 @@ void main() {
     if ("entity " + allPlayers + "[name=" + name + "]")
         /say Hello PurpleStriped!
 }
+
+void other() {
+    const str name = "Unicorn";
+    if ("entity @a" + allPlayers + "[name=" + name + "]")
+        /say Hello Unicorn!
+}
