@@ -5,6 +5,7 @@
 #include "preprocess/preplexer.h"
 #include "preprocess/preprocess.h"
 #include "preprocess/preptoken.h"
+#include "stdlib/stdlib.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -38,6 +39,20 @@ void Preprocessor::processFile(std::string filename) {
 
 std::vector<PrepToken> &Preprocessor::getOutput() const {
     return (std::vector<PrepToken> &)out;
+}
+
+void Preprocessor::processString(const std::string &content, std::string
+altFilename) {
+    std::string tmp = curFile;
+    curFile = "??STDLIB";
+    tokenStack.push_back(std::vector<PrepToken>());
+    readIndexStack.push_back(0);
+    PrepLexer lex(content, altFilename, tokenStack.back());
+    lex.lex();
+    readProgram();
+    tokenStack.pop_back();
+    readIndexStack.pop_back();
+    curFile = tmp;
 }
 
 std::vector<PrepToken> &Preprocessor::curTokenList() const {
@@ -119,8 +134,10 @@ void Preprocessor::readInclude() {
     if (cur().type == PTOK_STR) {
         processFile(getReferencePath(curFilename(), cur().content));
     } else if (cur().type == PTOK_INCL_LIB) {
-        // TODO: implement
-        MCLError(1, "Feature not implemented.", cur().loc);
+        std::string name = cur().content;
+        if (stdlibContent.count(name) == 0)
+            MCLError(1, "Invalid standard library name.", cur().loc);
+        processString(stdlibContent.find(name)->second, "<" + name + ">");
     } else {
         MCLError(1, "Expected include file.", cur().loc);
     }
