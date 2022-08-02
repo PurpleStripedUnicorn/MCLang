@@ -1,0 +1,7 @@
+
+#include <random>
+
+void main() {
+    random();
+    int y = randomValue;
+}

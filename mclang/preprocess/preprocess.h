@@ -45,6 +45,17 @@ public:
 private:
 
     /**
+     * Process a string as if is was a file
+     * @param content A reference to the string tp process
+     * @param altFilename Alternative filename to show because no file is being
+     * read
+     * @post The output is appended to `out`, if needed
+     * @note Process includes files recursively
+     */
+    void processString(const std::string &content, std::string altFilename =
+    "??");
+
+    /**
      * Get the current top vector of token stack
      * @return Reference to last item in `tokenStack`
      */

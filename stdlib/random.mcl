@@ -1,0 +1,7 @@
+
+int randomValue;
+
+// TODO: Change this to generate actual random numbers...
+void random() {
+    randomValue = 42;
+}

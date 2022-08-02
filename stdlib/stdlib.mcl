@@ -1,0 +1,12 @@
+
+void tp(const str entity, const int x, const int y, const int z) {
+    /tp {{entity}} {{x}} {{y}} {{z}}
+}
+
+void tprel(const str entity, const int dx, const int dy, const int dz) {
+    /tp {{entity}} ~{{x}} ~{{y}} ~{{z}}
+}
+
+void tpall(const int x, const int y, const int z) {
+    /tp @a {{x}} {{y}} {{z}}
+}

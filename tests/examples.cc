@@ -23,6 +23,7 @@ std::set<std::string> getFileNames(std::string path = "examples") {
 
 #ifdef _WIN32
 std::string colored(std::string txt, std::string color) {
+    (void)color;
     return txt;
 }
 #else
