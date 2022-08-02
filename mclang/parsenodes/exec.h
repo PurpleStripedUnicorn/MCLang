@@ -21,7 +21,7 @@ public:
      * @param codeblock Code inside the statement block
      * @param loc The location of the parse node
      */
-    ExecNode(std::string type, std::string args, CodeBlockNode *codeblock,
+    ExecNode(std::string type, ParseNode *args, CodeBlockNode *codeblock,
     Loc loc);
 
     /**
@@ -47,7 +47,7 @@ private:
     std::string execType;
 
     // Subcommand arguments
-    std::string execArgs;
+    ParseNode *execArgs;
 
     // Content of the statement block
     CodeBlockNode *codeblock;

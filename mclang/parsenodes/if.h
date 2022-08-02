@@ -22,7 +22,7 @@ public:
      * @param codeblocks Code inside the statement blocks in the if-statements
      * @param loc The location of the parse node
      */
-    IfNode(std::vector<std::string> args, std::vector<CodeBlockNode *>
+    IfNode(std::vector<ParseNode *> args, std::vector<CodeBlockNode *>
     codeblocks, Loc loc);
 
     /**
@@ -51,7 +51,7 @@ public:
 private:
 
     // If-statement arguments
-    std::vector<std::string> ifArgs;
+    std::vector<ParseNode *> ifArgs;
 
     // Content of the statement blocks
     std::vector<CodeBlockNode *> codeblocks;
