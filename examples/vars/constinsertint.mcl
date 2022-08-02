@@ -1,0 +1,10 @@
+
+void f(const int x) {
+    const int y = 10;
+    int z = x;
+    /say Magic numbers: {{x}}, {{y}}
+}
+
+void main() {
+    f(8);
+}
