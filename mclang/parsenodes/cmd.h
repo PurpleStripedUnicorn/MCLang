@@ -70,8 +70,38 @@ private:
      */
     std::string primaryCmd() const;
 
+    /**
+     * Replaces defined constants inserted into the command using
+     * "{{constant_name}}"
+     * @param man The main bytecode manager
+     * @note Throws an error if there are opening "{{" and closing "}}" with an
+     * invalid constant name inside
+     * @post `processedCmd` has all of the constants inserted from `cmd`
+     */
+    void replaceConstants(const BCManager &man);
+
+    /**
+     * Read in a constant inside the `cmd` string, the "{{" has already been read
+     * @param man The main bytecode manager
+     * @param i The counting index to loop through the `cmd` string
+     * @return An output string where the inserted constant (if there was any)
+     * is replaced
+     */
+    std::string readInConstant(const BCManager &man, unsigned int &i) const;
+
+    /**
+     * Check if the given character is alphanumeric, or an underscore
+     * @param c The character to check
+     * @return A boolean indicating if the character is alphanumeric, or an
+     * underscore
+     */
+    bool isAlphaNumUS(char c) const;
+
     // The command as a string, without '/'
     std::string cmd;
+
+    // The command with constants inserted
+    std::string processedCmd;
 
 };
 

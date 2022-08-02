@@ -1,0 +1,6 @@
+
+const str player = "PurpleStriped";
+
+void main() {
+    /say Hello {{player}}
+}
