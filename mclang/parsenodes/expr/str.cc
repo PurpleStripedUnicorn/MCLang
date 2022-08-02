@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-StrNode::StrNode(std::string content, Loc loc) : ParseNode(PNODE_NUM, loc),
+StrNode::StrNode(std::string content, Loc loc) : ParseNode(PNODE_STR, loc),
 content(content) {
 
 }
