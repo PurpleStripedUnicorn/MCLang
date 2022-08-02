@@ -69,15 +69,22 @@ void ProgramNode::generateFunctions(BCManager &man) const {
     unsigned int i = 0;
     while (foundUngenerated && i < GEN_RECURION_LIMIT) {
         foundUngenerated = false;
-        for (FuncNode *func : man.funcs.getFuncs()) {
-            if (func->hasUngeneratedEntries()) {
-                func->generateEntries(man);
-                foundUngenerated = true;
-            }
-        }
+        for (FuncNode *func : man.funcs.getFuncs())
+            if (func->hasUngeneratedEntries())
+                func->generateEntries(man), foundUngenerated = true;
         i++;
     }
-    if (i >= GEN_RECURION_LIMIT)
-        MCLError(1, "Generation recursion limit of "
-        + std::to_string(GEN_RECURION_LIMIT) + " reached.");
+    if (foundUngenerated)
+        recursionError(man);
+}
+
+void ProgramNode::recursionError(BCManager &man) const {
+    std::string funcList = "";
+    for (FuncNode *func : man.funcs.getFuncs())
+        if (func->hasUngeneratedEntries())
+            funcList += std::string(funcList == "" ? "" : ", ") + "\""
+            + func->getName() + "\"";
+    MCLError(1, "Generation recursion limit of " + std::to_string(
+    GEN_RECURION_LIMIT) + " reached. Function(s) " + funcList + " could not be "
+    "generated!");
 }

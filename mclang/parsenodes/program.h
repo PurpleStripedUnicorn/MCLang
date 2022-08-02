@@ -76,6 +76,12 @@ private:
      */
     void generateFunctions(BCManager &man) const;
 
+    /**
+     * Show an error for reaching the generation recursion limit
+     * @param man The main bytecode manager
+     */
+    void recursionError(BCManager &man) const;
+
     // Child nodes of the main program
     std::vector<ParseNode *> childNodes;
 
