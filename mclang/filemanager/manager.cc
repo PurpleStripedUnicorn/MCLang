@@ -46,6 +46,10 @@ void FileManager::genFunctionFile(const CmdFunc &func) const {
         MCLError(1, "Could not write to file '" + func.name + ".mcfunction'.");
     }
     file.close();
+    if (func.name == "tick")
+        addFuncTag("tick", "tick");
+    if (func.name == "load")
+        addFuncTag("load", "load");
 }
 
 int FileManager::getPackFormat() const {
@@ -89,6 +93,10 @@ void FileManager::genFolderStructure() const {
     createSubFolder("data");
     createSubFolder("data" + DIRSEP + ns);
     createSubFolder("data" + DIRSEP + ns + DIRSEP + "functions");
+    createSubFolder("data" + DIRSEP + "minecraft");
+    createSubFolder("data" + DIRSEP + "minecraft" + DIRSEP + "tags");
+    createSubFolder("data" + DIRSEP + "minecraft" + DIRSEP + "tags" + DIRSEP
+    + "functions");
 }
 
 void FileManager::createSubFolder(std::string path) const {
@@ -104,4 +112,13 @@ void FileManager::createFolder(std::string path) const {
     if (check == MKDIR_FAIL_CODE) {
         MCLError(1, "Could not create folder '" + path + "'");
     }
+}
+
+void FileManager::addFuncTag(std::string tag, std::string funcname) const {
+    std::ofstream file(root + DIRSEP + "data" + DIRSEP + "minecraft" + DIRSEP
+    + "tags" + DIRSEP + "functions" + DIRSEP + tag + ".json");
+    if (!file.is_open())
+        MCLError(1, "Could not write to file \"" + tag + ".json\".");
+    file << "{\"values\":[\"" + ns + ":" + funcname + "\"]}";
+    file.close();
 }

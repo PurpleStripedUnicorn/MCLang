@@ -91,6 +91,14 @@ private:
      */
     void createFolder(std::string path) const;
 
+    /**
+     * Add a tag that references the given function
+     * @param tag The tag name
+     * @param funcname The name of the function to tag
+     * @note The tag namespace will be set to "minecraft"
+     */
+    void addFuncTag(std::string tag, std::string funcname) const;
+
     // Target directory folder
     std::string root;
 
