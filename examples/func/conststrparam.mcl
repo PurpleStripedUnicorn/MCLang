@@ -1,0 +1,12 @@
+
+void f(const str playerName) {
+    if ("entity @a[name=" + playerName + "]")
+        /say Player detected!
+}
+
+void main() {
+    f("PurpleStriped");
+    f("PurpurStriped");
+    if ("entity @e[type=pig]")
+        f("Unicorn");
+}
