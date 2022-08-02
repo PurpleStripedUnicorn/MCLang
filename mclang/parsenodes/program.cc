@@ -4,6 +4,7 @@
 #include "errorhandle/handle.h"
 #include "general/loc.h"
 #include "general/types.h"
+#include "parsenodes/func.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
@@ -26,10 +27,10 @@ std::vector<ParseNode *> ProgramNode::children() const {
 
 void ProgramNode::bytecode(BCManager &man) {
     applyGlobalSettings(man);
-    for (unsigned int i = 0; i < childNodes.size(); i++)
-        childNodes[i]->bytecode(man);
-    man.ret.type = Type("void");
-    man.ret.value = "";
+    registerGlobalVars(man);
+    registerFunctions(man);
+    generateFunctions(man);
+    man.ret = {Type("void"), ""};
 }
 
 void ProgramNode::applyGlobalSettings(BCManager &man) const {
@@ -44,4 +45,46 @@ void ProgramNode::applyGlobalSettings(BCManager &man) const {
             foundNamespace = true;
         }
     }
+}
+
+void ProgramNode::registerGlobalVars(BCManager &man) const {
+    for (ParseNode *node : childNodes)
+        if (node->getType() == PNODE_GLOBALVAR)
+            node->bytecode(man);
+}
+
+void ProgramNode::registerFunctions(BCManager &man) const {
+    for (ParseNode *node : childNodes) {
+        if (node->getType() == PNODE_FUNC) {
+            ((FuncNode *)node)->checkNameConflicts(man);
+            man.funcs.push((FuncNode *)node);
+        }
+    }
+}
+
+void ProgramNode::generateFunctions(BCManager &man) const {
+    for (FuncNode *func : man.funcs.getFuncs())
+        func->addGenerationEntry(man, func->defaultConstValues());
+    bool foundUngenerated = true;
+    unsigned int i = 0;
+    while (foundUngenerated && i < GEN_RECURION_LIMIT) {
+        foundUngenerated = false;
+        for (FuncNode *func : man.funcs.getFuncs())
+            if (func->hasUngeneratedEntries())
+                func->generateEntries(man), foundUngenerated = true;
+        i++;
+    }
+    if (foundUngenerated)
+        recursionError(man);
+}
+
+void ProgramNode::recursionError(BCManager &man) const {
+    std::string funcList = "";
+    for (FuncNode *func : man.funcs.getFuncs())
+        if (func->hasUngeneratedEntries())
+            funcList += std::string(funcList == "" ? "" : ", ") + "\""
+            + func->getName() + "\"";
+    MCLError(1, "Generation recursion limit of " + std::to_string(
+    GEN_RECURION_LIMIT) + " reached. Function(s) " + funcList + " could not be "
+    "generated!");
 }

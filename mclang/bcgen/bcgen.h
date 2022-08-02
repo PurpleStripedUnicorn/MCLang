@@ -92,6 +92,14 @@ public:
      */
     BCFunc *topFunc() const;
 
+    /**
+     * Set the contents of the function stack
+     * @param stack A vector of pointer to BCFuncs representing the function
+     * stack
+     * @post `funcStack` is set to the value of `stack`
+     */
+    void setFuncStack(std::vector<BCFunc *> stack);
+
     // Context stack
     ContextStack ctx;
 

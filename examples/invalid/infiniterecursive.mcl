@@ -1,0 +1,10 @@
+
+void f(const int x) {
+    int y = x;
+    g(x + 1);
+}
+
+void g(const int x) {
+    int y = x;
+    f(x + 1);
+}

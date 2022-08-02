@@ -1,0 +1,15 @@
+
+// Note that this program enters an endless loop, but the program should compile
+// just fine
+
+void f(int x) {
+    g(x - 1);
+}
+
+void g(int x) {
+    f(x - 1);
+}
+
+void main() {
+    f(62);
+}
