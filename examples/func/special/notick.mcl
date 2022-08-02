@@ -1,0 +1,8 @@
+
+void tick(int x) {
+    int y = x;
+}
+
+void main() {
+    tick(7);
+}
