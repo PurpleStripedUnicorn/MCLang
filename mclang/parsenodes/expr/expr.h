@@ -21,7 +21,7 @@ public:
      * no right child
      */
     ExprNode(ParseNodeType type, Loc loc,  ParseNode *left,
-    ParseNode *right = NULL);
+    ParseNode *right = nullptr);
 
     /**
      * Destructor

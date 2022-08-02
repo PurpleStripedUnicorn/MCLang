@@ -30,8 +30,8 @@
 #include <string>
 #include <vector>
 
-Parser::Parser(Compiler *comp) : comp(comp), toks(NULL), curIndex(0), out(NULL)
-{
+Parser::Parser(Compiler *comp) : comp(comp), toks(nullptr), curIndex(0),
+out(nullptr) {
 
 }
 
