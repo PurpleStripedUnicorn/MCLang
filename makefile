@@ -61,8 +61,9 @@ mclang/stdlib/stdlib.cc: mclang/stdlib/stdlib.h
 	touch mclang/stdlib/stdlib.cc
 mclang/stdlib/stdlib.h: build/stdlibexe
 	build/stdlibexe
+# This always compiles for linux, because it is executed by the build process
 build/stdlibexe: stdlib/build.cc
-	$(cc) $(cppargs) stdlib/build.cc -o build/stdlibexe
+	g++ -std=c++17 -Imclang -Wall -Wextra stdlib/build.cc -o build/stdlibexe
 
 # Create folders if neccessary
 build:
