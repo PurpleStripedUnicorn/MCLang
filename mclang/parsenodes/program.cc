@@ -4,6 +4,7 @@
 #include "errorhandle/handle.h"
 #include "general/loc.h"
 #include "general/types.h"
+#include "parsenodes/func.h"
 #include "parsenodes/namespace.h"
 #include "parsenodes/parsenode.h"
 #include "parsenodes/program.h"
@@ -28,9 +29,8 @@ void ProgramNode::bytecode(BCManager &man) {
     applyGlobalSettings(man);
     registerGlobalVars(man);
     registerFunctions(man);
+    generateFunctions(man);
     man.ret = {Type("void"), ""};
-    man.ret.type = Type("void");
-    man.ret.value = "";
 }
 
 void ProgramNode::applyGlobalSettings(BCManager &man) const {
@@ -54,7 +54,30 @@ void ProgramNode::registerGlobalVars(BCManager &man) const {
 }
 
 void ProgramNode::registerFunctions(BCManager &man) const {
-    for (ParseNode *node : childNodes)
-        if (node->getType() == PNODE_FUNC)
-            node->bytecode(man);
+    for (ParseNode *node : childNodes) {
+        if (node->getType() == PNODE_FUNC) {
+            ((FuncNode *)node)->checkNameConflicts(man);
+            man.funcs.push((FuncNode *)node);
+        }
+    }
+}
+
+void ProgramNode::generateFunctions(BCManager &man) const {
+    for (FuncNode *func : man.funcs.getFuncs())
+        func->addGenerationEntry(man, func->defaultConstValues());
+    bool foundUngenerated = true;
+    unsigned int i = 0;
+    while (foundUngenerated && i < GEN_RECURION_LIMIT) {
+        foundUngenerated = false;
+        for (FuncNode *func : man.funcs.getFuncs()) {
+            if (func->hasUngeneratedEntries()) {
+                func->generateEntries(man);
+                foundUngenerated = true;
+            }
+        }
+        i++;
+    }
+    if (i >= GEN_RECURION_LIMIT)
+        MCLError(1, "Generation recursion limit of "
+        + std::to_string(GEN_RECURION_LIMIT) + " reached.");
 }

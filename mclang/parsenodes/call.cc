@@ -30,12 +30,11 @@ void CallNode::bytecode(BCManager &man) {
     FuncNode *func = findFunc(man);
     if (func == nullptr)
         notFoundError();
-    std::string callname = func->bytecode(getConstVals());
+    std::string callname = func->addGenerationEntry(man, getConstVals());
     man.write(BCInstr(INSTR_CALL, callname));
     popLocalVars(man);
     // TODO: Implement return types other than void
-    man.ret.type = Type("void");
-    man.ret.value = "";
+    man.ret = {Type("void"), ""};
 }
 
 FuncNode *CallNode::findFunc(BCManager &man) const {

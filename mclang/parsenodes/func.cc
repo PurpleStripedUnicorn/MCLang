@@ -28,62 +28,38 @@ FuncNode::~FuncNode() {
 }
 
 void FuncNode::bytecode(BCManager &man) {
-    bcman = &man;
+    (void)man;
+    MCLError(1, "Unexpected error, direct generation of function bytecode is "
+    "not allowed.", loc);
+}
+
+std::string FuncNode::bytecode(BCManager &man, std::vector<std::string> constValues) {
     // TODO: Implement non-void functions
     if (retType != Type("void"))
         MCLError(1, "Non-void functions are not supported", loc);
-    if (hasNameConflict())
-        MCLError(1, "Function with same name and parameter types was already "
-        "defined", loc);
-    copyContextStack();
-    // Add function definition to context
-    man.funcs.push(this);
-    // If there are no parameters, the function should be generated beforehand
-    // with its original name. If it has parameters it should be generated with
-    // default constant values, to check for syntax errors
-    if (params.empty()) {
-        bytecode({});
-    } else {
-        std::vector<std::string> constValues;
-        for (const Param &param : params) {
-            if (param.type.isConst) {
-                if (param.type == Type("const str"))
-                    constValues.push_back("");
-                else 
-                    constValues.push_back("0");
-            }
-        }
-        bytecode(constValues);
-    }
-}
-
-std::string FuncNode::bytecode(std::vector<std::string> constValues) {
-    // TODO: Implement predefined functions, then account for recursive calls of
-    // constant values (put some limit on it)
-    // Check if this function was already generated with the given constants
-    std::string callname;
-    if (findAlias(constValues, callname))
+    // Find generation entry associated with these constant values, if none is
+    // found a new one is created
+    FuncGenEntry *funcEntry = getGenerationEntry(constValues);
+    if (funcEntry == nullptr)
+        addGenerationEntry(man, constValues);
+    funcEntry = getGenerationEntry(constValues);
+    std::string callname = funcEntry->bcfunc->name;
+    // Check if bytecode has already been generated
+    if (funcEntry->hasGenerated)
         return callname;
-    // Functions without params will receive original name, other will get
-    // some random name
-    bcman->addFunc(params.empty() ? name : "");
-    callname = bcman->topFunc()->name;
-    // Add alias of function that will be generated right now
-    aliases.push_back({callname, constValues});
-    // Temporary set current context stack aside
-    ContextStack curCtx = bcman->ctx;
-    bcman->ctx = ctxStore;
+    man.setFuncStack({funcEntry->bcfunc});
+    // Mark the function as generated
+    funcEntry->hasGenerated = true;
     // Add instructions to set constant variable values
     for (const std::pair<std::string, std::string> &val :
-    bcman->ctx.getConstValues())
-        bcman->write(BCInstr(INSTR_SET, val.first, val.second));
-    bcman->ctx.push();
-    initGlobalVars();
-    initParams(constValues);
-    codeblock->bytecode(*bcman);
-    bcman->ctx.pop();
-    bcman->popFunc();
-    bcman->ctx = curCtx;
+    man.ctx.getConstValues())
+        man.write(BCInstr(INSTR_SET, val.first, val.second));
+    man.ctx.push();
+    initGlobalVars(man);
+    initParams(man, constValues);
+    codeblock->bytecode(man);
+    man.ctx.pop();
+    man.popFunc();
     return callname;
 }
 
@@ -111,19 +87,62 @@ bool FuncNode::acceptTypes(std::vector<Type> types) const {
     return true;
 }
 
-bool FuncNode::findAlias(std::vector<std::string> constValues, std::string
-&result) const {
-    for (const FuncAlias &alias : aliases) {
-        if (alias.constValues == constValues) {
-            result = alias.callname;
+bool FuncNode::hasUngeneratedEntries() const {
+    for (const FuncGenEntry &entry : genTable)
+        if (!entry.hasGenerated)
             return true;
-        }
-    }
     return false;
 }
 
-bool FuncNode::hasNameConflict() const {
-    for (FuncNode *func : bcman->funcs.getFuncs())
+void FuncNode::generateEntries(BCManager &man) {
+    for (FuncGenEntry &entry : genTable) {
+        if (!entry.hasGenerated) {
+            bytecode(man, entry.constValues);
+            entry.hasGenerated = true;
+        }
+    }
+}
+
+std::string FuncNode::addGenerationEntry(BCManager &man,
+std::vector<std::string> constValues) {
+    // Check if the entry already exists
+    if (getGenerationEntry(constValues) != nullptr)
+        return getGenerationEntry(constValues)->bcfunc->name;
+    // Functions with no parameters and a void return type will receive their
+    // original name, others will receive a random name
+    if (getReturnType() == Type("void") && getParamTypes().empty())
+        man.addFunc(getName());
+    else
+        man.addFunc();
+    FuncGenEntry entry = {false, man.topFunc(), constValues};
+    std::string callname = man.topFunc()->name;
+    man.popFunc();
+    genTable.push_back(entry);
+    return callname;
+}
+
+void FuncNode::checkNameConflicts(BCManager &man) const {
+    if (hasNameConflict(man))
+        MCLError(1, "Function with same name and parameter types was already "
+        "defined.", loc);
+}
+
+std::vector<std::string> FuncNode::defaultConstValues() const {
+    std::vector<std::string> out;
+    for (const Param &param : params) {
+        if (param.type.isConst) {
+            if (param.type.base == TYPE_BOOL || param.type.base == TYPE_INT)
+                out.push_back("0");
+            else if (param.type.base == TYPE_STR || param.type.base ==
+            TYPE_VOID)
+                out.push_back("");
+        }
+    }
+    return out;
+}
+
+bool FuncNode::hasNameConflict(BCManager &man) const {
+    for (FuncNode *func : man.funcs.getFuncs())
         if (hasNameConflict(func))
             return true;
     return false;
@@ -141,32 +160,36 @@ bool FuncNode::hasNameConflict(FuncNode *other) const {
     return true;
 }
 
-void FuncNode::initGlobalVars() {
-    for (const Var &var : bcman->ctx.getVars())
-        bcman->write(BCInstr(INSTR_ADDI, var.name, "0"));
+void FuncNode::initGlobalVars(BCManager &man) {
+    for (const Var &var : man.ctx.getVars())
+        man.write(BCInstr(INSTR_ADDI, var.name, "0"));
 }
 
-void FuncNode::initParams(std::vector<std::string> constValues) {
+void FuncNode::initParams(BCManager &man, std::vector<std::string> constValues)
+{
     // Add parameters to context and copy them to the correct variables
     unsigned int constCount = 0;
     for (unsigned int i = 0; i < params.size(); i++) {
         if (params[i].type.isConst) {
-            bcman->write(BCInstr(INSTR_SET, params[i].name,
+            man.write(BCInstr(INSTR_SET, params[i].name,
             constValues[constCount]));
-            bcman->ctx.setConst(params[i].name, constValues[constCount]);
+            man.ctx.setConst(params[i].name, constValues[constCount]);
             constCount++;
         } else {
-            bcman->write(BCInstr(INSTR_COPY, params[i].name, "__param"
+            man.write(BCInstr(INSTR_COPY, params[i].name, "__param"
             + std::to_string(i)));
         }
         Var var(Type(), "??");
-        if (bcman->ctx.findVar(params[i].name, var))
+        if (man.ctx.findVar(params[i].name, var))
             MCLError(1, "Parameter name is already defined somewhere else.",
             loc);
-        bcman->ctx.pushVar(Var(params[i].type, params[i].name));
+        man.ctx.pushVar(Var(params[i].type, params[i].name));
     }
 }
 
-void FuncNode::copyContextStack() {
-    ctxStore = bcman->ctx;
+FuncGenEntry *FuncNode::getGenerationEntry(std::vector<std::string> constValues) {
+    for (FuncGenEntry &entry : genTable)
+        if (entry.constValues == constValues)
+            return &entry;
+    return nullptr;
 }
