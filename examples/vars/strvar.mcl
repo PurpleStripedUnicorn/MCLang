@@ -1,0 +1,8 @@
+
+const str allPlayers = "@a";
+
+void main() {
+    const str name = "PurpleStriped";
+    if ("entity " + allPlayers + "[name=" + name + "]")
+        /say Hello PurpleStriped!
+}
