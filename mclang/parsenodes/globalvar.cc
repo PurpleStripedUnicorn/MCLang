@@ -24,6 +24,8 @@ std::vector<ParseNode *> GlobalVarNode::children() const {
 }
 
 void GlobalVarNode::bytecode(BCManager &man) {
+    if (varType == Type("str"))
+        MCLError(1, "Non-constant strings are not supported.", loc);
     // Get the global variable name
     std::string varName;
     if (varType.isConst) {

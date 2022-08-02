@@ -189,6 +189,12 @@ private:
     ParseNode *readInCall();
 
     /**
+     * Read in a base expression, such as a word, string or number
+     * @return A pointer to the generated parse node
+     */
+    ParseNode *readInBaseExpr();
+
+    /**
      * Read in a namespace statement
      * @return A pointer to the generated parse node
      */

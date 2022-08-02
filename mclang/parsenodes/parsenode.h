@@ -34,8 +34,8 @@ enum ParseNodeType {
     PNODE_VARINIT,
     // Global variable
     PNODE_GLOBALVAR,
-    // Variable name/word
-    PNODE_WORD, PNODE_NUM
+    // Variable name/word and literals
+    PNODE_WORD, PNODE_NUM, PNODE_STR
 };
 
 class ParseNode {

@@ -69,6 +69,14 @@ private:
     void bytecodeChildren(BCManager &man);
 
     /**
+     * Put constant values that are inputs for non-constant values in "__param"
+     * variables
+     * @param man The main bytecode manager
+     * @param func The function definition parse node
+     */
+    void bytecodeConstParams(BCManager &man, FuncNode *func);
+
+    /**
      * Show an error for the called function not existing
      */
     void notFoundError();

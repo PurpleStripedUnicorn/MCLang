@@ -23,6 +23,8 @@ std::vector<ParseNode *> VarInitNode::children() const {
 }
 
 void VarInitNode::bytecode(BCManager &man) {
+    if (varType == Type("str"))
+        MCLError(1, "Non-constant strings are not supported.", loc);
     if (varType.isConst)
         constBytecode(man);
     else

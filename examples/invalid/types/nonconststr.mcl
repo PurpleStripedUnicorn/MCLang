@@ -1,0 +1,4 @@
+
+void main() {
+    str hello = "Hello World!";
+}

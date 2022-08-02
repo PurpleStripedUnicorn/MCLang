@@ -16,7 +16,13 @@
 FuncNode::FuncNode(Type retType, std::string name, std::vector<Param> params,
 CodeBlockNode *codeblock, Loc loc) : ParseNode(PNODE_FUNC, loc),
 retType(retType), name(name), params(params), codeblock(codeblock) {
-
+    for (Param &param : params)
+        if (param.type == Type("str"))
+            MCLError(1, "Non-constant strings as parameters are not supported.",
+            loc);
+    if (retType == Type("str"))
+        MCLError(1, "Non-constant strings as parameters are not supported.",
+        loc);
 }
 
 std::vector<ParseNode *> FuncNode::children() const {
@@ -50,10 +56,6 @@ std::string FuncNode::bytecode(BCManager &man, std::vector<std::string> constVal
     man.setFuncStack({funcEntry->bcfunc});
     // Mark the function as generated
     funcEntry->hasGenerated = true;
-    // Add instructions to set constant variable values
-    for (const std::pair<std::string, std::string> &val :
-    man.ctx.getConstValues())
-        man.write(BCInstr(INSTR_SET, val.first, val.second));
     man.ctx.push();
     initGlobalVars(man);
     initParams(man, constValues);
@@ -162,7 +164,8 @@ bool FuncNode::hasNameConflict(FuncNode *other) const {
 
 void FuncNode::initGlobalVars(BCManager &man) {
     for (const Var &var : man.ctx.getVars())
-        man.write(BCInstr(INSTR_ADDI, var.name, "0"));
+        if (var.type == Type("int") || var.type == Type("bool"))
+            man.write(BCInstr(INSTR_ADDI, var.name, "0"));
 }
 
 void FuncNode::initParams(BCManager &man, std::vector<std::string> constValues)
@@ -171,8 +174,6 @@ void FuncNode::initParams(BCManager &man, std::vector<std::string> constValues)
     unsigned int constCount = 0;
     for (unsigned int i = 0; i < params.size(); i++) {
         if (params[i].type.isConst) {
-            man.write(BCInstr(INSTR_SET, params[i].name,
-            constValues[constCount]));
             man.ctx.setConst(params[i].name, constValues[constCount]);
             constCount++;
         } else {

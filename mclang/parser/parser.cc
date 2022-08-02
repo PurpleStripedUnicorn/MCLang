@@ -17,6 +17,7 @@
 #include "parsenodes/expr/bool.h"
 #include "parsenodes/expr/expr.h"
 #include "parsenodes/expr/num.h"
+#include "parsenodes/expr/str.h"
 #include "parsenodes/func.h"
 #include "parsenodes/globalvar.h"
 #include "parsenodes/if.h"
@@ -183,9 +184,7 @@ ParseNode *Parser::readInExec() {
     std::string execType = cur().content;
     next();
     expect(TOK_LBRACE), next();
-    expect(TOK_STR);
-    std::string args = cur().content;
-    next();
+    ParseNode *args = readInExpr();
     expect(TOK_RBRACE), next();
     CodeBlockNode *codeblock = (CodeBlockNode *)readInCodeBlock();
     return new ExecNode(execType, args, codeblock, lastLoc);
@@ -193,7 +192,7 @@ ParseNode *Parser::readInExec() {
 
 ParseNode *Parser::readInIf() {
     Loc lastLoc = cur().loc;
-    std::vector<std::string> ifArgs;
+    std::vector<ParseNode *> ifArgs;
     std::vector<CodeBlockNode *> codeblocks;
     bool foundElse = false;
     do {
@@ -206,9 +205,7 @@ ParseNode *Parser::readInIf() {
         if (accept(TOK_ELSEIF) || accept(TOK_IF)) {
             next();
             expect(TOK_LBRACE), next();
-            expect(TOK_STR);
-            ifArgs.push_back(cur().content);
-            next();
+            ifArgs.push_back(readInExpr());
             expect(TOK_RBRACE), next();
         } else if (accept(TOK_ELSE)) {
             next();
@@ -274,6 +271,30 @@ ParseNode *Parser::readInProd() {
 }
 
 ParseNode *Parser::readInTerm() {
+    return readInCall();
+}
+
+ParseNode *Parser::readInCall() {
+    Loc lastLoc = cur().loc;
+    ParseNode *child = readInBaseExpr();
+    if (child->getType() == PNODE_WORD && accept(TOK_LBRACE)) {
+        next();
+        std::string fname = ((WordNode *)child)->getContent();
+        delete child;
+        std::vector<ParseNode *> params;
+        if (!accept(TOK_RBRACE))
+            params.push_back(readInExpr());
+        while (!accept(TOK_RBRACE)) {
+            expect(TOK_COMMA), next();
+            params.push_back(readInExpr());
+        }
+        expect(TOK_RBRACE), next();
+        return new CallNode(fname, params, lastLoc);
+    }
+    return child;
+}
+
+ParseNode *Parser::readInBaseExpr() {
     Loc lastLoc = cur().loc;
     if (accept(TOK_NUM)) {
         std::string content = cur().content;
@@ -285,27 +306,15 @@ ParseNode *Parser::readInTerm() {
         next();
         return new BoolNode(value, lastLoc);
     }
-    return readInCall();
-}
-
-ParseNode *Parser::readInCall() {
-    Loc lastLoc = cur().loc;
-    expect(TOK_WORD);
-    std::string fname = cur().content;
-    next();
-    if (accept(TOK_LBRACE)) {
+    if (accept(TOK_STR)) {
+        std::string content = cur().content;
         next();
-        std::vector<ParseNode *> params;
-        if (!accept(TOK_RBRACE))
-            params.push_back(readInExpr());
-        while (!accept(TOK_RBRACE)) {
-            expect(TOK_COMMA), next();
-            params.push_back(readInExpr());
-        }
-        expect(TOK_RBRACE), next();
-        return new CallNode(fname, params, lastLoc);
+        return new StrNode(content, lastLoc);
     }
-    return new WordNode(fname, lastLoc);
+    expect(TOK_WORD);
+    std::string name = cur().content;
+    next();
+    return new WordNode(name, lastLoc);
 }
 
 ParseNode *Parser::readInNamespace() {

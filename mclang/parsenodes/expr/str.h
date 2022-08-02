@@ -1,6 +1,6 @@
 
-#ifndef __PARSENODE_EXEC_H__
-#define __PARSENODE_EXEC_H__
+#ifndef __PARSENODE_STR_H__
+#define __PARSENODE_STR_H__
 
 #include "general/loc.h"
 #include "parsenodes/parsenode.h"
@@ -8,26 +8,22 @@
 #include <vector>
 
 class BCManager;
-class CodeBlockNode;
 
-class ExecNode : public ParseNode {
+class StrNode : public ParseNode {
 
 public:
 
     /**
      * Constructor
-     * @param type The subcommand type
-     * @param args The subcommand arguments
-     * @param codeblock Code inside the statement block
+     * @param content The string content
      * @param loc The location of the parse node
      */
-    ExecNode(std::string type, ParseNode *args, CodeBlockNode *codeblock,
-    Loc loc);
+    StrNode(std::string content, Loc loc);
 
     /**
      * Destructor
      */
-    virtual ~ExecNode() override;
+    virtual ~StrNode() override;
 
     /**
      * Get the children of this parse node
@@ -41,16 +37,16 @@ public:
      */
     virtual void bytecode(BCManager &man) override;
 
-private:
+    /**
+     * Get the content of the string
+     * @return The content as a string
+     */
+    std::string getContent() const;
 
-    // Subcommand type
-    std::string execType;
+protected:
 
-    // Subcommand arguments
-    ParseNode *execArgs;
-
-    // Content of the statement block
-    CodeBlockNode *codeblock;
+    // The string content
+    std::string content;
 
 };
 

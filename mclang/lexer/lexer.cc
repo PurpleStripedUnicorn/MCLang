@@ -89,7 +89,7 @@ inline Token &Lexer::lastRead() const {
 
 Token Lexer::convertIdent(std::string ident) {
     TokenType tt = TOK_WORD;
-    if (ident == "int" || ident == "void" || ident == "bool")
+    if (ident == "int" || ident == "void" || ident == "bool" || ident == "str")
         tt = TOK_TYPENAME;
     if (ident == "const")
         tt = TOK_CONST;
