@@ -30,6 +30,7 @@ void CallNode::bytecode(BCManager &man) {
     FuncNode *func = findFunc(man);
     if (func == nullptr)
         notFoundError();
+    bytecodeConstParams(man, func);
     std::string callname = func->addGenerationEntry(man, getConstVals());
     man.write(BCInstr(INSTR_CALL, callname));
     popLocalVars(man);
@@ -58,15 +59,22 @@ void CallNode::bytecodeChildren(BCManager &man) {
     paramTypes.clear(), paramValues.clear();
     for (unsigned int i = 0; i < params.size(); i++) {
         params[i]->bytecode(man);
-        if (man.ret.type.isConst)
-            man.write(BCInstr(INSTR_SET, "__param" + std::to_string(i),
-            man.ret.value));
-        else
+        if (!man.ret.type.isConst)
             man.write(BCInstr(INSTR_COPY, "__param" + std::to_string(i),
             man.ret.value));
         paramTypes.push_back(man.ret.type);
         paramValues.push_back(man.ret.value);
     }
+}
+
+void CallNode::bytecodeConstParams(BCManager &man, FuncNode *func) {
+    // WARNING: Assumes that paramTypes, paramValues and funcParamTypes all have
+    // the same size!
+    std::vector<Type> funcParamTypes = func->getParamTypes();
+    for (unsigned int i = 0; i < paramTypes.size(); i++)
+        if (!funcParamTypes[i].isConst && paramTypes[i].isConst)
+            man.write(BCInstr(INSTR_SET, "__param" + std::to_string(i),
+            paramValues[i]));
 }
 
 void CallNode::notFoundError() {
