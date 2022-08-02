@@ -2,27 +2,14 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "MCLang",
 	"patterns": [
-		{
-			"include": "#directives"
-		},
-		{
-			"include": "#comments"
-		},
-		{
-			"include": "#commands"
-		},
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#strings"
-		},
-		{
-			"include": "#storage"
-		},
-		{
-			"include": "#numbers"
-		}
+		{"include": "#directives"},
+		{"include": "#comments"},
+		{"include": "#commands"},
+		{"include": "#keywords"},
+		{"include": "#strings"},
+		{"include": "#storage"},
+		{"include": "#numbers"},
+		{"include": "#functions"}
 	],
 	"repository": {
 		"comments": {
@@ -116,6 +103,14 @@
 				{
 					"name": "entity.name.function.preprocessor.mclang",
 					"match": "(?<=^\\s*\\#define )[A-Za-z_][A-Za-z0-9_]*\\b"
+				}
+			]
+		},
+		"functions": {
+			"patterns": [
+				{
+					"name": "entity.name.function.mclang",
+					"match": "((?<=void )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=str )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=bool )[A-Za-z_][A-Za-z0-9_]*\\b|(?<=int )[A-Za-z_][A-Za-z0-9_]*\\b)"
 				}
 			]
 		}
