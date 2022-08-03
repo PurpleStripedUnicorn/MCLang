@@ -1,0 +1,18 @@
+
+void g() {
+    /say Hello!
+}
+
+void f() {
+    if ("entity @a") {
+        /say Hello everyone!
+        g();
+    }
+}
+
+void main() {
+    if ("entity @p") {
+        /say Hello closest player!
+        f();
+    }
+}
