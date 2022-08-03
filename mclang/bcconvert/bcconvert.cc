@@ -67,10 +67,14 @@ std::vector<std::string> BCConverter::convertInstr(const BCInstr &instr) {
     if (instr.type == INSTR_COPY)
         return {"scoreboard players operation " + instr.arg1 + " " +
         comp->scoreboardName + " = " + instr.arg2 + " " + comp->scoreboardName};
-    if (IMARK_ARITH_START < instr.type && instr.type < IMARK_ARITH_END)
+    if (INSTR_ADD <= instr.type && instr.type <= INSTR_MOD)
         return convertArith(instr);
-    if (IMARK_ARITHI_START < instr.type && instr.type < IMARK_ARITHI_END)
+    if (INSTR_ADDI <= instr.type && instr.type <= INSTR_MODI)
         return convertArithI(instr);
+    if (INSTR_LT <= instr.type && instr.type <= INSTR_NEQ)
+        return convertComparison(instr);
+    if (INSTR_NOT <= instr.type && instr.type <= INSTR_OR)
+        return convertLogical(instr);
     MCLError(1, "Unexpected error, reading undefined instruction");
     return {};
 }
@@ -140,7 +144,50 @@ std::vector<std::string> BCConverter::convertArithI(BCInstr instr) const {
         op = "/=";
     if (instr.type == INSTR_MODI)
         op = "%=";
-    return {"scoreboard players set __itmp " + comp->scoreboardName + " "
+    return {"scoreboard players set 0itmp " + comp->scoreboardName + " "
     + instr.arg2, "scoreboard players operation " + instr.arg1 + " "
-    + comp->scoreboardName + " " + op + " __itmp " + comp->scoreboardName};
+    + comp->scoreboardName + " " + op + " 0itmp " + comp->scoreboardName};
+}
+
+std::vector<std::string> BCConverter::convertComparison(BCInstr instr) const {
+    std::string sb = comp->scoreboardName;
+    std::string op = "";
+    if (instr.type == INSTR_LT)
+        op = "<";
+    if (instr.type == INSTR_LTE)
+        op = "<=";
+    if (instr.type == INSTR_GT)
+        op = ">";
+    if (instr.type == INSTR_GTE)
+        op = ">=";
+    if (instr.type == INSTR_EQ)
+        op = "=";
+    if (op == "")
+        MCLError(1, "Unexpected error while converting comparison instruction."
+        );
+    return {"scoreboard players set 0itmp" + sb + " 0",
+    "execute if score " + instr.arg1 + " " + sb + " " + op + " " + instr.arg2
+    + " " + sb + " run scoreboard players set 0itmp " + sb + " 1",
+    "scoreboard players operation " + instr.arg1 + " " + sb + " = 0itmp " + sb};
+}
+
+std::vector<std::string> BCConverter::convertLogical(BCInstr instr) const {
+    std::string sb = comp->scoreboardName;
+    if (instr.type == INSTR_NOT)
+        return {"scoreboard players set 0itmp" + sb + " 0",
+        "execute if score " + instr.arg1 + " " + sb + " matches 0 run "
+        "scoreboard players set 0itmp " + sb + " 1", "scoreboard players "
+        "operation " + instr.arg1 + " " + sb + " = 0itmp " + sb};
+    if (instr.type == INSTR_AND)
+        return {"execute unless score " + instr.arg1 + " " + sb + " matches 0 "
+        "run scoreboard players set " + instr.arg1 + " " + sb + " 1",
+        "execute if score " + instr.arg2 + " " + sb + " matches 0 run "
+        "scoreboard players set " + instr.arg1 + " " + sb + " 0"};
+    if (instr.type == INSTR_OR)
+        return {"execute unless score " + instr.arg1 + " " + sb + " matches 0 "
+        "run scoreboard players set " + instr.arg1 + " " + sb + " 1",
+        "execute unless score " + instr.arg2 + " " + sb + " matches 0 run "
+        "scoreboard players set " + instr.arg1 + " " + sb + " 1"};
+    MCLError(1, "Unexpected error while converting logical instruction.");
+    return {};
 }

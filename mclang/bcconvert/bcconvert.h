@@ -2,6 +2,7 @@
 #ifndef __BCCONVERT_H__
 #define __BCCONVERT_H__
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -99,7 +100,7 @@ private:
 
     /**
      * Convert an arithmatic operation instruction
-     * @param instr THe instruction to convert, assumed to be an arithmatic
+     * @param instr The instruction to convert, assumed to be an arithmatic
      * operation instruction
      * @return A vector of strings containing raw commands
      */
@@ -108,11 +109,26 @@ private:
     /**
      * Convert an arithmatic operation instruction with as the second argument a
      * number
-     * @param instr THe instruction to convert, assumed to be an arithmatic
+     * @param instr The instruction to convert, assumed to be an arithmatic
      * operation instruction with second argument numeric
      * @return A vector of strings containing raw commands
      */
     std::vector<std::string> convertArithI(BCInstr instr) const;
+
+    /**
+     * Convert a comparison instruction
+     * @param instr The instruction to convert, assumed to be a comparison
+     * @return A vector of strings containing raw commands
+     */
+    std::vector<std::string> convertComparison(BCInstr instr) const;
+
+    /**
+     * Convert a logical operation instruction
+     * @param instr The instruction to convert, assumed to be a logical
+     * operation
+     * @return A vector of strings containing raw commands
+     */
+    std::vector<std::string> convertLogical(BCInstr instr) const;
 
     // The compiler component
     Compiler *comp;

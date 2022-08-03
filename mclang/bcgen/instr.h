@@ -6,7 +6,8 @@
 
 /**
  * Bytecode instruction type
- * @note Has some markers in between the types for creating categories
+ * @warning Changing the order of these instructions may break things in the
+ * bytecode converter!
  */
 enum BCInstrType {
     // Error type
@@ -31,13 +32,17 @@ enum BCInstrType {
     INSTR_COPY,
     // Arithmatic, applies operation to two arguments and then puts result in
     // arg1
-    IMARK_ARITH_START,
     INSTR_ADD, INSTR_SUB, INSTR_MUL, INSTR_DIV, INSTR_MOD,
-    IMARK_ARITH_END,
     // Arithmatic with the second argument being a number
-    IMARK_ARITHI_START,
     INSTR_ADDI, INSTR_SUBI, INSTR_MULI, INSTR_DIVI, INSTR_MODI,
-    IMARK_ARITHI_END
+    // Comparison operators, applies operation to two arguments (arg1 = left,
+    // arg2 = right) and then puts the result in arg1 (either 0 or 1)
+    INSTR_LT, INSTR_LTE, INSTR_GT, INSTR_GTE, INSTR_EQ, INSTR_NEQ,
+    // Not operation, if arg1 is not 0, it becomes 0. If it is 0 it becomes 1
+    INSTR_NOT,
+    // Other logical operations, interpret every value other than 0 as true and
+    // result is a 0 or 1
+    INSTR_AND, INSTR_OR
 };
 
 struct BCInstr {
