@@ -21,7 +21,7 @@ const std::string parseNodeNames[] = {
     "VARINIT",
     "GLOBALVAR",
     "WORD", "NUM", "STR",
-    "<", "<=", ">", ">=",
+    "<", "<=", ">", ">=", "==",
     "!", "&&", "||"
 };
 
