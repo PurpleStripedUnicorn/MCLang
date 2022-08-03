@@ -22,7 +22,14 @@ const std::set<std::string> punctSymbols = {
     "*", "*=",
     "/", "/=",
     "%", "%=",
-    "=", "=="
+    "=", "==",
+    "<", "<=",
+    ">", ">=",
+    // NOTE: Some operators are not actually supported but are there because
+    // they are a prefix, this is later handled by the main lexer
+    "&", "&&",
+    "|", "||",
+    "!"
 };
 
 // Table for escape characters that do not simply translate to themselves

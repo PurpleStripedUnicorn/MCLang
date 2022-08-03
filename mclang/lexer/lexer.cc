@@ -115,6 +115,7 @@ Token Lexer::convertIdent(std::string ident) {
 
 Token Lexer::convertPunct(std::string punct) {
     if (punctTable.count(punct) == 0)
-        MCLError(1, "Unexpected error reading punctuation", cur().loc);
+        MCLError(1, "Use of the symbol \"" + punct + "\" is unsupported.",
+        cur().loc);
     return Token(punctTable.find(punct)->second);
 }

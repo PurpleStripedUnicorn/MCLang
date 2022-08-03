@@ -27,10 +27,12 @@ enum TokenType {
     // Assignment operators, have to be in the same order as normal operators!
     TOK_ASSIGN_ADD, TOK_ASSIGN_SUB, TOK_ASSIGN_DIV, TOK_ASSIGN_MUL,
     TOK_ASSIGN_MOD,
+    // Comparison operators
+    TOK_LT, TOK_LTE, TOK_GT, TOK_GTE, TOK_EQ,
+    // Logical operators
+    TOK_NOT, TOK_AND, TOK_OR,
     // Strings, numbers and other constants
     TOK_NUM, TOK_STR, TOK_TRUE, TOK_FALSE,
-    // Comparisons
-    TOK_EQ,
     // Execute-like statements, similar to if-statements, but only take strings
     // inside the round brackets
     TOK_EXEC_STMT,
