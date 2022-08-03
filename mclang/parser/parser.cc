@@ -252,7 +252,7 @@ ParseNode *Parser::readInAnd() {
     Loc lastLoc  = cur().loc;
     ParseNode *cur = readInEquality();
     while (accept(TOK_AND))
-        next(), cur = new LogicNode(PNODE_OR, cur, readInEquality(), lastLoc);
+        next(), cur = new LogicNode(PNODE_AND, cur, readInEquality(), lastLoc);
     return cur;
 }
 
