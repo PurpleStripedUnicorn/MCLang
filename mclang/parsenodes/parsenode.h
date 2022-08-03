@@ -35,7 +35,11 @@ enum ParseNodeType {
     // Global variable
     PNODE_GLOBALVAR,
     // Variable name/word and literals
-    PNODE_WORD, PNODE_NUM, PNODE_STR
+    PNODE_WORD, PNODE_NUM, PNODE_STR,
+    // Comparison operators
+    PNODE_LT, PNODE_LTE, PNODE_GT, PNODE_GTE,
+    // Logical operators
+    PNODE_NOT, PNODE_AND, PNODE_OR
 };
 
 class ParseNode {
