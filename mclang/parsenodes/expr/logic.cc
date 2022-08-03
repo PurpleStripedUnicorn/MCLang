@@ -18,12 +18,13 @@ LogicNode::~LogicNode() {
 void LogicNode::bytecode(BCManager &man) {
     if (type == PNODE_NOT)
         bytecodeNot(man);
-    if (type == PNODE_AND)
+    else if (type == PNODE_AND)
         bytecodeAnd(man);
-    if (type == PNODE_OR)
+    else if (type == PNODE_OR)
         bytecodeOr(man);
-    MCLError(1, "Unexpected error occured when converting logical bytecode.",
-    loc);
+    else
+        MCLError(1, "Unexpected error occured when converting logical "
+        "bytecode.", loc);
 }
 
 void LogicNode::invalidTypeError() const {
