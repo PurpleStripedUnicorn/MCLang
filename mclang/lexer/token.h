@@ -28,7 +28,7 @@ enum TokenType {
     TOK_ASSIGN_ADD, TOK_ASSIGN_SUB, TOK_ASSIGN_DIV, TOK_ASSIGN_MUL,
     TOK_ASSIGN_MOD,
     // Comparison operators
-    TOK_LT, TOK_LTE, TOK_GT, TOK_GTE, TOK_EQ,
+    TOK_LT, TOK_LTE, TOK_GT, TOK_GTE, TOK_EQ, TOK_NEQ,
     // Logical operators
     TOK_NOT, TOK_AND, TOK_OR,
     // Strings, numbers and other constants

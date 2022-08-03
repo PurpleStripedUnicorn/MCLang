@@ -26,7 +26,8 @@ const std::map<std::string, TokenType> punctTable = {
     {"<", TOK_LT}, {"<=", TOK_LTE},
     {">", TOK_GT}, {">=", TOK_GTE},
     {"&&", TOK_AND},
-    {"||", TOK_OR}
+    {"||", TOK_OR},
+    {"!", TOK_NOT}, {"!=", TOK_NEQ}
 };
 
 // Execute-statement indicators, i.e. positioned, as, at, etc.
