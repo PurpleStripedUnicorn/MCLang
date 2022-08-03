@@ -17,12 +17,11 @@ const std::string instrNames[] = {
     "POP",
     "TOP",
     "COPY",
-    "M_ARITH_START",
     "ADD", "SUB", "MUL", "DIV", "MOD",
-    "M_ARITH_END",
-    "M_ARITHI_START",
     "ADDI", "SUBI", "MULI", "DIVI", "MODI",
-    "M_ARITHI_END"
+    "LT", "LTE", "GT", "GTE", "EQ", "NEQ",
+    "NOT",
+    "AND", "OR"
 };
 
 /**
