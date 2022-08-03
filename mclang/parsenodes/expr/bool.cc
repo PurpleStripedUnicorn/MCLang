@@ -21,7 +21,7 @@ std::vector<ParseNode *> BoolNode::children() const {
 }
 
 void BoolNode::bytecode(BCManager &man) {
-    man.ret = {Type("const bool"), value ? "0" : "1"};
+    man.ret = {Type("const bool"), value ? "1" : "0"};
 }
 
 bool BoolNode::getValue() const {
