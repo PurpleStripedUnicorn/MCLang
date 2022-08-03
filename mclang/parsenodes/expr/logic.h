@@ -14,9 +14,7 @@
 class BCManager;
 
 /**
- * Arithmatic parse node, which is used for all arithmatic operations, such as
- * addition, modulo, etc.
- * @note This is not used when using for example "+="
+ * Logic parse node, for operations NOT, AND and OR
  */
 class LogicNode : public ExprNode {
 
