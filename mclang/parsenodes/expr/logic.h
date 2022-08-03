@@ -61,12 +61,6 @@ private:
     void bytecodeNot(BCManager &man);
 
     /**
-     * Generate bytecode for this parsenode assuming it is an AND or OR operator
-     * @param man The main bytecode manager
-     */
-    void bytecodeAndOr(BCManager &man);
-
-    /**
      * Generate bytecode for this parsenode assuming it is an AND operator
      * @param man The main bytecode manager
      */
