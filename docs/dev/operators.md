@@ -17,8 +17,8 @@ This document is based on [C++ Operator Precedence](https://en.cppreference.com/
 | 5 | `a<=b`, `a<b`, `a>b`, `a>=b` | Inequality operators | |
 | 6 | `a==b`, `a!=b` | Equality operations | |
 | 7 | `a&&b` | And | |
-| 8 | `a\|\|b` | Or | Right-to-left |
-| 9 | `a?b:c` | Ternary operator | |
+| 8 | `a\|\|b` | Or | |
+| 9 | `a?b:c` | Ternary operator | Right-to-left |
 | | `a=b` | Assignment | |
 | | `a+=b`, `a-=b` | Assignment with addition and subtraction |
 | | `a*=b`, `a/=b`, `a%=b` | Assignment with multiplication, division and remainder |
