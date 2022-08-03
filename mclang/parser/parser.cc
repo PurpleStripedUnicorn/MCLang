@@ -15,7 +15,9 @@
 #include "parsenodes/expr/arith.h"
 #include "parsenodes/expr/assign.h"
 #include "parsenodes/expr/bool.h"
+#include "parsenodes/expr/compare.h"
 #include "parsenodes/expr/expr.h"
+#include "parsenodes/expr/logic.h"
 #include "parsenodes/expr/num.h"
 #include "parsenodes/expr/str.h"
 #include "parsenodes/func.h"
@@ -226,7 +228,7 @@ ParseNode *Parser::readInExpr() {
 ParseNode *Parser::readInAssign() {
     // Assignment is right associative
     Loc lastLoc = cur().loc;
-    ParseNode *left = readInSum();
+    ParseNode *left = readInOr();
     if (accept(TOK_ASSIGN)) {
         next();
         ParseNode *right = readInAssign();
@@ -236,6 +238,53 @@ ParseNode *Parser::readInAssign() {
         return new AssignNode(((WordNode *)left)->getContent(), right, lastLoc);
     }
     return left;
+}
+
+ParseNode *Parser::readInOr() {
+    Loc lastLoc  = cur().loc;
+    ParseNode *cur = readInAnd();
+    while (accept(TOK_OR))
+        next(), cur = new LogicNode(PNODE_OR, cur, readInAnd(), lastLoc);
+    return cur;
+}
+
+ParseNode *Parser::readInAnd() {
+    Loc lastLoc  = cur().loc;
+    ParseNode *cur = readInEquality();
+    while (accept(TOK_AND))
+        next(), cur = new LogicNode(PNODE_OR, cur, readInEquality(), lastLoc);
+    return cur;
+}
+
+ParseNode *Parser::readInEquality() {
+    Loc lastLoc  = cur().loc;
+    ParseNode *cur = readInInequality();
+    while (accept(TOK_EQ) || accept(TOK_NEQ)) {
+        ParseNodeType ptype = PNODE_EQ;
+        if (accept(TOK_NEQ))
+            ptype = PNODE_NEQ;
+        next();
+        cur = new CompareNode(ptype, cur, readInInequality(), lastLoc);
+    }
+    return cur;
+}
+
+ParseNode *Parser::readInInequality() {
+    Loc lastLoc  = cur().loc;
+    ParseNode *cur = readInSum();
+    while (accept(TOK_LT) || accept(TOK_LTE) || accept(TOK_GT)
+    || accept(TOK_GTE)) {
+        ParseNodeType ptype = PNODE_LT;
+        if (accept(TOK_LTE))
+            ptype = PNODE_LTE;
+        if (accept(TOK_GT))
+            ptype = PNODE_GT;
+        if (accept(TOK_GTE))
+            ptype = PNODE_GTE;
+        next();
+        cur = new CompareNode(ptype, cur, readInSum(), lastLoc);
+    }
+    return cur;
 }
 
 ParseNode *Parser::readInSum() {

@@ -159,6 +159,34 @@ private:
     ParseNode *readInAssign();
 
     /**
+     * Read in an OR logical operator (||)
+     * @return A pointer to the genrated parse node
+     * @note Can also just return an operation lower in the order of operators
+     */
+    ParseNode *readInOr();
+
+    /**
+     * Read in an AND logical operator (&&)
+     * @return A pointer to the genrated parse node
+     * @note Can also just return an operation lower in the order of operators
+     */
+    ParseNode *readInAnd();
+
+    /**
+     * Read in an equality comparison (== or !=)
+     * @return A pointer to the genrated parse node
+     * @note Can also just return an operation lower in the order of operators
+     */
+    ParseNode *readInEquality();
+
+    /**
+     * Read in an inequality comparison (<, <=, > or >=)
+     * @return A pointer to the genrated parse node
+     * @note Can also just return an operation lower in the order of operators
+     */
+    ParseNode *readInInequality();
+
+    /**
      * Read in a sum
      * @return A pointer to the genrated parse node
      * @note Can also just return an operation lower in the order of operators
