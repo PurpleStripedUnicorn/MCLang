@@ -1,0 +1,6 @@
+
+void main() {
+    const bool x = true;
+    bool y = false;
+    bool z = x && y;
+}
