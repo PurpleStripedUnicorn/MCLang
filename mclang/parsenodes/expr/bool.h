@@ -1,5 +1,5 @@
 
-#ifndef __PARSENODE_BOOl_H__
+#ifndef __PARSENODE_BOOL_H__
 #define __PARSENODE_BOOL_H__
 
 #include "general/loc.h"
