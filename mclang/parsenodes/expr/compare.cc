@@ -29,6 +29,10 @@ void CompareNode::bytecode(BCManager &man) {
         tmpVarLeft = man.tmp.reserve();
         man.write(BCInstr(INSTR_SET, tmpVarLeft, retLeft.value));
         leftVar = tmpVarLeft;
+    } else {
+        tmpVarLeft = man.tmp.reserve();
+        man.write(BCInstr(INSTR_COPY, tmpVarLeft, leftVar));
+        leftVar = tmpVarLeft;
     }
     right->bytecode(man), retRight = man.ret;
     std::string rightVar = retRight.value;
