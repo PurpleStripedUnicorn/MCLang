@@ -151,6 +151,12 @@ std::vector<std::string> BCConverter::convertArithI(BCInstr instr) const {
 
 std::vector<std::string> BCConverter::convertComparison(BCInstr instr) const {
     std::string sb = comp->scoreboardName;
+    if (instr.type == INSTR_NEQ)
+        return {"scoreboard players set 0itmp" + sb + " 0",
+        "execute unless score " + instr.arg1 + " " + sb + " = " + instr.arg2
+        + " " + sb + " run scoreboard players set 0itmp " + sb + " 1",
+        "scoreboard players operation " + instr.arg1 + " " + sb + " = 0itmp "
+        + sb};
     std::string op = "";
     if (instr.type == INSTR_LT)
         op = "<";

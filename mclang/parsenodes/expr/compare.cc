@@ -57,6 +57,8 @@ void CompareNode::invalidTypeError() const {
         op = ">=";
     if (type == PNODE_EQ)
         op = "==";
+    if (type == PNODE_NEQ)
+        op = "!=";
     MCLError(1, "Operator \"" + op + "\" does not support operands of types \""
     + retLeft.type.str() + "\" and \"" + retRight.type.str() + "\".");
 }
@@ -72,6 +74,8 @@ BCInstrType CompareNode::getInstrType() const {
         return INSTR_GTE;
     if (type == PNODE_EQ)
         return INSTR_EQ;
+    if (type == PNODE_NEQ)
+        return INSTR_NEQ;
     MCLError(1, "Unexpected error occured while converting comparison "
     "node bytecode.", loc);
     return INSTR_ERR;

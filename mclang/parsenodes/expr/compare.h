@@ -10,7 +10,7 @@
 class BCManager;
 
 /**
- * Comparison parse node, for <, <=, >, >= and ==
+ * Comparison parse node, for <, <=, >, >=, == and !=
  */
 class CompareNode : public ExprNode {
 
